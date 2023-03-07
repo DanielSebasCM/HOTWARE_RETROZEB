@@ -1,0 +1,31 @@
+{
+  "name": "hotware_retrozeb",
+  "version": "1.0.0",
+  "description": "Platforma para sesiones de retrospectiva de zecommerce",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielSebasCM/HOTWARE_RETROZEB.git"
+  },
+  "author": "Sergio Garnica, Ricardo Fernandez, Leslie del Carmen Sanchez, Damariz Licea, Daniel, Fuentes, Daniel Cajas",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DanielSebasCM/HOTWARE_RETROZEB/issues"
+  },
+  "homepage": "https://github.com/DanielSebasCM/HOTWARE_RETROZEB#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.21"
+  },
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "cookie-parser": "^1.4.6",
+    "ejs": "^3.1.8",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "sequelize": "^6.29.1"
+  }
+}
