@@ -59,6 +59,12 @@ class Question {
     if (!options.includes(question.type))
       throw new Error("El tipo de pregunta no es válido");
 
+    if (question.type !== "SELECTION" && question.options) {
+      throw new Error(
+        "Para ingresar opciones, el tipo de pregunta debe ser SELECTION"
+      );
+    }
+
     // Option is SELECTION and Option is not null and length > 1
     if (question.type === "SELECTION") {
       if (!question.options) throw new Error("Ingresa al menos dos opciones");
@@ -86,6 +92,12 @@ class Question {
   }
 
   async post() {
+    if (this.type !== "SELECTION" && this.options) {
+      throw new Error(
+        "Para ingresar opciones, el tipo de pregunta debe ser SELECTION"
+      );
+    }
+
     let [res, _] = await db.execute(
       `INSERT INTO question(description, type)
       VALUES (?, ?)`,
@@ -93,7 +105,7 @@ class Question {
     );
     this.id = res.insertId;
 
-    if (this.options) {
+    if (this.type === "SELECTION" && this.options) {
       this.options.forEach(async (option) => {
         await db.execute(
           `INSERT INTO option(description, id_question)
