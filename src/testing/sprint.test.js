@@ -47,6 +47,16 @@ test("Sprint has a valid end date", () => {
   }).toThrow("Formato de fecha inválido");
 });
 
+test("Sprint has a valid dates", () => {
+  expect(() => {
+    new Sprint({
+      name: "a".repeat(40),
+      start: "2021-01-01 00:00:00",
+      end: "2020-01-01 00:00:00",
+    });
+  }).toThrow("La fecha de inicio debe ser menor a la fecha de fin");
+});
+
 test("Sprint has valid id_jira", () => {
   expect(() => {
     new Sprint({
