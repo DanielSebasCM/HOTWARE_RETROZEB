@@ -46,3 +46,23 @@ test("Sprint has a valid end date", () => {
     });
   }).toThrow("Formato de fecha inválido");
 });
+
+test("Sprint has valid id_jira", () => {
+  expect(() => {
+    new Sprint({
+      name: "a".repeat(40),
+      start: "2021-01-01 00:00:00",
+      id_jira: "Esto no sirve",
+    });
+  }).toThrow("Id_jira inválido");
+});
+
+test("Sprint has valid id_project", () => {
+  expect(() => {
+    new Sprint({
+      name: "a".repeat(40),
+      start: "2021-01-01 00:00:00",
+      id_project: "Esto no sirve",
+    });
+  }).toThrow("Id_project inválido");
+});
