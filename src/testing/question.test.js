@@ -82,20 +82,56 @@ test("Option is SELECTION and Option is not null and length < 25 && length > 0",
 
 // ---------------- CU05: Registrar pregunta ----------------
 test("question inserted successfully", async () => {
+  // Mock question
   const mockQuestion = new Question({
     description: "¿Cómo te sentiste durante el sprint?",
     type: "OPEN",
   });
 
+  // Insert question
   const res = await mockQuestion.post();
-  expect(res.insertId).not.toEqual(null);
-  expect(res.insertId).not.toBe(undefined);
+  // Verify id created
+  expect(res.insertId).not.toBeNull();
+  expect(res.insertId).toBeDefined();
 
+  // Get question
   const createdQuestion = await Question.getById(res.insertId);
+  // Verify question
   expect(res.insertId).toEqual(createdQuestion.id);
   expect(mockQuestion.description).toEqual(createdQuestion.description);
   expect(mockQuestion.type).toEqual(createdQuestion.type);
   expect(createdQuestion.active).toEqual(1);
+});
 
-  // TODO - try add question with options
+test("question inserted successfully with options", async () => {
+  // Mock question
+  const mockQuestion = new Question({
+    description: "¿Cómo te sentiste durante el sprint?",
+    type: "SELECTION",
+    options: ["Muy bien", "Bien", "Regular", "Mal", "Muy mal"],
+  });
+
+  // Insert question
+  const res = await mockQuestion.post();
+  // Verify id created
+  expect(res.insertId).not.toBeNull();
+  expect(res.insertId).toBeDefined();
+
+  // Get question
+  const createdQuestion = await Question.getById(res.insertId);
+  // Verify question
+  expect(res.insertId).toEqual(createdQuestion.id);
+  expect(mockQuestion.description).toEqual(createdQuestion.description);
+  expect(mockQuestion.type).toEqual(createdQuestion.type);
+  expect(createdQuestion.active).toEqual(1);
+  // Verify options
+  expect(createdQuestion.options).not.toBeNull();
+  expect(createdQuestion.options).toBeDefined();
+  expect(createdQuestion.options.length).toEqual(5);
+  // Verify options are the same
+  expect(createdQuestion.options).toContain("Muy bien");
+  expect(createdQuestion.options).toContain("Bien");
+  expect(createdQuestion.options).toContain("Regular");
+  expect(createdQuestion.options).toContain("Mal");
+  expect(createdQuestion.options).toContain("Muy mal");
 });

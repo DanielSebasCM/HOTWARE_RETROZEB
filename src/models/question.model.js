@@ -19,6 +19,15 @@ class Question {
       `SELECT * FROM question WHERE id = ?`,
       [id]
     );
+
+    if (question[0].type == "SELECTION") {
+      let [options, _] = await db.execute(
+        `SELECT description FROM option WHERE id_question = ? ORDER BY id`,
+        [id]
+      );
+      question[0].options = options.map((option) => option.description);
+    }
+
     return new Question(question[0]);
   }
 
@@ -82,7 +91,17 @@ class Question {
       VALUES (?, ?)`,
       [this.description, this.type]
     );
-    this.id = res.insertedId;
+    this.id = res.insertId;
+
+    if (this.options) {
+      this.options.forEach(async (option) => {
+        await db.execute(
+          `INSERT INTO option(description, id_question)
+          VALUES (?, ?)`,
+          [option, this.id]
+        );
+      });
+    }
 
     // TODO - Add question with options
     return res;
