@@ -28,6 +28,16 @@ test("type is not null and of type OPEN, BOOLEAN, SCALE or SELECTION", () => {
   }).toThrow("El tipo de pregunta no es válido");
 });
 
+test("type is not null and of type OPEN, BOOLEAN, SCALE or SELECTION, and options are not null", () => {
+  expect(() => {
+    new Question({
+      description: "a".repeat(255),
+      type: "BOOLEAN",
+      options: ["a".repeat(10)],
+    });
+  }).toThrow("Para ingresar opciones, el tipo de pregunta debe ser SELECTION");
+});
+
 test("Option is SELECTION and Option is not null and length > 1", () => {
   expect(() => {
     new Question({
@@ -134,4 +144,14 @@ test("question inserted successfully with options", async () => {
   expect(createdQuestion.options).toContain("Regular");
   expect(createdQuestion.options).toContain("Mal");
   expect(createdQuestion.options).toContain("Muy mal");
+});
+
+test("question not inserted if type is not selection and has options", async () => {
+  expect(() => {
+    new Question({
+      description: "¿Cómo te sentiste durante el sprint?",
+      type: "BOOLEAN",
+      options: ["Muy bien", "Bien", "Regular", "Mal", "Muy mal"],
+    });
+  }).toThrow("Para ingresar opciones, el tipo de pregunta debe ser SELECTION");
 });
