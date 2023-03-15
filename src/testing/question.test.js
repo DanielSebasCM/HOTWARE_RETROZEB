@@ -147,9 +147,6 @@ test("question inserted successfully with options", async () => {
   expect(createdQuestion.options).toContain("Regular");
   expect(createdQuestion.options).toContain("Mal");
   expect(createdQuestion.options).toContain("Muy mal");
-
-  // delete question
-  await mockQuestion.delete();
 });
 
 test("question not inserted if type is not selection and has options", async () => {
