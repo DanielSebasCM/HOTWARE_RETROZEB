@@ -119,8 +119,8 @@ class Question {
     return res;
   }
 
-  delete() {
-    // TODO
+  async delete() {
+    return await db.execute(`DELETE FROM question WHERE id = ?`, [this.id]);
   }
 }
 
