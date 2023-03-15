@@ -111,9 +111,6 @@ test("question inserted successfully", async () => {
   expect(mockQuestion.description).toEqual(createdQuestion.description);
   expect(mockQuestion.type).toEqual(createdQuestion.type);
   expect(createdQuestion.active).toEqual(1);
-
-  // delete question
-  await mockQuestion.delete();
 });
 
 test("question inserted successfully with options", async () => {
