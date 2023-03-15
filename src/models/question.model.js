@@ -113,8 +113,8 @@ class Question {
     return res;
   }
 
-  delete() {
-    // TODO
+  async delete() {
+    return await db.execute(`UPDATE question SET active = 0 WHERE id = ?`, [this.id]);
   }
 }
 
