@@ -114,13 +114,11 @@ class Question {
         );
       });
     }
-
-    // TODO - Add question with options
     return res;
   }
 
   async delete() {
-    return await db.execute(`DELETE FROM question WHERE id = ?`, [this.id]);
+    return await db.execute(`UPDATE question SET active = 0 WHERE id = ?`, [this.id]);
   }
 }
 

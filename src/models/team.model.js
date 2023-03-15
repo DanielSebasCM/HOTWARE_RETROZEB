@@ -62,7 +62,9 @@ class Team {
   }
 
   async delete() {
-    return await db.execute(`DELETE FROM team WHERE id = ?`, [this.id]);
+    return await db.execute(`UPDATE team SET active = 0 WHERE id = ?`, [
+      this.id,
+    ]);
   }
 }
 
