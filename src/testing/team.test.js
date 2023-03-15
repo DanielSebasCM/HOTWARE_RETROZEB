@@ -1,77 +1,62 @@
 const Team = require("../models/team.model");
 
 // ------------------ VERIFIER ------------------
-// test("name is not empty", () => {
-//   expect(() => {
-//     new Team({
-//       name: "",
-//       active: true,
-//       creation_date: new Date(),
-//     });
-//   }).toThrow("El nombre del equipo no puede estar vacío");
-// });
-
-// test("name is not null", () => {
-//   expect(() => {
-//     new Team({
-//       name: null,
-//       active: true,
-//       creation_date: new Date(),
-//     });
-//   }).toThrow("El nombre del equipo no puede estar vacío");
-// });
-
-// test("name is not null and length <= 40", () => {
-//   expect(() => {
-//     new Team({
-//       name: "a".repeat(41),
-//       active: true,
-//       creation_date: new Date(),
-//     });
-//   }).toThrow("El nombre del equipo debe tener máximo 40 caracteres");
-// });
-
-// test("active is not null", () => {
-//   expect(() => {
-//     new Team({
-//       name: "a".repeat(40),
-//       active: null,
-//       creation_date: new Date(),
-//     });
-//   }).toThrow("El estado 'activo' del equipo no puede estar vacío");
-// });
-
-// test("active is different than 0 or 1", () => {
-//   expect(() => {
-//     new Team({
-//       name: "a".repeat(40),
-//       active: 2,
-//       creation_date: new Date(),
-//     });
-//   }).toThrow("El estado 'activo' del equipo debe ser 0 o 1");
-// });
-
-// test("creation_date is not null", () => {
-//   expect(() => {
-//     new Team({
-//       name: "a".repeat(40),
-//       active: true,
-//       creation_date: null,
-//     });
-//   }).toThrow("La fecha de creación del equipo no puede estar vacía");
-// });
-
-test("creation_date day is not greater than today", () => {
-  let tomorrow = new Date();
-  tomorrow.setDate(tomorrow.getDate() + 1);
-
+test("name is not empty", () => {
   expect(() => {
     new Team({
-      name: "a".repeat(40),
+      name: "",
       active: true,
-      creation_date: tomorrow,
+      creation_date: new Date(),
     });
-  }).toThrow(
-    "La fecha de creación del equipo no puede ser mayor a la fecha actual"
-  );
+  }).toThrow("El nombre del equipo no puede estar vacío");
+});
+
+test("name is not null", () => {
+  expect(() => {
+    new Team({
+      name: null,
+      active: true,
+      creation_date: new Date(),
+    });
+  }).toThrow("El nombre del equipo no puede estar vacío");
+});
+
+test("name is not null and length <= 40", () => {
+  expect(() => {
+    new Team({
+      name: "a".repeat(41),
+      active: true,
+      creation_date: new Date(),
+    });
+  }).toThrow("El nombre del equipo debe tener máximo 40 caracteres");
+});
+
+// ------------------ POST ONE AND GET ONE BY ID ------------------
+test("post returns a Team object", async () => {
+  const mockTeam = new Team({
+    name: "Test team",
+  });
+
+  // Insert team
+  const res = await mockTeam.post();
+  // Verify id created
+  expect(res.insertId).toBeGreaterThan(0);
+  expect(res.insertId).not.toBeNull();
+  expect(res.insertId).toBeDefined();
+
+  // Get team
+  const createdTeam = await Team.getById(res.insertId);
+  // Verify team
+  expect(res.insertId).toEqual(createdTeam.id);
+  expect(createdTeam).not.toBeNull();
+  expect(createdTeam).toBeDefined();
+  expect(createdTeam).toBeInstanceOf(Team);
+  expect(createdTeam.name).toEqual(mockTeam.name);
+  expect(createdTeam.active).toEqual(1);
+
+  // Verify data
+  expect(createdTeam.name.length).toBeLessThan(41);
+
+  // Delete team
+  await createdTeam.delete();
 });
