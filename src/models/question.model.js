@@ -92,12 +92,6 @@ class Question {
   }
 
   async post() {
-    if (this.type !== "SELECTION" && this.options) {
-      throw new Error(
-        "Para ingresar opciones, el tipo de pregunta debe ser SELECTION"
-      );
-    }
-
     let [res, _] = await db.execute(
       `INSERT INTO question(description, type)
       VALUES (?, ?)`,
@@ -105,17 +99,17 @@ class Question {
     );
     this.id = res.insertId;
 
-    if (this.type === "SELECTION" && this.options) {
-      this.options.forEach(async (option) => {
-        await db.execute(
-          `INSERT INTO option(description, id_question)
+    if (this.type === "SELECTION") {
+      await Promise.all(
+        this.options.map(async (option) => {
+          await db.execute(
+            `INSERT INTO option(description, id_question)
           VALUES (?, ?)`,
-          [option, this.id]
-        );
-      });
+            [option, this.id]
+          );
+        })
+      );
     }
-
-    // TODO - Add question with options
     return res;
   }
 
