@@ -28,23 +28,29 @@ class Answer {
     // Length of value is less than 400
     if (answer.value?.length > 400)
       throw new Error(
-        "Tu respuesta excede el número de caracteres permitidos."
+        "El tamaño de la respuesta debe ser menor a 400 caracteres"
       );
 
     // Value is not empty or null
     if (answer.value?.length == 0 || answer.value?.length == null) 
-      throw new Error("No puedes dejar estar pregunta sin contestar.");
+      throw new Error("Ingresa una respuesta");
+
+    //Uid is a number
+    if (isNaN(answer.uid))
+      throw new Error("Uid debe ser un número entero");
+    if (!answer.uid)
+      throw new Error("Uid no debe ser nulo");
 
     //Id_retrospective is a number
-    if (isNaN(suggested_todo.id_retrospective))
+    if (isNaN(answer.id_retrospective))
       throw new Error("id_retrospective debe ser un número entero");
-    if (!suggested_todo.id_retrospective)
+    if (!answer.id_retrospective)
       throw new Error("id_retrospective no debe ser nulo");
 
     //Id_question is a number
-    if (isNaN(suggested_todo.id_question))
+    if (isNaN(answer.id_question))
       throw new Error("id_question debe ser un número entero");
-    if (!suggested_todo.id_retrospective)
+    if (!answer.id_retrospective)
       throw new Error("id_question no debe ser nulo");
 
     return true;
