@@ -38,7 +38,7 @@ class Project {
       throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
   }
 
-  postOne() {
+  post() {
     const [res, _] = db.execute(
       `INSERT INTO project (name, jira_id, active) VALUES (?, ?, ?)`,
       [this.name, this.jira_id, this.active]
