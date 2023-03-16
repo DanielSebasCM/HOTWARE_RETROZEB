@@ -17,29 +17,64 @@ test("Answer value is not empty", () => {
   }).toThrow("Ingresa una respuesta");
 });
 
+test("Answer has valid uid", () => {
+  expect(() => {
+    new Answer({
+      value: "a",
+      uid: "Esto no sirve",
+    });
+  }).toThrow("Uid debe ser un número entero");
+});
+
+test("Answer uid is not null", () => {
+  expect(() => {
+    new Answer({
+      value: "a",
+      uid: null,
+    });
+  }).toThrow("Uid no debe ser nulo");
+});
+
 test("Answer has valid id_question", () => {
   expect(() => {
     new Answer({
-      value: "a".repeat(400),
+      value: "a",
+      uid: 1,
+      id_retrospective: 1,
       id_question: "Esto no sirve",
     });
-  }).toThrow("id_question inválido");
+  }).toThrow("id_question debe ser un número entero");
+});
+
+test("Answer has id_question not null", () => {
+  expect(() => {
+    new Answer({
+      value: "a",
+      uid: 1,
+      id_retrospective: 1,
+      id_question: null,
+    });
+  }).toThrow("id_question no debe ser nulo");
 });
 
 test("Answer has valid id_retrospective", () => {
   expect(() => {
     new Answer({
-      value: "a".repeat(400),
+      value: "a",
+      uid: 1,
+      id_question: 1,
       id_retrospective: "Esto no sirve",
     });
-  }).toThrow("id_retrospective inválido");
+  }).toThrow("id_retrospective debe ser un número entero");
 });
 
-test("Answer has valid uid", () => {
+test("Answer has id_retrospective not null", () => {
   expect(() => {
     new Answer({
-      value: "a".repeat(400),
-      uid: "Esto no sirve",
+      value: "a",
+      uid: 1,
+      id_question: 1,
+      id_retrospective: null,
     });
-  }).toThrow("uid inválido");
+  }).toThrow("id_retrospective no debe ser nulo");
 });
