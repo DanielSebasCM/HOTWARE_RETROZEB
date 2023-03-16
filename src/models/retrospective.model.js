@@ -1,4 +1,5 @@
 const db = require("../utils/db");
+const isValidDate = require("../utils/isValidDate");
 
 class Retrospective {
   constructor(retrospective) {
@@ -49,7 +50,6 @@ class Retrospective {
       (retrospective) => new Retrospective(retrospective)
     );
   }
-
   static verify(retrospective) {
     // Name is not empty
     if (!retrospective.name) throw new Error("Ingresa un nombre");
@@ -58,7 +58,21 @@ class Retrospective {
     if (retrospective.name?.length > 40)
       throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
 
-    // TODO Start and end date are valid (missing util function)
+    // Has start date
+    if (!retrospective.start_date)
+      throw new Error("Ingresa una fecha de inicio");
+
+    // Start date is valid
+    if (!isValidDate(retrospective.start_date))
+      throw new Error("Formato de fecha inválido");
+
+    // End date is valid
+    if (retrospective.end_date && !isValidDate(retrospective.end_date))
+      throw new Error("Formato de fecha inválido");
+
+    // Start date is before end date
+    if (new Date(retrospective.start_date) >= new Date(retrospective.end_date))
+      throw new Error("La fecha de inicio debe ser menor a la fecha de fin");
 
     // If state exists, it is either PENDING, IN_PROGRESS or CLOSED
     if (retrospective.state) {
@@ -81,7 +95,6 @@ class Retrospective {
     if (!Number.isInteger(retrospective.id_sprint))
       throw new Error("Ingresa un id de sprint");
   }
-
   async post() {
     const [res, _] = await db.execute(
       `INSERT INTO retrospective (name, start_date, end_date, state, id_team, id_sprint) VALUES (?, ?, ?, ?, ?, ?)`,
@@ -121,3 +134,5 @@ class Retrospective {
     return res;
   }
 }
+
+module.exports = Retrospective;
