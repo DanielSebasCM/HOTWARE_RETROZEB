@@ -4,12 +4,11 @@ class Answer {
   constructor(answer) {
     Answer.verify(answer);
 
-    this.id = answer.id;
+    this.id = answer.id || null;
     this.value = answer.value;
     this.uid = answer.uid || null;
     this.id_retrospective = answer.id_retrospective;
     this.id_question = answer.id_question;
-
   }
 
   static async getById(id) {
@@ -17,7 +16,6 @@ class Answer {
       `SELECT * FROM answer WHERE id = ?`,
       [id]
     );
-
     return new Answer(answer[0]);
   }
 
@@ -33,14 +31,24 @@ class Answer {
         "Tu respuesta excede el número de caracteres permitidos."
       );
 
-    // Value is not empty
-    if (answer.value?.length == 0)
+    // Value is not empty or null
+    if (answer.value?.length == 0 || answer.value?.length == null) 
       throw new Error("No puedes dejar estar pregunta sin contestar.");
+
+    //Id_retrospective is a number
+    if (isNaN(suggested_todo.id_retrospective))
+      throw new Error("id_retrospective debe ser un número entero");
+    if (!suggested_todo.id_retrospective)
+      throw new Error("id_retrospective no debe ser nulo");
+
+    //Id_question is a number
+    if (isNaN(suggested_todo.id_question))
+      throw new Error("id_question debe ser un número entero");
+    if (!suggested_todo.id_retrospective)
+      throw new Error("id_question no debe ser nulo");
 
     return true;
   }
-
-
 }
 
 module.exports = Answer;
