@@ -4,7 +4,7 @@ class SuggestedTodo {
   constructor(suggested_todo) {
     SuggestedTodo.verify(suggested_todo);
 
-    this.id = suggested_todo.id;
+    this.id = suggested_todo.id || 1;
     this.title = suggested_todo.title;
     this.description = suggested_todo.description;
     this.state = suggested_todo.state || 'PENDING';
@@ -41,31 +41,34 @@ class SuggestedTodo {
         "El tamaño del titulo debe ser menor a 40 caracteres"
       );
 
-    // Title is not empty
+    // Title is not empty or null
     if (suggested_todo.title?.length == 0 || suggested_todo.title == null)
       throw new Error("Ingresa un titulo para este accionable");
 
-    // Length of title is less than 40
+    // Length of description is less than 255 
     if (suggested_todo.description?.length > 255)
       throw new Error(
         "La descripcion debe ser menor a 255 caracteres"
       );
 
-    // Title is not empty
+    // Description is not empty or null
     if (suggested_todo.description?.length == 0 || suggested_todo.description == null)
       throw new Error("Ingresa una descripcion");
 
-
-
-    // State is not null and of type OPEN, BOOLEAN, SCALE or SELECTION
+    //State is of type "PENDING", "ACCEPTED", "REJECTED"
     const options = ["PENDING", "ACCEPTED", "REJECTED"];
     if (!options.includes(suggested_todo.state))
       throw new Error("El tipo de estado no es válido");
-
     
+    //State is not null
+    if(suggested_todo.state == null)
+      throw new Error("El tipo de estado no es válido");
+    
+    //Id_user_author is a number
     if (isNaN(suggested_todo.id_user_author))
       throw new Error("id_user_author debe ser un número entero");
 
+    //Id_retrospective is a number
     if (isNaN(suggested_todo.id_retrospective))
      throw new Error("id_retrospective debe ser un número entero");
 

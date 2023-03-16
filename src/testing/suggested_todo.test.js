@@ -33,7 +33,6 @@ test("SuggestedTodo title is not null", () => {
   }).toThrow("Ingresa un titulo");
 });*/
 
-
 test("SuggestedTodo description is in range description.length < 255", () => {
     expect(() => {
       new SuggestedTodo({
