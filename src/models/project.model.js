@@ -36,6 +36,9 @@ class Project {
     // Lenght of name is less than 40
     if (project.name?.length > 40)
       throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
+
+    if (typeof project.active !== "boolean")
+      throw new Error("El valor de active debe ser booleano");
   }
 
   post() {
