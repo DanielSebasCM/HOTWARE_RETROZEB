@@ -5,7 +5,7 @@ test("Retrospective name is in range name.length < 40", () => {
   expect(() => {
     new Retrospective({
       name: "a".repeat(41),
-      start: "2021-01-01 00:00:00",
+      start_date: "2021-01-01 00:00:00",
       id_team: 1,
       id_sprint: 1,
     });
@@ -16,7 +16,7 @@ test("Retrospective name is not empty", () => {
   expect(() => {
     new Retrospective({
       name: "",
-      start: "2021-01-01 00:00:00",
+      start_date: "2021-01-01 00:00:00",
       id_team: 1,
       id_sprint: 1,
     });
@@ -26,7 +26,7 @@ test("Retrospective name is not empty", () => {
 test("Retrospective has a start date", () => {
   expect(() => {
     new Retrospective({
-      start: "2021-01-01 00:00:00",
+      start_date: "2021-01-01 00:00:00",
       id_team: 1,
       id_sprint: 1,
     });
@@ -47,7 +47,7 @@ test("Retrospective has a valid start date", () => {
   expect(() => {
     new Retrospective({
       name: "a".repeat(40),
-      start: "Esto no sirve",
+      start_date: "Esto no sirve",
       id_team: 1,
       id_sprint: 1,
     });
@@ -58,8 +58,8 @@ test("Retrospective has a valid end date", () => {
   expect(() => {
     new Retrospective({
       name: "a".repeat(40),
-      start: "2021-01-01 00:00:00",
-      end: "Esto no sirve",
+      start_date: "2021-01-01 00:00:00",
+      end_date: "Esto no sirve",
       id_team: 1,
       id_sprint: 1,
     });
@@ -70,8 +70,8 @@ test("Retrospective star_date is before end_date", () => {
   expect(() => {
     new Retrospective({
       name: "a".repeat(40),
-      start: "2021-01-01 00:00:00",
-      end: "2021-01-01 00:00:00",
+      start_date: "2021-01-01 00:00:00",
+      end_date: "2021-01-01 00:00:00",
       id_team: 1,
       id_sprint: 1,
     });
@@ -82,8 +82,8 @@ test("Retrospective has a valid state", () => {
   expect(() => {
     new Retrospective({
       name: "a".repeat(40),
-      start: "2021-01-01 00:00:00",
-      end: "2021-01-01 00:00:00",
+      start_date: "2021-01-01 00:00:00",
+      end_date: "2021-01-01 00:00:01",
       state: "Esto no sirve",
       id_team: 1,
       id_sprint: 1,
@@ -95,22 +95,20 @@ test("Retrospective has an id_team", () => {
   expect(() => {
     new Retrospective({
       name: "a".repeat(40),
-      start: "2021-01-01 00:00:00",
-      end: "2021-01-01 00:00:00",
-      state: "active",
+      start_date: "2021-01-01 00:00:00",
+      end_date: "2021-01-01 00:00:01",
       id_sprint: 1,
     });
-  }).toThrow("Id de equipo inválido");
+  }).toThrow("Ingresa un id de equipo");
 });
 
 test("Retrospective has an id_sprint", () => {
   expect(() => {
     new Retrospective({
       name: "a".repeat(40),
-      start: "2021-01-01 00:00:00",
-      end: "2021-01-01 00:00:00",
-      state: "active",
+      start_date: "2021-01-01 00:00:00",
+      end_date: "2021-01-01 00:00:01",
       id_team: 1,
     });
-  }).toThrow("Id de sprint inválido");
+  }).toThrow("Ingresa un id de sprint");
 });
