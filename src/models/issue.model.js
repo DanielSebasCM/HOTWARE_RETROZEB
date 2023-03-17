@@ -14,9 +14,8 @@ class Issue {
   }
 
   static async getById(id) {
-    let [issue, _] = await db.execute(`SELECT * FROM issues WHERE id = ?`, [
-      id,
-    ]);
+    let [issue, _] = await db.execute(`SELECT * FROM issues WHERE id = ?`, [id]);
+
     return new Issue(issue[0]);
   }
 
