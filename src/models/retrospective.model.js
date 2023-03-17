@@ -1,5 +1,4 @@
 const db = require("../utils/db");
-const isValidDate = require("../utils/isValidDate");
 
 class Retrospective {
   constructor(retrospective) {
@@ -63,17 +62,18 @@ class Retrospective {
       throw new Error("Ingresa una fecha de inicio");
 
     // Start date is valid
-    if (!isValidDate(retrospective.start_date))
-      throw new Error("Formato de fecha inválido");
+    if (!(retrospective.start_date instanceof Date))
+      throw new Error("Fecha debe ser una instancia de Date");
 
-    // End date is valid
-    if (retrospective.end_date && !isValidDate(retrospective.end_date))
-      throw new Error("Formato de fecha inválido");
+    if (retrospective.end_date) {
+      // End date is valid
+      if (!(retrospective.end_date instanceof Date))
+        throw new Error("Fecha debe ser una instancia de Date");
 
-    // Start date is before end date
-    if (new Date(retrospective.start_date) >= new Date(retrospective.end_date))
-      throw new Error("La fecha de inicio debe ser menor a la fecha de fin");
-
+      // Start date is before end date
+      if (retrospective.start_date > retrospective.end_date)
+        throw new Error("La fecha de inicio debe ser menor a la fecha de fin");
+    }
     // If state exists, it is either PENDING, IN_PROGRESS or CLOSED
     if (retrospective.state) {
       const options = ["PENDING", "IN_PROGRESS", "CLOSED"];

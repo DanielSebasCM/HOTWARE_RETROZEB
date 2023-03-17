@@ -23,7 +23,7 @@ test("Retrospective name is not empty", () => {
   }).toThrow("Ingresa un nombre");
 });
 
-test("Retrospective has a start date", () => {
+test("Retrospective has a name", () => {
   expect(() => {
     new Retrospective({
       start_date: "2021-01-01 00:00:00",
@@ -51,7 +51,7 @@ test("Retrospective has a valid start date", () => {
       id_team: 1,
       id_sprint: 1,
     });
-  }).toThrow("Formato de fecha inválido");
+  }).toThrow("Fecha debe ser una instancia de Date");
 });
 
 test("Retrospective has a valid end date", () => {
@@ -63,7 +63,7 @@ test("Retrospective has a valid end date", () => {
       id_team: 1,
       id_sprint: 1,
     });
-  }).toThrow("Formato de fecha inválido");
+  }).toThrow("Fecha debe ser una instancia de Date");
 });
 
 test("Retrospective star_date is before end_date", () => {
