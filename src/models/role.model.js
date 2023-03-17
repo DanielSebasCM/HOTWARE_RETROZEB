@@ -5,7 +5,11 @@ class Role {
     Role.verify(role);
     this.id = role.id || null;
     this.name = role.name;
-    this.active = role.active || 1;
+    if (role?.active === undefined) {
+      this.active = 1;
+    } else {
+      this.active = user.active;
+    }
   }
   static async getById(id) {
     let [role, _] = await db.execute(`SELECT * FROM role WHERE id = ?`, [id]);
@@ -33,18 +37,18 @@ class Role {
     }
   }
   async post() {
-    let [res, _] = await db.execute(
-      `INSERT INTO role (name, active) VALUES (?, ?)`,
-      [this.name, this.active]
-    );
+    let [res, _] = await db.execute(`INSERT INTO role (name) VALUES (?)`, [
+      this.name,
+    ]);
     this.id = res.insertId;
   }
 
   async delete() {
-    return ([res, _] = db.execute(
-      "UPDATE project SET active = 0 WHERE id = ?",
-      [this.id]
-    ));
+    let [res, _] = await db.execute(`UPDATE role SET active = 0 WHERE id = ?`, [
+      this.id,
+    ]);
+    this.active = 0;
+    return res;
   }
 
   addPrivilege(privilege) {
