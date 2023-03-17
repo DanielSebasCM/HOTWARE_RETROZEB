@@ -1,4 +1,5 @@
 const db = require("../utils/db");
+const isValidDate = require("../utils/isValidDate");
 
 class Sprint {
   constructor(sprint) {
@@ -27,14 +28,28 @@ class Sprint {
   static verify(sprint) {
     // Length of name is less than 40
     if (sprint.name?.length > 40)
-      throw new Error("El nombre del sprint debe ser menor a 40 caracteres");
+      throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
 
     // Name is not empty
     if (sprint.name?.length == 0)
       throw new Error("Ingresa un nombre para el sprint");
 
+    if (!sprint.name) throw new Error("Ingresa un nombre para el sprint");
+
     if (sprint.start_date == 0 || sprint.start_date == null) {
-      throw new Error("Ingresa una fecha para el sprint");
+      throw new Error("Ingresa una fecha de inicio");
+    }
+
+    if (!isValidDate(sprint.start_date)) {
+      throw new Error("Formato de fecha inválido");
+    }
+
+    if (!isValidDate(sprint.end_date)) {
+      throw new Error("Formato de fecha inválido");
+    }
+
+    if (sprint.end_date < sprint.start_date) {
+      throw new Error("La fecha de inicio debe ser menor a la fecha de fin");
     }
 
     return true;
