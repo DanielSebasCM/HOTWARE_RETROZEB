@@ -1,13 +1,18 @@
 const db = require("../utils/db");
 class User {
   constructor(user) {
+    User.verify(user);
     this.uid = user.uid || null;
     this.id_jira = user.id_jira || null;
-    this.id_google_auth = user.id_google_auth || null;
+    this.id_google_auth = user.id_google_auth || "abcd";
     this.first_name = user.first_name;
     this.last_name = user.last_name;
     this.email = user.email;
-    this.active = user.active || 1;
+    if (user?.active === undefined) {
+      this.active = 1;
+    } else {
+      this.active = user.active;
+    }
   }
   static async getAll() {
     let [users, _] = await db.execute(`SELECT * FROM user`);
@@ -34,51 +39,60 @@ class User {
     let [users, _] = await db.execute(`SELECT * FROM user WHERE active = 1`);
     return users.map((user) => new User(user));
   }
+
+  //----------------------------VERIFY--------------------------------
+
   static verify(user) {
-    if (user.id_jira?.length > 40) {
-      throw new Error("El id de jira no puede tener más de 40 caracteres");
-    }
-
-    if (user.id_google_auth?.length > 255) {
-      throw new Error("El id de google no puede tener más de 255 caracteres");
-    }
-
-    if (user.id_google_auth?.length == 0) {
-      throw new Error("El id de google no puede estar vacío");
-    }
-
-    if (user.first_name?.length > 40) {
-      throw new Error("El nombre no puede tener más de 40 caracteres");
-    }
-    if (user.first_name?.length == 0) {
+    if (!user.first_name) {
       throw new Error("El nombre no puede estar vacío");
     }
-    if (user.last_name?.length > 40) {
-      throw new Error("El apellido no puede tener más de 40 caracteres");
+    if (user.first_name.length > 40) {
+      throw new Error("El nombre no puede tener más de 40 caracteres");
     }
-    if (user.last_name?.length == 0) {
+
+    if (!user.last_name) {
       throw new Error("El apellido no puede estar vacío");
     }
-    if (user.email?.length > 40) {
-      throw new Error("El email no puede tener más de 40 caracteres");
+    if (user.last_name.length > 40) {
+      throw new Error("El apellido no puede tener más de 40 caracteres");
     }
-    if (user.email?.length == 0) {
+
+    if (!user.email) {
       throw new Error("El email no puede estar vacío");
     }
+
+    if (user.email.length > 40) {
+      throw new Error("El email no puede tener más de 40 caracteres");
+    }
   }
+
+  //---------------------------POST----------------------------------
   async post() {
     let [res, _] = await db.execute(
-      `INSERT INTO user (id_jira, id_google_auth, first_name, last_name, email, active) VALUES (?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO user (id_jira, id_google_auth, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)`,
       [
         this.id_jira,
         this.id_google_auth,
         this.first_name,
         this.last_name,
         this.email,
-        this.active,
       ]
     );
+    this.uid = res.insertId;
+
+    return res;
   }
+
+  //------------------------DELETE-------------------------------------
+  async delete() {
+    let [res, _] = await db.execute(
+      `UPDATE user SET active = 0 WHERE uid = ?`,
+      [this.uid]
+    );
+    this.active = 0;
+    return res;
+  }
+
   addRole(role) {
     return db.execute(`INSERT INTO users_roles (uid, id_role) VALUES (?, ?)`, [
       this.uid,

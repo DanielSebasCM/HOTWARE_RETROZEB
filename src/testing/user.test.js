@@ -75,9 +75,9 @@ test("email is not too long", () => {
     new User({
       first_name: "John",
       last_name: "Doe",
-      email: "a".repeat(256),
+      email: "a".repeat(41),
     });
-  }).toThrow("El email no puede tener más de 255 caracteres");
+  }).toThrow("El email no puede tener más de 40 caracteres");
 });
 
 test("email exists", () => {
@@ -91,7 +91,8 @@ test("email exists", () => {
 
 test("getById return correct user", async () => {
   const user = await User.getById(1);
-  expect(user.id).toEqual(1);
+  console.log(user);
+  expect(user.uid).toEqual(1);
 });
 
 test("getAllActive return only active users", async () => {
@@ -108,6 +109,7 @@ test("post() should insert a new user", async () => {
     email: "example@example.com",
   });
   const res = await mockUser.post();
+  console.log(mockUser);
 
   expect(res.insertId).not.toBeNull();
   expect(res.insertId).toBeDefined();
@@ -124,7 +126,7 @@ test("delete() should soft delete a user", async () => {
   });
   const res = await mockUser.post();
 
-  await mockUser.delete();
+  const a = await mockUser.delete();
 
   const createdUser = await User.getById(res.insertId);
   expect(createdUser.active).toEqual(0);
