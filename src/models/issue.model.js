@@ -80,13 +80,6 @@ class Issue {
 
     return res;
   }
-
-  async get() {
-    let [issue, _] = await db.execute(`SELECT * FROM issues WHERE id = ?`, [
-      this.id,
-    ]);
-    return new Issue(issue[0]);
-  }
 }
 
 module.exports = Issue;
