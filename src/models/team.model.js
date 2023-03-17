@@ -51,11 +51,9 @@ class Team {
 
   async post() {
     // ALREADY TESTED
-    let [res, _] = await db.execute(
-      `INSERT INTO team(name, active)
-      VALUES (?, ?)`,
-      [this.name, this.active]
-    );
+    let [res, _] = await db.execute(`INSERT INTO team(name) VALUES (?)`, [
+      this.name,
+    ]);
     this.id = res.insertId;
 
     return res;
@@ -63,6 +61,13 @@ class Team {
 
   async delete() {
     const res = await db.execute(`UPDATE team SET active = 0 WHERE id = ?`, [
+      this.id,
+    ]);
+    return res;
+  }
+
+  async activate() {
+    const res = await db.execute(`UPDATE team SET active = 1 WHERE id = ?`, [
       this.id,
     ]);
     return res;

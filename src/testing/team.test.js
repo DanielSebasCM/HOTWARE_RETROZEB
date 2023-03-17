@@ -35,7 +35,24 @@ test("name is not null and length <= 40", () => {
   }).toThrow("El nombre del equipo debe tener máximo 40 caracteres");
 });
 
-test("Team inserted, get and soft deleted succesfully", async () => {
+// ------------------ METHODS ------------------
+// getAllActive
+test("Get all active teams", async () => {
+  // Get all active teams
+  const teams = await Team.getAllActive();
+  // Verify team
+  expect(teams).not.toBeNull();
+  expect(teams).toBeDefined();
+  expect(teams).toBeInstanceOf(Array);
+  expect(teams.length).toBeGreaterThan(0);
+
+  teams.forEach((team) => {
+    expect(team.active).toBe(1);
+  });
+});
+
+// post, getById, delete
+test("Team inserted, getById, soft delete and activated succesfully", async () => {
   const mockTeam = new Team({
     name: "Default Team",
   });
@@ -61,9 +78,7 @@ test("Team inserted, get and soft deleted succesfully", async () => {
 
   // Soft delete team
   await createdTeam.delete();
-  console.log(createdTeam);
   const deletedTeam = await Team.getById(createdTeam.id);
-  console.log(deletedTeam);
 
   // Verify team
   expect(deletedTeam).not.toBeNull();
@@ -74,4 +89,18 @@ test("Team inserted, get and soft deleted succesfully", async () => {
   expect(deletedTeam.creation_date).not.toBeNull();
   expect(deletedTeam.creation_date).toBeDefined();
   expect(deletedTeam.creation_date).toBeInstanceOf(Date);
+
+  // activate team
+  await deletedTeam.activate();
+  const activatedTeam = await Team.getById(deletedTeam.id);
+
+  // Verify team
+  expect(activatedTeam).not.toBeNull();
+  expect(activatedTeam).toBeDefined();
+  expect(activatedTeam.id).toBe(res.insertId);
+  expect(activatedTeam.name).toBe(mockTeam.name);
+  expect(activatedTeam.active).toBe(1);
+  expect(activatedTeam.creation_date).not.toBeNull();
+  expect(activatedTeam.creation_date).toBeDefined();
+  expect(activatedTeam.creation_date).toBeInstanceOf(Date);
 });
