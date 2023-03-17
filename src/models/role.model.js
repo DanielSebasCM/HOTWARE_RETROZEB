@@ -24,10 +24,16 @@ class Role {
   }
   static verify(role) {
     if (role.name?.length > 40) {
-      throw new Error("El nombre del rol no puede tener más de 40 caracteres");
+      throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
     }
     if (role.name?.length == 0) {
-      throw new Error("El nombre del rol no puede estar vacío");
+      throw new Error("Ingresa un nombre de rol");
+    }
+    if (role.name == null) {
+      throw new Error("Ingresa un nombre de rol");
+    }
+    if (typeof role.active != "boolean") {
+      throw new Error("El estado del rol debe ser booleano");
     }
   }
   async post() {
@@ -35,7 +41,6 @@ class Role {
       this.name,
     ]);
     this.id = res.insertId;
-    return res;
   }
 
   async delete() {

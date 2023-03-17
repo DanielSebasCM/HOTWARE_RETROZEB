@@ -7,7 +7,7 @@ class Question {
     this.id = question.id || null;
     this.description = question.description;
     this.type = question.type;
-    this.active = question.active || 1;
+    this.active = question.active != 0 ? 1 : 0;
 
     if (this.type == "SELECTION") {
       this.options = question.options;
@@ -33,6 +33,18 @@ class Question {
 
   static async getAll() {
     let [questions, _] = await db.execute(`SELECT * FROM question`);
+
+    for (let i = 0; i < questions.length; i++) {
+      const question = questions[i];
+      if (question.type == "SELECTION") {
+        let [options, _] = await db.execute(
+          `SELECT description FROM option WHERE id_question = ? ORDER BY id`,
+          [question.id]
+        );
+        questions[i].options = options.map((option) => option.description);
+      }
+    }
+
     return questions.map((question) => new Question(question));
   }
 
@@ -40,6 +52,18 @@ class Question {
     let [questions, _] = await db.execute(
       `SELECT * FROM question WHERE active = 1`
     );
+
+    for (let i = 0; i < questions.length; i++) {
+      const question = questions[i];
+      if (question.type == "SELECTION") {
+        let [options, _] = await db.execute(
+          `SELECT description FROM option WHERE id_question = ? ORDER BY id`,
+          [question.id]
+        );
+        questions[i].options = options.map((option) => option.description);
+      }
+    }
+
     return questions.map((question) => new Question(question));
   }
 
@@ -114,7 +138,9 @@ class Question {
   }
 
   async delete() {
-    return await db.execute(`UPDATE question SET active = 0 WHERE id = ?`, [this.id]);
+    return await db.execute(`UPDATE question SET active = 0 WHERE id = ?`, [
+      this.id,
+    ]);
   }
 }
 

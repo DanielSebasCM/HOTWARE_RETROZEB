@@ -4,8 +4,7 @@ const Issue = require("../models/issue.model");
 test("Issue epic name is not empty", () => {
   expect(() => {
     new Issue({
-      epicName: "",
-      priority: "LOW",
+      epic_name: "",
       id_sprint: 1,
     });
   }).toThrow("Ingresa un nombre de epic");
@@ -14,9 +13,7 @@ test("Issue epic name is not empty", () => {
 test("Issue epic name length is in range < 40", () => {
   expect(() => {
     new Issue({
-      epicName: "a".repeat(41),
-      story_points: 1,
-      priority: "LOW",
+      epic_name: "a".repeat(41),
       id_sprint: 1,
     });
   }).toThrow("El tamaño del nombre de epic debe ser menor a 40 caracteres");
@@ -25,71 +22,61 @@ test("Issue epic name length is in range < 40", () => {
 test("Issue priority is of type LOWEST, LOW, MEDIUM, HIGH, HIGHEST", () => {
   expect(() => {
     new Issue({
-      epicName: "a".repeat(40),
-      story_points: 5,
+      epic_name: "a".repeat(40),
       priority: "INVALID",
       id_sprint: 1,
     });
   }).toThrow("La prioridad no es válida");
 });
 
-test("Default priority is MEDIUM", () => {
-  const issue = new Issue({
-    epicName: "a".repeat(40),
-    story_points: 5,
-    id_sprint: 1,
-  });
-  expect(issue.priority).toBe("MEDIUM");
-});
-
 test("Issue state is of type To Do, En curso, Pull requessts, QA, Blocked, Done", () => {
   expect(() => {
     new Issue({
-      epicName: "a".repeat(40),
-      story_points: 5,
-      priority: "LOW",
+      epic_name: "a".repeat(40),
       state: "INVALID",
       id_sprint: 1,
     });
   }).toThrow("El estado no es válido");
 });
 
-test("Default state is To Do", () => {
-  const issue = new Issue({
-    epicName: "a".repeat(40),
-    story_points: 5,
-    id_sprint: 1,
-  });
-  expect(issue.state).toBe("To Do");
-});
-
-test("Issue uid is valid", () => {
+test("Issue has id_sprint", () => {
   expect(() => {
     new Issue({
-      epicName: "a".repeat(40),
-      story_points: 5,
-      priority: "LOW",
-      uid: "INVALID",
-      id_sprint: 1,
-    });
-  }).toThrow("El uid no es válido");
-});
-
-test("Issue id_sprint exists and is valid", () => {
-  expect(() => {
-    new Issue({
-      epicName: "a".repeat(40),
-      story_points: 5,
-      id_sprint: 1,
+      epic_name: "a".repeat(40),
     });
   }).toThrow("id_sprint es obligatorio");
+});
 
-  expect(() => {
-    new Issue({
-      epicName: "a".repeat(40),
-      story_points: 5,
-      id_sprint: "INVALID",
-      id_sprint: 1,
-    });
-  }).toThrow("El id del sprint no es válido");
+// ------------------ GETTER ------------------
+test("Issue getById", async () => {
+  const mockIssue = await Issue.getById(1);
+  expect(mockIssue.id).toEqual(1);
+});
+
+test("Issue getAll", async () => {
+  await expect(async () => {
+    await Issue.getAll();
+  }).not.toThrow();
+});
+
+// ------------------- Post -------------------
+test("Issue post", async () => {
+  // Create mock Issue
+  const mockIssue = new Issue({
+    epic_name: "Test",
+    id_sprint: 1,
+  });
+
+  // Insert issue
+  const res = await mockIssue.post();
+
+  // Verify id created
+  expect(res.insertId).not.toBeNull();
+  expect(res.insertId).toBeDefined();
+
+  // get issue
+  const createdIssue = await Issue.getById(res.insertId);
+
+  // Verify Issue
+  expect(createdIssue).toEqual(mockIssue);
 });

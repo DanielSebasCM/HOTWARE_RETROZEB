@@ -5,7 +5,7 @@ test("Sprint name is in range name.length < 40", () => {
   expect(() => {
     new Sprint({
       name: "a".repeat(41),
-      start: "2021-01-01 00:00:00",
+      start_date: "2021-01-01 00:00:00",
     });
   }).toThrow("El tamaño del nombre debe ser menor a 40 caracteres");
 });
@@ -14,7 +14,15 @@ test("Sprint name is not empty", () => {
   expect(() => {
     new Sprint({
       name: "",
-      start: "2021-01-01 00:00:00",
+      start_date: "2021-01-01 00:00:00",
+    });
+  }).toThrow("Ingresa un nombre");
+});
+
+test("Sprint has a name", () => {
+  expect(() => {
+    new Sprint({
+      start_date: "2021-01-01 00:00:00",
     });
   }).toThrow("Ingresa un nombre");
 });
@@ -23,7 +31,6 @@ test("Sprint has a start date", () => {
   expect(() => {
     new Sprint({
       name: "a".repeat(40),
-      start: null,
     });
   }).toThrow("Ingresa una fecha de inicio");
 });
@@ -32,47 +39,65 @@ test("Sprint has a valid start date", () => {
   expect(() => {
     new Sprint({
       name: "a".repeat(40),
-      start: "Esto no sirve",
+      start_date: "Esto no sirve",
     });
-  }).toThrow("Formato de fecha inválido");
+  }).toThrow("Fecha debe ser una instancia de Date");
 });
 
 test("Sprint has a valid end date", () => {
   expect(() => {
     new Sprint({
       name: "a".repeat(40),
-      start: "2021-01-01 00:00:00",
-      end: "Esto no sirve",
+      start_date: "2021-01-01 00:00:00",
+      end_date: "Esto no sirve",
     });
-  }).toThrow("Formato de fecha inválido");
+  }).toThrow("Fecha debe ser una instancia de Date");
 });
 
-test("Sprint has a valid dates", () => {
+test("Sprint start_date is before en_date", () => {
   expect(() => {
     new Sprint({
       name: "a".repeat(40),
-      start: "2021-01-01 00:00:00",
-      end: "2020-01-01 00:00:00",
+      start_date: new Date("2021-01-01 00:00:00"),
+      end_date: new Date("2021-01-01 00:00:00"),
     });
   }).toThrow("La fecha de inicio debe ser menor a la fecha de fin");
 });
 
-test("Sprint has valid id_jira", () => {
-  expect(() => {
-    new Sprint({
-      name: "a".repeat(40),
-      start: "2021-01-01 00:00:00",
-      id_jira: "Esto no sirve",
-    });
-  }).toThrow("Id_jira inválido");
+// ------------------ Getter ------------------
+
+test("Sprint getById", async () => {
+  const sprint = await Sprint.getById(1);
+  expect(sprint.id).toBe(1);
 });
 
-test("Sprint has valid id_project", () => {
-  expect(() => {
-    new Sprint({
-      name: "a".repeat(40),
-      start: "2021-01-01 00:00:00",
-      id_project: "Esto no sirve",
-    });
-  }).toThrow("Id_project inválido");
+test("Sprint getAll", async () => {
+  await expect(async () => {
+    await Sprint.getAll();
+  }).not.toThrow();
+});
+
+// ------------------ POST ------------------
+
+test("Sprint post", async () => {
+  // Create mock Issue
+  const now = new Date();
+  now.setMilliseconds(0, 0, 0);
+  const mockSprint = new Sprint({
+    name: "Test",
+    start_date: now,
+  });
+
+  // Insert issue
+  const res = await mockSprint.post();
+
+  // Verify id created
+  expect(res.insertId).not.toBeNull();
+  expect(res.insertId).toBeDefined();
+
+  // get issue
+  const createdSprint = await Sprint.getById(res.insertId);
+
+  // Verify Issue
+  expect(createdSprint).toEqual(mockSprint);
 });

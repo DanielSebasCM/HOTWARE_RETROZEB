@@ -5,8 +5,8 @@ class Team {
     Team.verify(team);
 
     this.id = team.id || null;
-    this.name = team.name || "Default team";
-    this.active = team.active || 1;
+    this.name = team.name;
+    this.active = team.active != 0 ? 1 : 0;
     this.creation_date = team.creation_date || new Date();
   }
 
@@ -39,44 +39,38 @@ class Team {
   static verify(team) {
     // ALREADY TESTED
     // name is not empty
-    if (team.name?.length == 0 || team.name == null)
+    if (team.name?.length == 0 || team.name == null || !team.name)
       throw new Error("El nombre del equipo no puede estar vacío");
 
     // name is less than 41 characters
     if (team.name?.length > 40)
       throw new Error("El nombre del equipo debe tener máximo 40 caracteres");
 
-    // active is not null
-    if (team.active == null)
-      throw new Error("El estado 'activo' del equipo no puede estar vacío");
-
-    // active is 0 or 1
-    if (team.active != 0 && team.active != 1)
-      throw new Error("El estado 'activo' del equipo debe ser 0 o 1");
-
-    // creation_date is not null
-    if (team.creation_date == null)
-      throw new Error("La fecha de creación del equipo no puede estar vacía");
-
     return true;
   }
 
   async post() {
     // ALREADY TESTED
-    let [res, _] = await db.execute(
-      `INSERT INTO team(name, active)
-      VALUES (?, ?)`,
-      [this.name, this.active]
-    );
+    let [res, _] = await db.execute(`INSERT INTO team(name) VALUES (?)`, [
+      this.name,
+    ]);
     this.id = res.insertId;
 
     return res;
   }
 
   async delete() {
-    return await db.execute(`UPDATE team SET active = 0 WHERE id = ?`, [
+    const res = await db.execute(`UPDATE team SET active = 0 WHERE id = ?`, [
       this.id,
     ]);
+    return res;
+  }
+
+  async activate() {
+    const res = await db.execute(`UPDATE team SET active = 1 WHERE id = ?`, [
+      this.id,
+    ]);
+    return res;
   }
 }
 
