@@ -81,7 +81,7 @@ test("Sprint getAll", async () => {
 
 test("Sprint post", async () => {
   // Create mock Issue
-  const mockSprint = new Issue({
+  const mockSprint = new Sprint({
     name: "Test",
     start_date: new Date(),
   });

@@ -1,5 +1,4 @@
 const db = require("../utils/db");
-const isValidDate = require("../utils/isValidDate");
 
 class Sprint {
   constructor(sprint) {
@@ -40,12 +39,13 @@ class Sprint {
       throw new Error("Ingresa una fecha de inicio");
     }
 
-    if (!isValidDate(sprint.start_date)) {
-      throw new Error("Formato de fecha inválido");
+    // Solo cambié el uso de la funcion de is Valid Date por el instanceof Date
+    if (!(sprint.start_date instanceof Date)) {
+      throw new Error("Fecha debe ser una instancia de Date");
     }
 
-    if (!isValidDate(sprint.end_date)) {
-      throw new Error("Formato de fecha inválido");
+    if (!(sprint.end_date instanceof Date)) {
+      throw new Error("Fecha debe ser una instancia de Date");
     }
 
     if (sprint.end_date < sprint.start_date) {
