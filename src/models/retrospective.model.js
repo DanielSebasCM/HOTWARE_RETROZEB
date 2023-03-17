@@ -55,7 +55,7 @@ class Retrospective {
     if (!retrospective.name) throw new Error("Ingresa un nombre");
 
     // Length of name is less than 40
-    if (retrospective.name?.length > 40)
+    if (retrospective.name.length > 40)
       throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
 
     // TODO Start and end date are valid (missing util function)
@@ -121,3 +121,5 @@ class Retrospective {
     return res;
   }
 }
+
+module.exports = Retrospective;

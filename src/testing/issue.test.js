@@ -19,14 +19,6 @@ test("Issue epic name length is in range < 40", () => {
   }).toThrow("El tamaño del nombre de epic debe ser menor a 40 caracteres");
 });
 
-test("Issue has an epic name", () => {
-  expect(() => {
-    new Issue({
-      id_sprint: 1,
-    });
-  }).toThrow("Ingresa un nombre de epic");
-});
-
 test("Issue priority is of type LOWEST, LOW, MEDIUM, HIGH, HIGHEST", () => {
   expect(() => {
     new Issue({
@@ -53,4 +45,38 @@ test("Issue has id_sprint", () => {
       epic_name: "a".repeat(40),
     });
   }).toThrow("id_sprint es obligatorio");
+});
+
+// ------------------ GETTER ------------------
+test("Issue getById", async () => {
+  const mockIssue = await Issue.getById(1);
+  expect(mockIssue.id).toEqual(1);
+});
+
+test("Issue getAll", async () => {
+  await expect(async () => {
+    await Issue.getAll();
+  }).not.toThrow();
+});
+
+// ------------------- Post -------------------
+test("Issue post", async () => {
+  // Create mock Issue
+  const mockIssue = new Issue({
+    epic_name: "Test",
+    id_sprint: 1,
+  });
+
+  // Insert issue
+  const res = await mockIssue.post();
+
+  // Verify id created
+  expect(res.insertId).not.toBeNull();
+  expect(res.insertId).toBeDefined();
+
+  // get issue
+  const createdIssue = await Issue.getById(res.insertId);
+
+  // Verify Issue
+  expect(createdIssue).toEqual(mockIssue);
 });

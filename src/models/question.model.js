@@ -114,7 +114,9 @@ class Question {
   }
 
   async delete() {
-    return await db.execute(`UPDATE question SET active = 0 WHERE id = ?`, [this.id]);
+    return await db.execute(`UPDATE question SET active = 0 WHERE id = ?`, [
+      this.id,
+    ]);
   }
 }
 
