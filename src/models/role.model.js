@@ -8,11 +8,12 @@ class Role {
     if (role?.active === undefined) {
       this.active = 1;
     } else {
-      this.active = user.active;
+      this.active = role.active;
     }
   }
   static async getById(id) {
     let [role, _] = await db.execute(`SELECT * FROM role WHERE id = ?`, [id]);
+    return new Role(role[0]);
   }
   static async getAll() {
     let [roles, _] = await db.execute(`SELECT * FROM role`);
@@ -22,6 +23,9 @@ class Role {
     let [roles, _] = await db.execute(`SELECT * FROM role WHERE active = 1`);
     return roles.map((role) => new Role(role));
   }
+
+  //----------------VERIFIER----------------
+
   static verify(role) {
     if (role.name?.length > 40) {
       throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
@@ -36,12 +40,18 @@ class Role {
       throw new Error("El estado del rol debe ser booleano");
     }
   }
+
+  //----------------POST----------------
+
   async post() {
     let [res, _] = await db.execute(`INSERT INTO role (name) VALUES (?)`, [
       this.name,
     ]);
     this.id = res.insertId;
+    return res;
   }
+
+  //----------------DELETE----------------
 
   async delete() {
     let [res, _] = await db.execute(`UPDATE role SET active = 0 WHERE id = ?`, [
