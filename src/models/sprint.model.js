@@ -44,12 +44,14 @@ class Sprint {
       throw new Error("Fecha debe ser una instancia de Date");
     }
 
-    if (!(sprint.end_date instanceof Date)) {
-      throw new Error("Fecha debe ser una instancia de Date");
-    }
+    if (sprint.end_date) {
+      if (!(sprint.end_date instanceof Date)) {
+        throw new Error("Fecha debe ser una instancia de Date");
+      }
 
-    if (sprint.end_date < sprint.start_date) {
-      throw new Error("La fecha de inicio debe ser menor a la fecha de fin");
+      if (sprint.end_date <= sprint.start_date) {
+        throw new Error("La fecha de inicio debe ser menor a la fecha de fin");
+      }
     }
 
     return true;
@@ -58,9 +60,8 @@ class Sprint {
   async post() {
     let [res, _] = await db.execute(
       // id_project?
-      `INSERT INTO sprint(name, start_date)
-      VALUES (?, ?)`,
-      [this.name, this.start_date]
+      `INSERT INTO sprint(name, id_jira, start_date, end_date, id_project) VALUES (?, ?, ?, ?, ?)`,
+      [this.name, this.id_jira, this.start_date, this.end_date, this.id_project]
     );
     this.id = res.insertId;
 

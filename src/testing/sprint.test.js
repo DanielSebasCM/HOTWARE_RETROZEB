@@ -81,9 +81,11 @@ test("Sprint getAll", async () => {
 
 test("Sprint post", async () => {
   // Create mock Issue
+  const now = new Date();
+  now.setMilliseconds(0, 0, 0);
   const mockSprint = new Sprint({
     name: "Test",
-    start_date: new Date(),
+    start_date: now,
   });
 
   // Insert issue
