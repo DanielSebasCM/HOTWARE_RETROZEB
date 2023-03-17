@@ -4,20 +4,17 @@ class Answer {
   constructor(answer) {
     Answer.verify(answer);
 
-    this.id = answer.id;
+    this.id = answer.id || null;
     this.value = answer.value;
-    this.uid = answer.uid || null;
+    this.uid = answer.uid;
     this.id_retrospective = answer.id_retrospective;
     this.id_question = answer.id_question;
-
   }
 
   static async getById(id) {
-    let [answer, _] = await db.execute(
-      `SELECT * FROM answer WHERE id = ?`,
-      [id]
-    );
-
+    let [answer, _] = await db.execute(`SELECT * FROM answer WHERE id = ?`, [
+      id,
+    ]);
     return new Answer(answer[0]);
   }
 
@@ -30,17 +27,43 @@ class Answer {
     // Length of value is less than 400
     if (answer.value?.length > 400)
       throw new Error(
-        "Tu respuesta excede el número de caracteres permitidos."
+        "El tamaño de la respuesta debe ser menor a 400 caracteres"
       );
 
-    // Value is not empty
-    if (answer.value?.length == 0)
-      throw new Error("No puedes dejar estar pregunta sin contestar.");
+    // Value is not empty or null
+    if (
+      answer.value?.length == 0 ||
+      answer.value?.length == null ||
+      !answer.value
+    )
+      throw new Error("Ingresa una respuesta");
+
+    //Uid is a number
+    if (!answer.uid) throw new Error("El id del usuario no debe ser nulo");
+    if (isNaN(answer.uid))
+      throw new Error("El id del usuario debe ser un número entero");
+
+    //Id_retrospective is a number
+    if (!answer.id_retrospective)
+      throw new Error("id_retrospective no debe ser nulo");
+    if (isNaN(answer.id_retrospective))
+      throw new Error("id_retrospective debe ser un número entero");
+
+    //Id_question is a number
+    if (!answer.id_question) throw new Error("id_question no debe ser nulo");
+    if (isNaN(answer.id_question))
+      throw new Error("id_question debe ser un número entero");
 
     return true;
   }
 
-
+  async post() {
+    let [res, _] = await db.execute(
+      `INSERT INTO answer (value, uid, id_retrospective, id_question) VALUES (?, ?, ?, ?)`,
+      [this.value, this.uid, this.id_retrospective, this.id_question]
+    );
+    return res;
+  }
 }
 
 module.exports = Answer;

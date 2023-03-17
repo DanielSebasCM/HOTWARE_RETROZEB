@@ -91,7 +91,7 @@ test("Option is SELECTION and Option is not null and length < 25 && length > 0",
 });
 
 // ---------------- CU05: Registrar pregunta ----------------
-test("question inserted successfully", async () => {
+test("question inserted, queried and deactivated successfully", async () => {
   // Mock question
   const mockQuestion = new Question({
     description: "¿Cómo te sentiste durante el sprint?",
@@ -111,6 +111,13 @@ test("question inserted successfully", async () => {
   expect(mockQuestion.description).toEqual(createdQuestion.description);
   expect(mockQuestion.type).toEqual(createdQuestion.type);
   expect(createdQuestion.active).toEqual(1);
+
+  // Soft delete question
+  await createdQuestion.delete();
+
+  // Verify question is soft deleted
+  const deletedQuestion = await Question.getById(res.insertId);
+  expect(deletedQuestion.active).toEqual(0);
 });
 
 test("question inserted successfully with options", async () => {
@@ -154,4 +161,25 @@ test("question not inserted if type is not selection and has options", async () 
       options: ["Muy bien", "Bien", "Regular", "Mal", "Muy mal"],
     });
   }).toThrow("Para ingresar opciones, el tipo de pregunta debe ser SELECTION");
+});
+
+test("get all active questions successfully", async () => {
+  // Get all active questions
+  const questions = await Question.getAllActive();
+  questions.forEach((question) => {
+    expect(question.active).toEqual(1);
+  });
+});
+
+test("get all questions successfully", async () => {
+  // Get all questions
+  const questions = await Question.getAll();
+  questions.forEach((question) => {
+    expect(question.id).not.toBeNull();
+    expect(question.id).toBeDefined();
+    expect(question.description).not.toBeNull();
+    expect(question.description).toBeDefined();
+    expect(question.type).not.toBeNull();
+    expect(question.type).toBeDefined();
+  });
 });

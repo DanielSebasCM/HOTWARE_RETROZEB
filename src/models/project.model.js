@@ -6,8 +6,12 @@ class Project {
 
     this.id = project.id || null;
     this.name = project.name;
-    this.jira_id = project.jira_id || null;
-    this.active = project.active || 1;
+    this.id_jira = project.id_jira || null;
+    if (project.active === 0 || project.active === 1) {
+      this.active = project.active;
+    } else {
+      project.active = 1;
+    }
   }
 
   static async getById(id) {
@@ -35,26 +39,34 @@ class Project {
   static verify(project) {
     // Lenght of name is less than 40
     if (project.name?.length > 40)
-      throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
+      throw new Error("El nombre debe ser menor a 40 caracteres");
 
-    if (typeof project.active !== "boolean")
-      throw new Error("El valor de active debe ser booleano");
+    if (project.name?.length === 0)
+      throw new Error("El nombre no puede estar vacío");
+
+    if (!project.name) throw new Error("El nombre no puede ser nulo");
   }
 
-  post() {
-    const [res, _] = db.execute(
-      `INSERT INTO project (name, jira_id, active) VALUES (?, ?, ?)`,
-      [this.name, this.jira_id, this.active]
+  async post() {
+    const [res, _] = await db.execute(
+      `INSERT INTO project (name, id_jira, active) VALUES (?, ?, ?)`,
+      [this.name, this.id_jira, this.active]
     );
 
     this.id = res.insertId;
+
+    return res;
   }
 
-  delete() {
-    return ([res, _] = db.execute(
+  async delete() {
+    let [res, _] = await db.execute(
       "UPDATE project SET active = 0 WHERE id = ?",
       [this.id]
-    ));
+    );
+
+    this.active = 0;
+
+    return res;
   }
 }
 

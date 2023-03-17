@@ -2,6 +2,7 @@ const db = require("../utils/db");
 
 class Privilege {
   constructor(privilege) {
+    Privilege.verify(privilege);
     this.id = privilege.id || null;
     this.name = privilege.name;
   }
@@ -32,13 +33,6 @@ class Privilege {
       `UPDATE privilege SET name = ? WHERE id = ?`,
       [privilege.name, id]
     );
-    return result.affectedRows;
-  }
-
-  static async delete(id) {
-    let [result, _] = await db.execute(`DELETE FROM privilege WHERE id = ?`, [
-      id,
-    ]);
     return result.affectedRows;
   }
 
