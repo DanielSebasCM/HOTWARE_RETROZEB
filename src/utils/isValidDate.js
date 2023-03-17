@@ -1,6 +1,12 @@
 // Validate date format
-// YYYY-MM-DD HH:MM:SS
+// YYYY-MM-DD HH:MM:SS STING
+// OR
+// DATE OBJECT (new Date())
 const isValidDate = (date) => {
+  if (Object.prototype.toString.call(input) === "[object Date]") {
+    return !isNaN(date.getTime());
+  }
+
   const regEx = /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2})$/;
 
   const dateTimeArray = date.match(regEx);
