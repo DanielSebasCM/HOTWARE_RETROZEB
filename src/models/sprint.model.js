@@ -51,13 +51,6 @@ class Sprint {
 
     return res;
   }
-
-  async delete() {
-    let [res, _] = await db.execute(`DELETE FROM sprint WHERE id = ?`, [
-      this.id,
-    ]);
-    return res;
-  }
 }
 
 module.exports = Sprint;
