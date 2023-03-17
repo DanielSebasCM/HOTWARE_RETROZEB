@@ -41,7 +41,7 @@ test("get all active roles", async () => {
 });
 
 test("role successfully created", async () => {
-  const mockRole = new Role({ name: "test", active: true });
+  const mockRole = new Role({ name: "test", active: 1 });
 
   const res = await mockRole.post();
 
