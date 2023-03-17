@@ -4,7 +4,7 @@ const Issue = require("../models/issue.model");
 test("Issue epic name is not empty", () => {
   expect(() => {
     new Issue({
-      epicName: "",
+      epic_name: "",
       id_sprint: 1,
     });
   }).toThrow("Ingresa un nombre de epic");
@@ -13,7 +13,7 @@ test("Issue epic name is not empty", () => {
 test("Issue epic name length is in range < 40", () => {
   expect(() => {
     new Issue({
-      epicName: "a".repeat(41),
+      epic_name: "a".repeat(41),
       id_sprint: 1,
     });
   }).toThrow("El tamaño del nombre de epic debe ser menor a 40 caracteres");
@@ -30,7 +30,7 @@ test("Issue has an epic name", () => {
 test("Issue priority is of type LOWEST, LOW, MEDIUM, HIGH, HIGHEST", () => {
   expect(() => {
     new Issue({
-      epicName: "a".repeat(40),
+      epic_name: "a".repeat(40),
       priority: "INVALID",
       id_sprint: 1,
     });
@@ -40,6 +40,7 @@ test("Issue priority is of type LOWEST, LOW, MEDIUM, HIGH, HIGHEST", () => {
 test("Issue state is of type To Do, En curso, Pull requessts, QA, Blocked, Done", () => {
   expect(() => {
     new Issue({
+      epic_name: "a".repeat(40),
       state: "INVALID",
       id_sprint: 1,
     });
@@ -48,6 +49,8 @@ test("Issue state is of type To Do, En curso, Pull requessts, QA, Blocked, Done"
 
 test("Issue has id_sprint", () => {
   expect(() => {
-    new Issue({});
+    new Issue({
+      epic_name: "a".repeat(40),
+    });
   }).toThrow("id_sprint es obligatorio");
 });
