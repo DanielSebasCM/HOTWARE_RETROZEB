@@ -22,6 +22,15 @@ test("first_name is not too long", () => {
   }).toThrow("El nombre no puede tener más de 40 caracteres");
 });
 
+test("first name exists", () => {
+  expect(() => {
+    new User({
+      last_name: "Doe",
+      email: "example@example.com",
+    });
+  }).toThrow("El nombre no puede estar vacío");
+});
+
 test("last_name is not empty", () => {
   expect(() => {
     new User({
@@ -42,6 +51,15 @@ test("last_name is not too long", () => {
   }).toThrow("El apellido no puede tener más de 40 caracteres");
 });
 
+test("last name exists", () => {
+  expect(() => {
+    new User({
+      first_name: "John",
+      email: "example@example.com",
+    });
+  }).toThrow("El apellido no puede estar vacío");
+});
+
 test("email is not empty", () => {
   expect(() => {
     new User({
@@ -60,6 +78,15 @@ test("email is not too long", () => {
       email: "a".repeat(256),
     });
   }).toThrow("El email no puede tener más de 255 caracteres");
+});
+
+test("email exists", () => {
+  expect(() => {
+    new User({
+      first_name: "John",
+      last_name: "Doe",
+    });
+  }).toThrow("El email no puede estar vacío");
 });
 
 test("getById return correct user", async () => {
