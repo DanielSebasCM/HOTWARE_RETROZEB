@@ -51,7 +51,7 @@ test("project inserted successfully", async () => {
   // Mock project
   const mockProject = new Project({
     name: "Proyecto 1",
-    id_jira: "123",
+    id_jira: "",
     active: 1,
   });
 
@@ -73,7 +73,7 @@ test("project deleted successfully", async () => {
   // Mock project
   const mockProject = new Project({
     name: "Proyecto 1",
-    id_jira: "122",
+    id_jira: "",
     active: 1,
   });
 
@@ -87,5 +87,5 @@ test("project deleted successfully", async () => {
   // Verify project
 
   expect(deletedProject.active).toEqual(0);
-  expecte(mockProject).toEqual(deletedProject);
+  expect(mockProject).toEqual(deletedProject);
 });
