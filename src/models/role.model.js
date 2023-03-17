@@ -2,6 +2,7 @@ const db = require("../utils/db");
 
 class Role {
   constructor(role) {
+    Role.verify(role);
     this.id = role.id || null;
     this.name = role.name;
     this.active = role.active || 1;
@@ -19,10 +20,16 @@ class Role {
   }
   static verify(role) {
     if (role.name?.length > 40) {
-      throw new Error("El nombre del rol no puede tener más de 40 caracteres");
+      throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
     }
     if (role.name?.length == 0) {
-      throw new Error("El nombre del rol no puede estar vacío");
+      throw new Error("Ingresa un nombre de rol");
+    }
+    if (role.name == null) {
+      throw new Error("Ingresa un nombre de rol");
+    }
+    if (typeof role.active != "boolean") {
+      throw new Error("El estado del rol debe ser booleano");
     }
   }
   async post() {
@@ -31,8 +38,15 @@ class Role {
       [this.name, this.active]
     );
     this.id = res.insertId;
-    return res;
   }
+
+  async delete() {
+    return ([res, _] = db.execute(
+      "UPDATE project SET active = 0 WHERE id = ?",
+      [this.id]
+    ));
+  }
+
   addPrivilege(privilege) {
     return db.execute(
       `INSERT INTO role_privilege (id_role, id_privilege) VALUES (?, ?)`,
@@ -40,3 +54,5 @@ class Role {
     );
   }
 }
+
+module.exports = Role;
