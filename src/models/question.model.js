@@ -34,14 +34,13 @@ class Question {
   static async getAll() {
     let [questions, _] = await db.execute(`SELECT * FROM question`);
 
-    for (let i = 0; i < questions.length; i++) {
-      const question = questions[i];
+    for (let question of questions) {
       if (question.type == "SELECTION") {
         let [options, _] = await db.execute(
           `SELECT description FROM option WHERE id_question = ? ORDER BY id`,
           [question.id]
         );
-        questions[i].options = options.map((option) => option.description);
+        question.options = options.map((option) => option.description);
       }
     }
 
@@ -53,14 +52,13 @@ class Question {
       `SELECT * FROM question WHERE active = 1`
     );
 
-    for (let i = 0; i < questions.length; i++) {
-      const question = questions[i];
+    for (let question of questions) {
       if (question.type == "SELECTION") {
         let [options, _] = await db.execute(
           `SELECT description FROM option WHERE id_question = ? ORDER BY id`,
           [question.id]
         );
-        questions[i].options = options.map((option) => option.description);
+        question.options = options.map((option) => option.description);
       }
     }
 
@@ -93,8 +91,9 @@ class Question {
     if (question.type === "SELECTION") {
       if (!question.options) throw new Error("Ingresa al menos dos opciones");
 
-      if (question.options.length < 2)
+      if (question.options.length < 2) {
         throw new Error("Ingresa al menos dos opciones");
+      }
 
       // Option is SELECTION and Option is not null and length < 25 && length > 0
       question.options.forEach((option) => {
