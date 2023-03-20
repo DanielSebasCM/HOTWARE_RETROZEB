@@ -1,8 +1,7 @@
 /* ICONS */
-
 .icon {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2rem;
+  height: 2rem;
   display: inline-block;
   outline: none;
   border: none;
@@ -13,6 +12,7 @@
   cursor: pointer;
 }
 
+/* TRANSITION */
 .transition {
   transition: all 0.3s ease-in-out;
 }

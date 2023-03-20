@@ -1,3 +1,19 @@
+/* -------------------------------------------- VARIABLES -------------------------------------------- */
+:root {
+  --color-font-primary: #525b75;
+  --color-bg-body: #f5f5f5;
+  --color-bg-hover: #eef2f6;
+  --color-off-white: #cbd0dd;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  --border-radius: 0.6rem;
+  --sidebar-width: 24rem;
+  --transition: all 0.3s ease-in-out;
+}
+
+/* -------------------------------------------- CONFIG -------------------------------------------- */
+
 *,
 *::after,
 *::before {
@@ -6,80 +22,165 @@
   box-sizing: border-box;
 }
 
-:root {
-  --bitcoin-orange: #f7931a;
-  --soft-orange: #ffe9d5;
-  --secondary-blue: #1a9af7;
-  --soft-blue: #e7f5ff;
-  --warm-black: #201e1c;
-  --black: #282623;
-  --grey: #bababa;
-  --off-white: #faf8f7;
-  --just-white: #fff;
-}
-
 html {
-  font-size: 62.5%;
-  font-family: "DM Sans", sans-serif;
   scroll-behavior: smooth;
+  font-size: 62.5%;
 }
 
-/* HEADER */
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+/* Width */
+body::-webkit-scrollbar {
+  width: 8px;
+}
+/* Track */
+body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+/* Handle */
+body::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 8px;
+}
+/* Handle on hover */
+body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* -------- BUTTONS -------- */
+button {
+  outline: none;
+  border: none;
+  background-color: none;
+  background: none;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* -------------------------------------------- LAYOUT -------------------------------------------- */
+
+/* -------- HEADER-------- */
 .header {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 65px;
+  padding: 0 2rem;
+  background-color: var(--color-white);
+  border: solid var(--color-off-white);
+  border-width: 0 0 1px 0;
+  z-index: 1000;
+}
+
+/* -------- NAVBAR -------- */
+.nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 3rem;
-  z-index: 1000;
-  background-color: var(--bitcoin-orange);
-  color: white;
+  height: 100%;
 }
 
-/* NAVBAR */
-.nav__toggler {
-  background: url("../icon/navbar-toggler.svg");
+.nav__logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
 }
 
-/* SIDEBAR */
+.nav__logo {
+  display: inline-block;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav__logo img {
+  height: 2rem;
+}
+
+/* -------- SIDEBAR -------- */
 .sidebar {
   position: fixed;
   top: 65px;
   width: 100vw;
   height: 100vh;
-  z-index: 9999;
+  padding: 2rem;
+  background-color: var(--color-white);
+  border: solid var(--color-off-white);
+  border-width: 0 1px 0 0;
   transform: translateX(-100%);
-  background-color: var(--black);
-  color: white;
+  z-index: 9999;
 }
 
 .sidebar.show {
   transform: translateX(0);
 }
 
-/* WRAPPER */
+.sidebar__nav-item {
+  border-radius: var(--border-radius);
+}
+
+.sidebar__nav-item:hover {
+  background-color: var(--color-bg-hover);
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  background-color: none;
+  color: var(--color-font-primary);
+  font-size: 1.3rem;
+  text-transform: uppercase;
+}
+
+.sidebar__nav-header {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.2rem;
+  color: var(--color-font-secondary);
+  text-transform: uppercase;
+}
+
+/* -------- WRAPPER -------- */
 .wrapper {
   margin-left: 0rem;
   margin-top: 6.5rem;
-  background-color: var(--secondary-blue);
-  height: 5000px;
+  background-color: var(--color-bg-body);
 }
 
-/* FOOTER */
+/* -------- MAIN -------- */
+.content {
+  min-height: calc(100vh - 130px);
+  padding: 2rem;
+}
+
+/* -------- FOOTER -------- */
 .footer {
   position: fixed;
   bottom: 0;
   width: 100%;
   height: 65px;
+  padding: 2rem 3rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 2rem 3rem;
+  background-color: var(--color-white);
+  border: solid var(--color-off-white);
+  border-width: 1px 0 0 0;
   z-index: 1000;
-  background-color: var(--bitcoin-orange);
-  color: white;
 }
