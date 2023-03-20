@@ -1,0 +1,34 @@
+/* 
+  sm: 576px
+  md: 768px
+  lg: 992px
+  xl: 1200px
+  xxl: 1400px
+*/
+
+/* MOBILE BREAKPOINT */
+@media screen and (min-width: 576px) {
+}
+
+/* TABLET BREAKPOINT */
+@media screen and (min-width: 768px) {
+  .sidebar {
+    width: 20rem;
+    transform: translateX(0%);
+  }
+
+  .nav__toggler {
+    display: none !important;
+  }
+
+  .wrapper {
+    margin-left: 20rem;
+  }
+}
+
+/* DESKTOP BREAKPOIN */
+@media screen and (min-width: 992px) {
+}
+
+@media screen and (min-width: 1200px) {
+}

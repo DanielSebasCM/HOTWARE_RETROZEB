@@ -1,43 +1,85 @@
-body {
-  background-color: #fbfbfb;
+*,
+*::after,
+*::before {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-@media (min-width: 991.98px) {
-  main {
-    padding-left: 240px;
-  }
+:root {
+  --bitcoin-orange: #f7931a;
+  --soft-orange: #ffe9d5;
+  --secondary-blue: #1a9af7;
+  --soft-blue: #e7f5ff;
+  --warm-black: #201e1c;
+  --black: #282623;
+  --grey: #bababa;
+  --off-white: #faf8f7;
+  --just-white: #fff;
 }
 
-/* Sidebar */
-.sidebar {
+html {
+  font-size: 62.5%;
+  font-family: "DM Sans", sans-serif;
+  scroll-behavior: smooth;
+}
+
+/* HEADER */
+.header {
   position: fixed;
   top: 0;
-  bottom: 0;
   left: 0;
-  padding: 58px 0 0;
-  /* Height of navbar */
-  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 5%), 0 2px 10px 0 rgb(0 0 0 / 5%);
-  width: 240px;
-  z-index: 600;
+  width: 100%;
+  height: 65px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 3rem;
+  z-index: 1000;
+  background-color: var(--bitcoin-orange);
+  color: white;
 }
 
-@media (max-width: 991.98px) {
-  .sidebar {
-    width: 100%;
-  }
+/* NAVBAR */
+.nav__toggler {
+  background: url("../icon/navbar-toggler.svg");
 }
 
-.sidebar .active {
-  border-radius: 5px;
-  box-shadow: 0 2px 5px 0 rgb(0 0 0 / 16%), 0 2px 10px 0 rgb(0 0 0 / 12%);
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  top: 65px;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  transform: translateX(-100%);
+  background-color: var(--black);
+  color: white;
 }
 
-.sidebar-sticky {
-  position: relative;
-  top: 0;
-  height: calc(100vh - 48px);
-  padding-top: 0.5rem;
-  overflow-x: hidden;
-  overflow-y: auto;
-  /* Scrollable contents if viewport is shorter than content. */
+.sidebar.show {
+  transform: translateX(0);
+}
+
+/* WRAPPER */
+.wrapper {
+  margin-left: 0rem;
+  margin-top: 6.5rem;
+  background-color: var(--secondary-blue);
+  height: 5000px;
+}
+
+/* FOOTER */
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 65px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 3rem;
+  z-index: 1000;
+  background-color: var(--bitcoin-orange);
+  color: white;
 }

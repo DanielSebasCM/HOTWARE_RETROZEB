@@ -49,8 +49,8 @@ test("Issue has id_sprint", () => {
 
 // ------------------ GETTER ------------------
 test("Issue getById", async () => {
-  const mockIssue = await Issue.getById(1);
-  expect(mockIssue.id).toEqual(1);
+  const mockIssue = await Issue.getById(52);
+  expect(mockIssue.id).toEqual(52);
 });
 
 test("Issue getAll", async () => {
