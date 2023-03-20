@@ -27,14 +27,31 @@ class Sprint {
   static verify(sprint) {
     // Length of name is less than 40
     if (sprint.name?.length > 40)
-      throw new Error("El nombre del sprint debe ser menor a 40 caracteres");
+      throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
 
     // Name is not empty
     if (sprint.name?.length == 0)
       throw new Error("Ingresa un nombre para el sprint");
 
+    if (!sprint.name) throw new Error("Ingresa un nombre para el sprint");
+
     if (sprint.start_date == 0 || sprint.start_date == null) {
-      throw new Error("Ingresa una fecha para el sprint");
+      throw new Error("Ingresa una fecha de inicio");
+    }
+
+    // Solo cambié el uso de la funcion de is Valid Date por el instanceof Date
+    if (!(sprint.start_date instanceof Date)) {
+      throw new Error("Fecha debe ser una instancia de Date");
+    }
+
+    if (sprint.end_date) {
+      if (!(sprint.end_date instanceof Date)) {
+        throw new Error("Fecha debe ser una instancia de Date");
+      }
+
+      if (sprint.end_date <= sprint.start_date) {
+        throw new Error("La fecha de inicio debe ser menor a la fecha de fin");
+      }
     }
 
     return true;
@@ -43,19 +60,11 @@ class Sprint {
   async post() {
     let [res, _] = await db.execute(
       // id_project?
-      `INSERT INTO sprint(name, start_date)
-      VALUES (?, ?)`,
-      [this.name, this.start_date]
+      `INSERT INTO sprint(name, id_jira, start_date, end_date, id_project) VALUES (?, ?, ?, ?, ?)`,
+      [this.name, this.id_jira, this.start_date, this.end_date, this.id_project]
     );
     this.id = res.insertId;
 
-    return res;
-  }
-
-  async delete() {
-    let [res, _] = await db.execute(`DELETE FROM sprint WHERE id = ?`, [
-      this.id,
-    ]);
     return res;
   }
 }
