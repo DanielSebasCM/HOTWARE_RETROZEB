@@ -71,7 +71,7 @@ class Retrospective {
         throw new Error("Fecha debe ser una instancia de Date");
 
       // Start date is before end date
-      if (retrospective.start_date > retrospective.end_date)
+      if (retrospective.start_date >= retrospective.end_date)
         throw new Error("La fecha de inicio debe ser menor a la fecha de fin");
     }
     // If state exists, it is either PENDING, IN_PROGRESS or CLOSED

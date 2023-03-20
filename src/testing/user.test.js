@@ -91,7 +91,6 @@ test("email exists", () => {
 
 test("getById return correct user", async () => {
   const user = await User.getById(1);
-  console.log(user);
   expect(user.uid).toEqual(1);
 });
 
@@ -109,7 +108,6 @@ test("post() should insert a new user", async () => {
     email: "example@example.com",
   });
   const res = await mockUser.post();
-  console.log(mockUser);
 
   expect(res.insertId).not.toBeNull();
   expect(res.insertId).toBeDefined();
