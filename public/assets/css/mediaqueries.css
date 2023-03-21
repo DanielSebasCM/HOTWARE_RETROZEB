@@ -1,0 +1,61 @@
+/* 
+  xs: 380px
+  sm: 576px
+  md: 768px
+  lg: 992px
+  xl: 1200px
+  xxl: 1400px
+*/
+
+/* MOBILE BREAKPOINT */
+@media screen and (min-width: 380px) {
+  .nav__logo img {
+    display: block;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .user__name {
+    display: block;
+  }
+}
+
+/* TABLET BREAKPOINT */
+@media screen and (min-width: 768px) {
+  .sidebar {
+    width: var(--sidebar-width);
+    transform: translateX(0%);
+  }
+
+  .nav__toggler {
+    display: none !important;
+  }
+
+  .wrapper {
+    margin-left: var(--sidebar-width);
+  }
+}
+
+/* DESKTOP BREAKPOIN */
+@media screen and (min-width: 992px) {
+  .chart-container {
+    max-width: 80%;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .charts-container {
+    display: grid;
+    grid-template-columns: repeat(2, 50%);
+    max-width: 98%;
+  }
+  .chart-container {
+    max-width: 100%;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .charts-container {
+    grid-template-columns: repeat(3, 33%);
+  }
+}
