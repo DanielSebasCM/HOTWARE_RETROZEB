@@ -22,7 +22,15 @@ app.use(expressLayouts);
 
 // ROUTES
 app.get("/", (_, res) => {
-  res.render("index", { title: "Home" });
+  res.redirect("/login");
+});
+
+app.get("/login", (_, res) => {
+  res.render("index", { title: "Login" });
+});
+
+app.get("/dashboard", (_, res) => {
+  res.render("dashboard", { title: "Dashboard", user: "Hotware" });
 });
 
 // SERVER

@@ -2,17 +2,24 @@
 <%- include('../partials/head.ejs') %>
 
   <body>
-    <!-- NAV -->
-    <%- include('../partials/nav.ejs') %>
-    <!-- SIDEBAR -->
-    <%- include('../partials/sidebar.ejs') %>
-    <div class="wrapper">
-      <main class="content">
-        <!-- BODY -->
-        <%- body %>
-      </main>
-        <!-- FOOTER -->
-      <%- include('../partials/footer.ejs') %>
+    <% if (locals.user) { %>
+      <!-- NAV -->
+      <%- include('../partials/nav.ejs') %>
+      <!-- SIDEBAR -->
+      <%- include('../partials/sidebar.ejs') %>
+      <div class="wrapper">
+        <main class="content">
+          <!-- BODY -->
+          <%- body %>
+        </main>
+    <% } else { %>
+      <div class="login">
+        <%- body %> 
+      </div>
+    <% } %>
+
+    <!-- FOOTER -->
+    <%- include('../partials/footer.ejs') %>
     </div>
   </body>
 
