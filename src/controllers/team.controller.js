@@ -5,7 +5,8 @@ const getAll = async (_, res) => {
     let teams = await Team.getAll();
     res.status(200).json(teams);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.log(err.message);
+    res.render("500/index", { error: err });
   }
 };
 
@@ -14,12 +15,12 @@ const getAllActive = async (_, res) => {
     let teams = await Team.getAllActive();
     res.status(200).json(teams);
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.log(err.message);
+    res.render("500/index", { error: err });
   }
 };
 
 const setLocalTeams = async (req, res, next) => {
-  console.log("setLocalTeams");
   try {
     let teams = await Team.getAllActive();
     req.app.locals.teams = teams;
@@ -28,6 +29,7 @@ const setLocalTeams = async (req, res, next) => {
     return teams;
   } catch (err) {
     console.log(err.message);
+    res.render("500/index", { error: err });
   }
 };
 

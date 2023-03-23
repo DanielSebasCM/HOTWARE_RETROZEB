@@ -23,7 +23,7 @@ app.use(expressLayouts);
 // ROUTER
 initRoutes(app);
 
-// ROUTES - TEST
+// -------------------------- TEST --------------------------
 app.get("/", (_, res) => {
   res.redirect("/login");
 });
@@ -45,6 +45,7 @@ app.get("/dashboard", async (req, res) => {
 
   res.render("dashboard", { title: "Dashboard", user: "Hotware" });
 });
+// -------------------------- FINISH TEST --------------------------
 
 // 404
 app.use((_, res) => {
