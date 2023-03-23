@@ -9,21 +9,32 @@
       </a>
     </div>
     <ul class="nav__list">
-      <li class="nav__item">
-        <div class="select-container">
-          <select class="select">
-            <option value="1">Equipo 1</option>
-            <option value="2">Equipo 2</option>
-            <option value="3">Equipo 3</option>
-          </select>
-        </div>
-      </li>
-      <li class="nav__item">
-        <div class="user">
-          <div class="user__avatar"><%= user[0] %></div>
-          <div class="user__name"><%= user %></div>
-        </div>
-      </li>
+      <% if(teams.length> 0) { %>
+        <li class="nav__item">
+          <div class="select-container">
+            <select class="select" id="team-options">
+              <% for(let i=0; i < teams.length; i++) { %>
+                <option 
+                  value="<%= teams[i].id %>" 
+                  data-name="<%= teams[i].name %>"
+                  <% if(teams[i].id == selectedTeam.id) { %> selected <% } %>  >
+                  <%= teams[i].name %>
+                </option>
+                <% } %>
+            </select>
+          </div>
+        </li>
+        <% } %>
+          <li class="nav__item">
+            <div class="user">
+              <div class="user__avatar">
+                <%= user[0] %>
+              </div>
+              <div class="user__name">
+                <%= user %>
+              </div>
+            </div>
+          </li>
     </ul>
   </nav>
 </header>

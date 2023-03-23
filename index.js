@@ -2,12 +2,12 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-let express = require("express");
-let app = express();
-let path = require("path");
+const express = require("express");
+const app = express();
+const path = require("path");
+const PORT = process.env.PORT || 3000;
 const expressLayouts = require("express-ejs-layouts");
-
-let PORT = process.env.PORT || 3000;
+const initRoutes = require("./src/routes/index.routes");
 
 // SET VIEW ENGINE
 app.set("view engine", "ejs");
@@ -20,26 +20,49 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(expressLayouts);
 
-// ROUTES
+// ROUTER
+initRoutes(app);
+
+// ROUTES - TEST
 app.get("/", (_, res) => {
   res.redirect("/login");
 });
 
 app.get("/login", (_, res) => {
+  app.locals.teams = [];
   res.render("index", { title: "Login" });
 });
 
-app.get("/dashboard", (_, res) => {
-  res.render("dashboard", { title: "Dashboard", user: "Hotware" });
-});
+const teamController = require("./src/controllers/team.controller");
+app.get("/dashboard", async (req, res) => {
+  if (req.app.locals.teams.length == 0)
+    await teamController.setLocalTeams(req, res);
 
-// SERVER
-app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`);
+  if (req.query.team)
+    req.app.locals.selectedTeam = req.app.locals.teams.find(
+      (team) => team.id == req.query.team
+    );
+
+  res.render("dashboard", { title: "Dashboard", user: "Hotware" });
 });
 
 // 404
 app.use((_, res) => {
   res.locals.title = "Error 404";
   res.status(404).render("404/index");
+});
+
+// 500
+app.use((err, _, res, __) => {
+  res.locals.title = "Error 500";
+  res.status(500).render("500/index", { error: err });
+});
+
+// LOCALS
+app.locals.teams = [];
+app.locals.selectedTeam;
+
+// SERVER
+app.listen(PORT, () => {
+  console.log(`Server is running on port http://localhost:${PORT}`);
 });
