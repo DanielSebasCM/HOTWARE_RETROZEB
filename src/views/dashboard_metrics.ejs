@@ -1,20 +1,33 @@
 <!-- SEND DATA TO SCRIPT -->
 
-<script></script>
+<script>
+  const states = <%- JSON.stringify(locals.states) %>;
+  const colors = <%- JSON.stringify(colors) %>;
+  const data_general = <%- JSON.stringify(data_general) %>;
+  const data_epics = <%- JSON.stringify(data_epics) %>;
+  const data_types = <%- JSON.stringify(data_types) %>;
+</script>
 
-<!-- HEADER -->
 <section class="dashboard">
+  <!-- HEADER -->
   <div class="dashboard-header">
     <div>
-      <h1 class="title">Sprint 19: Resumen Retrospectiva</h1>
+      <h1 class="title"><%= retrospective.name %></h1>
       <p class="description">Resumen del desempeño en la retrospectiva</p>
     </div>
+    <% if (retrospective.state === "CLOSED") { %>
     <div class="toggle-buttons-container toggle-buttons-container--primary">
       <button class="toggle-button toggle-button--active">Métricas</button>
       <button class="toggle-button">Preguntas</button>
     </div>
+    <% } else { %>
+    <p class="description" style="text-align: right">
+      Preguntas no disponibles <br />hasta cerrar la <br />retrospectiva
+    </p>
+    <% } %>
   </div>
   <hr />
+  <!-- CHARTS -->
   <div class="chart-container">
     <canvas id="general-chart"></canvas>
   </div>

@@ -2,10 +2,12 @@ if (process.env.NODE_ENV !== "production") {
   require("dotenv").config();
 }
 
-let express = require("express");
-let app = express();
-let path = require("path");
+const express = require("express");
+const app = express();
+const path = require("path");
 const expressLayouts = require("express-ejs-layouts");
+
+const dashboardController = require("./src/controllers/dashboard.controller");
 
 let PORT = process.env.PORT || 3000;
 
@@ -32,6 +34,8 @@ app.get("/login", (_, res) => {
 app.get("/dashboard", (_, res) => {
   res.render("dashboard", { title: "Dashboard", user: "Hotware" });
 });
+
+app.get("/dashboard_metrics", dashboardController.getMetrics);
 
 // SERVER
 app.listen(PORT, () => {

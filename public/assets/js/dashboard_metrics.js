@@ -1,40 +1,6 @@
-const states = ["To Do", "En curso", "Pull request", "QA", "Blocked", "Done"];
-const colors = [
-  "rgba(255, 99, 132, 0.6)",
-  "rgba(54, 162, 235, 0.6)",
-  "rgba(255, 206, 86, 0.6)",
-  "rgba(75, 192, 192, 0.6)",
-  "rgba(153, 102, 255, 0.6)",
-  "rgba(255, 159, 64, 0.6)",
-];
-
-let data_general = {
-  label: "Total",
-  data: states.map((_) => Math.ceil(Math.random() * 15)),
-};
-
 createFilteredChart("general-chart", "General", [data_general], states, true);
-
-const epics_data = [
-  { label: "Epic 1", data: states.map((_) => Math.ceil(Math.random() * 15)) },
-  { label: "Epic 2", data: states.map((_) => Math.ceil(Math.random() * 15)) },
-  { label: "Epic 3", data: states.map((_) => Math.ceil(Math.random() * 15)) },
-  { label: "Epic 4", data: states.map((_) => Math.ceil(Math.random() * 15)) },
-  { label: "Epic 5", data: states.map((_) => Math.ceil(Math.random() * 15)) },
-  { label: "Epic 6", data: states.map((_) => Math.ceil(Math.random() * 15)) },
-  { label: "Epic 7", data: states.map((_) => Math.ceil(Math.random() * 15)) },
-];
-createFilteredChart("epics-chart", "Epics", epics_data, states, true);
-
-const types_data = [
-  { label: "Task", data: states.map((_) => Math.ceil(Math.random() * 15)) },
-  { label: "Bug", data: states.map((_) => Math.ceil(Math.random() * 15)) },
-  {
-    label: "User story",
-    data: states.map((_) => Math.ceil(Math.random() * 15)),
-  },
-];
-createFilteredChart("types-chart", "Types", types_data, states, true);
+createFilteredChart("epics-chart", "Epics", data_epics, states, true);
+createFilteredChart("types-chart", "Types", data_types, states, true);
 
 function createFilteredChart(
   canvasId,
