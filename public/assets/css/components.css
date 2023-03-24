@@ -290,6 +290,14 @@
   gap: 2rem;
 }
 
+.charts-container--vertical {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
 .chart-container {
   position: relative;
   height: 100%;
@@ -300,4 +308,18 @@
   border-radius: var(--border-radius);
   background-color: var(--color-white);
   box-shadow: var(--box-shadow);
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
