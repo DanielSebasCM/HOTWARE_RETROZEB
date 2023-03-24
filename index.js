@@ -31,11 +31,20 @@ app.get("/", (_, res) => {
 
 app.get("/login", (_, res) => {
   app.locals.teams = [];
+  app.locals.currentUser = null;
   res.render("index", { title: "Login" });
 });
 
 const teamController = require("./src/controllers/team.controller");
 app.get("/dashboard", async (req, res) => {
+  req.app.locals.currentUser = {
+    first_name: "Mariane",
+    last_name: "Boyer",
+    id: 12,
+  };
+
+  console.log(req.app.locals.currentUser);
+
   if (req.app.locals.activeTeams.length == 0)
     await teamController.setLocalTeams(req, res);
 
@@ -44,7 +53,7 @@ app.get("/dashboard", async (req, res) => {
       (team) => team.id == req.query.team
     );
 
-  res.render("dashboard", { title: "Dashboard", user: "Hotware" });
+  res.render("dashboard", { title: "Dashboard" });
 });
 // -------------------------- FINISH TEST --------------------------
 
@@ -58,6 +67,8 @@ app.use((_, res) => {
 app.locals.activeTeams = [];
 app.locals.selectedTeam;
 app.locals.routes = routes;
+app.locals.currentUser = null;
+
 
 // SERVER
 app.listen(PORT, () => {

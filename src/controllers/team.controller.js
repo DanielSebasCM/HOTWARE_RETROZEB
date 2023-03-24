@@ -2,12 +2,12 @@ const Team = require("../models/team.model");
 const sqlErrorCodes = require("../utils/db.errors");
 const messages = require("../utils/messages");
 
-const getAllWithUsers = async (_, res) => {
+const getAllWithUsers = async (req, res) => {
   try {
-    const teams = await Team.getAllWithUsers();
+    const teams = await Team.getAllWithUsers(req.app.locals.currentUser.id);
     res
       .status(200)
-      .render("teams/index", { title: "Equipos", teams, user: "Hotware" });
+      .render("teams/index", { title: "Equipos", teams });
   } catch (err) {
     console.error(err.message);
     if (
@@ -121,7 +121,7 @@ const removeUserFromTeam = async (req, res) => {
 // UTILS
 const setLocalTeams = async (req, res, next) => {
   try {
-    const teams = await Team.getAllActive();
+    const teams = await Team.getAllActiveByUser(req.app.locals.currentUser.id);
     req.app.locals.activeTeams = teams;
     if (!req.app.locals.selectedTeam) req.app.locals.selectedTeam = teams[0];
     if (next) next();

@@ -9,6 +9,7 @@ class Team {
     this.active = team.active != 0 ? 1 : 0;
     this.creation_date = team.creation_date || new Date();
     this.members = team.members || [];
+    this.isMember = team.isMember || false;
   }
 
   static async getById(id) {
@@ -27,14 +28,23 @@ class Team {
     return teams.map((team) => new Team(team));
   }
 
-  static async getAllWithUsers() {
+  static async getAllActiveByUser(uid) {
+    let [teams, _] = await db.execute(
+      `SELECT DISTINCT t.* FROM team as t, team_users as tu WHERE tu.id_team = t.id AND tu.uid = ? AND t.active = 1 AND tu.active = 1 ORDER BY t.name ASC`,
+      [uid]
+    );
+
+    return teams.map((team) => new Team(team));
+  }
+
+  static async getAllWithUsers(uid = null) {
     let [teams] = await db.execute(
       `SELECT DISTINCT * FROM team WHERE active = 1`
     );
 
     let [members, _] = await db.execute(
       `
-      SELECT tu.id_team, u.first_name, u.last_name
+      SELECT tu.id_team, u.uid, u.first_name, u.last_name
       FROM user as u, team_users as tu 
       WHERE u.uid = tu.uid
       AND u.active = 1
@@ -50,13 +60,15 @@ class Team {
       })
     );
 
-    members.forEach((team) => {
-      teamsWithMembers[team.id_team].members.push({
-        first_name: team.first_name,
-        last_name: team.last_name,
+    members.forEach((member) => {
+      teamsWithMembers[member.id_team].isMember = member.uid === uid ? true : false;
+      teamsWithMembers[member.id_team].members.push({
+        first_name: member.first_name,
+        last_name: member.last_name,
+        uid: member.uid,
       });
     });
-
+    
     return Object.values(teamsWithMembers).map((team) => new Team(team));
   }
 
