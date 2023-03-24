@@ -51,7 +51,10 @@
 
 <!-- ALL TEAMS -->
 <div class="banner banner--nomargin">
-  <h2 class="subtitle">Todos los equipos <span class="meta"> (<%=teams.length - 1 %>) </span> </h2>
+  <h2 class="subtitle">
+    Todos los equipos
+    <span class="meta"> (<%=teams.length %>) </span>
+  </h2>
   <div class="toggle-buttons-container toggle-buttons-container--primary">
     <button class="toggle-button toggle-button--active">Activo</button>
     <button class="toggle-button">Inactivo</button>
@@ -60,7 +63,7 @@
 <!-- TEAMS LIST -->
 <% if(teams && teams.length> 0) { %>
   <div class="cards-container">
-    <% for(let i=1; i < teams.length; i++) { %>
+    <% for(let i=0; i < teams.length; i++) { %>
       <div class="card card--team">
         <h3 class="card__title">
           <%= teams[i].name %>
@@ -82,7 +85,9 @@
             </div>
             <% } %>
         </div>
-        <a class="button button--primary" href="#">Unirme</a>
+        <button class="button button--primary add-team-user-btn" data-uid=1 data-id_team=<%=teams[i].id %>>
+          Unirme
+        </button>
       </div>
       <% } %>
         <% } %>
