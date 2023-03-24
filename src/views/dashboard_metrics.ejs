@@ -12,16 +12,28 @@
       <h1 class="title"><%= retrospective.name %></h1>
       <p class="description">Resumen del desempeño en la retrospectiva</p>
     </div>
-    <% if (retrospective.state === "CLOSED") { %>
-    <div class="toggle-buttons-container toggle-buttons-container--primary">
-      <button class="toggle-button toggle-button--active">Métricas</button>
-      <button class="toggle-button">Preguntas</button>
+    <div>
+      <% if (retrospective.state === "CLOSED") { %>
+      <div class="toggle-buttons-container toggle-buttons-container--primary">
+        <button class="toggle-button toggle-button--active">Métricas</button>
+        <button class="toggle-button">Preguntas</button>
+      </div>
+      <% } else { %>
+      <p class="description" style="text-align: right">
+        Preguntas no disponibles
+      </p>
+      <% } %>
+      <p class="subtitle" style="text-align: right">Labels</p>
+      <div class="select-container">
+        <select class="select" id="label-select">
+          <option value="Todos">Todos</option>
+          <option value="Sin Label">Sin Label</option>
+          <% for (let i = 0; i < labels.length; i++) { %>
+          <option value="<%= labels[i] %>"><%= labels[i] %></option>
+          <% } %>
+        </select>
+      </div>
     </div>
-    <% } else { %>
-    <p class="description" style="text-align: right">
-      Preguntas no disponibles <br />hasta cerrar la <br />retrospectiva
-    </p>
-    <% } %>
   </div>
   <hr />
   <!-- CHARTS -->

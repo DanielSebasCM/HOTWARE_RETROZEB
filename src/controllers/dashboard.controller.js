@@ -25,12 +25,15 @@ const renderDashboardMetrics = async (req, res) => {
     retrospective = await Retrospective.getById(id_retrospective);
     const issues = await retrospective.getIssues();
 
+    const labels = [...new Set(issues.map((d) => d.labels).flat())];
+    console.log(labels);
     res.render("dashboard_metrics", {
       title: "Dashboard Metricas",
       user: "Hotware",
       retrospective,
       states,
       issues,
+      labels,
     });
   } catch (error) {
     console.log(error);
