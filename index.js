@@ -36,14 +36,7 @@ app.get("/login", (_, res) => {
 });
 
 const teamController = require("./src/controllers/team.controller");
-app.get("/dashboard", async (req, res) => {
-  req.app.locals.currentUser = {
-    first_name: "Mariane",
-    last_name: "Boyer",
-    id: 12,
-  };
-
-  console.log(req.app.locals.currentUser);
+app.get("/dashboard", teamController.setLocalTeams, async (req, res) => {
 
   if (req.app.locals.activeTeams.length == 0)
     await teamController.setLocalTeams(req, res);
@@ -67,8 +60,7 @@ app.use((_, res) => {
 app.locals.activeTeams = [];
 app.locals.selectedTeam;
 app.locals.routes = routes;
-app.locals.currentUser = null;
-
+app.locals.currentUser;
 
 // SERVER
 app.listen(PORT, () => {

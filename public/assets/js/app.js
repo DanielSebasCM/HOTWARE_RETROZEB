@@ -27,7 +27,7 @@
   });
 })();
 
-(function selectActiveTeam() {
+(function selectactiveTeams() {
   const teamOptions = document.getElementById("team-options");
   if(!teamOptions) return;
   const teamList = teamOptions.querySelectorAll("option");

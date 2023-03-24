@@ -15,7 +15,7 @@
 
   <!-- USER TEAMS -->
   <h2 class="subtitle">Mis Equipos <span class="meta">
-      (<%=teams.length - 1 %>)
+      (<%=teams.filter(team=> team.isMember).length %>)
     </span>
   </h2>
   <% if(teams && teams.length> 0) { %>
@@ -56,7 +56,7 @@
 <div class="banner banner--nomargin">
   <h2 class="subtitle">
     Todos los equipos
-    <span class="meta"> (<%=teams.length %>) </span>
+    <span class="meta"> (<%=teams.filter(team=> !team.isMember).length %>) </span>
   </h2>
   <div class="toggle-buttons-container toggle-buttons-container--primary">
     <button class="toggle-button toggle-button--active">Activo</button>

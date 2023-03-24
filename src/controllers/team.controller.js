@@ -5,9 +5,7 @@ const messages = require("../utils/messages");
 const getAllWithUsers = async (req, res) => {
   try {
     const teams = await Team.getAllWithUsers(req.app.locals.currentUser.id);
-    res
-      .status(200)
-      .render("teams/index", { title: "Equipos", teams });
+    res.status(200).render("teams/index", { title: "Equipos", teams });
   } catch (err) {
     console.error(err.message);
     if (
@@ -23,12 +21,12 @@ const getAllWithUsers = async (req, res) => {
 
 const addUserToTeam = async (req, res) => {
   try {
+    // await setLocalTeams(req, res);
     const { id_team, uid } = req.body;
 
     // Verify if user is deactivated in the team
     const userData = await Team.getUserById(id_team, uid);
     if (userData && userData.active == 0) {
-      console.log("Activating user in team");
       await Team.activateUserInTeam(id_team, uid);
       return res
         .status(200)
@@ -73,6 +71,7 @@ const addUserToTeam = async (req, res) => {
 
 const removeUserFromTeam = async (req, res) => {
   try {
+    // await setLocalTeams(req, res);
     const { id_team, uid } = req.body;
 
     // Verify if user exists in the team
@@ -121,13 +120,17 @@ const removeUserFromTeam = async (req, res) => {
 // UTILS
 const setLocalTeams = async (req, res, next) => {
   try {
+    req.app.locals.currentUser = {
+      first_name: "Mariane",
+      last_name: "Boyer",
+      id: 12,
+    };
     const teams = await Team.getAllActiveByUser(req.app.locals.currentUser.id);
     req.app.locals.activeTeams = teams;
     if (!req.app.locals.selectedTeam) req.app.locals.selectedTeam = teams[0];
-    if (next) next();
-    return teams;
+    next();
   } catch (err) {
-    console.log(err.message);
+    console.log(err);
     if (
       err.code == sqlErrorCodes.errorConnecting ||
       err.code == sqlErrorCodes.unknownDB ||
