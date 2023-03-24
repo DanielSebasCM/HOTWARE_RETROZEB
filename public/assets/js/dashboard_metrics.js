@@ -1,5 +1,3 @@
-console.log(decodeURI(states));
-states = JSON.parse(states);
 createFilteredChart("general-chart", "General", [data_general], states, true);
 createFilteredChart("epics-chart", "Epics", data_epics, states, true);
 createFilteredChart("types-chart", "Types", data_types, states, true);
