@@ -15,7 +15,7 @@
   --color-font-active: #4376ec;
   --color-bg-active: #e5edff;
   --color-border-active: #adc5ff;
-  --color-font-alert: #d43c3c;
+  --color-font-alert: #b13c3c;
   --color-bg-alert: #facfcf;
   --color-border-alert: #fd8d8d;
   --color-font-success: #2f6c11;
@@ -46,7 +46,7 @@
   /* MARGINS */
   --component-mb: 1rem;
   --component-mr: 1rem;
-  --banner-mb: 3rem;
+  --banner-mb: 1rem;
   --container-mb: 3rem;
   --container-pt: 3rem;
   --card-mb: 2rem;

@@ -8,6 +8,7 @@ class Team {
     this.name = team.name;
     this.active = team.active != 0 ? 1 : 0;
     this.creation_date = team.creation_date || new Date();
+    this.members = team.members || [];
   }
 
   static async getById(id) {
@@ -24,6 +25,40 @@ class Team {
   static async getAllActive() {
     let [teams, _] = await db.execute(`SELECT * FROM team WHERE active = 1`);
     return teams.map((team) => new Team(team));
+  }
+
+  static async getAllWithUsers() {
+    let [teams, _] = await db.execute(
+      `
+      SELECT tu.id_team, t.name, t.creation_date, u.first_name, u.last_name
+      FROM team as t, user as u, team_users as tu 
+      WHERE t.id = tu.id_team
+      AND u.uid = tu.uid
+      AND t.active = 1
+      AND u.active = 1
+      AND tu.active = 1
+      `
+    );
+
+    const teamNames = new Set(teams.map((team) => team.name));
+    const teamsWithMembers = Object.fromEntries(
+      Array.from(teamNames).map((name) => [
+        name,
+        { name: "", id: "", members: [], creation_date: "" },
+      ])
+    );
+
+    teams.forEach((team) => {
+      teamsWithMembers[team.name].members.push({
+        first_name: team.first_name,
+        last_name: team.last_name,
+      });
+      teamsWithMembers[team.name].name = team.name;
+      teamsWithMembers[team.name].id = team.id_team;
+      teamsWithMembers[team.name].creation_date = team.creation_date;
+    });
+
+    return Object.values(teamsWithMembers).map((team) => new Team(team));
   }
 
   static async addUserToTeam(id_team, uid) {

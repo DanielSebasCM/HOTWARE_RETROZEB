@@ -3,8 +3,7 @@ const router = express.Router();
 const controller = require("../controllers/team.controller");
 
 // GET
-router.get("/", controller.getAll);
-router.get("/activos", controller.getAllActive);
+router.get("/", controller.getAllWithUsers);
 
 // POST
 router.post("/nuevo/usuario", controller.addUserToTeam);

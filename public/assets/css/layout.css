@@ -82,7 +82,8 @@
 .users__list {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem 4rem;
+  gap: 2rem 3rem;
+  margin-bottom: var(--card-mb);
 }
 
 .user__item {

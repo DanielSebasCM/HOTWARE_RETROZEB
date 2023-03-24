@@ -2,30 +2,13 @@ const Team = require("../models/team.model");
 const sqlErrorCodes = require("../utils/db.errors");
 const messages = require("../utils/messages");
 
-const getAll = async (_, res) => {
+const getAllWithUsers = async (_, res) => {
   try {
-    const teams = await Team.getAll();
-    console.log(teams);
+    const teams = await Team.getAllWithUsers();
+
     res
       .status(200)
       .render("teams/index", { title: "Equipos", teams, user: "Hotware" });
-  } catch (err) {
-    console.log(err.message);
-    if (
-      err.code == sqlErrorCodes.errorConnecting ||
-      err.code == sqlErrorCodes.unknownDB ||
-      !err.code
-    )
-      return res.status(500).render("500/index");
-
-    return res.status(500).render("500/index");
-  }
-};
-
-const getAllActive = async (_, res) => {
-  try {
-    const teams = await Team.getAllActive();
-    res.status(200).json(teams);
   } catch (err) {
     console.error(err.message);
     if (
@@ -99,8 +82,7 @@ const setLocalTeams = async (req, res, next) => {
 };
 
 module.exports = {
-  getAll,
-  getAllActive,
+  getAllWithUsers,
   addUserToTeam,
   setLocalTeams,
 };
