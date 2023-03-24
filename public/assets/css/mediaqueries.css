@@ -38,24 +38,28 @@
 
 /* DESKTOP BREAKPOIN */
 @media screen and (min-width: 992px) {
-  .chart-container {
+  .chart-container,
+  .card {
     max-width: 80%;
   }
 }
 
 @media screen and (min-width: 1200px) {
-  .charts-container {
+  .charts-container,
+  .cards-container {
     display: grid;
     grid-template-columns: repeat(2, 50%);
     max-width: 98%;
   }
-  .chart-container {
+  .chart-container,
+  .card {
     max-width: 100%;
   }
 }
 
 @media screen and (min-width: 1400px) {
-  .charts-container {
+  .charts-container,
+  .cards-container {
     grid-template-columns: repeat(3, 33%);
   }
 }

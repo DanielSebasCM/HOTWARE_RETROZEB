@@ -76,6 +76,19 @@
 .user__name {
   font-size: 1.4rem;
   display: none;
+  display: inline-block;
+}
+
+.users__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem 4rem;
+}
+
+.user__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 /* -------- SIDEBAR -------- */

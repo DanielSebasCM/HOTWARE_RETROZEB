@@ -1,82 +1,90 @@
 <!-- MAIN -->
 <section class="dashboard">
-  <h1 class="title">Sprint 19: Resumen Retrospectiva</h1>
-  <p class="description">Resumen del desempeño en la retrospectiva</p>
-
-  <!-- Labels -->
-  <h2 class="subtitle">Lables</h2>
-  <div class="labels-container" style="display: flex; flex-wrap: wrap">
-    <span class="label label--active">En Curso</span>
-    <span class="label label--alert">Atrasado</span>
-    <span class="label label--success">Terminado</span>
-    <span class="label label--danger">Inactivo</span>
-    <span class="label label--inactive">Cancelado</span>
-  </div>
-
-  <!-- Pills -->
-  <h2 class="subtitle">Pills</h2>
-  <div class="pills-container" style="display: flex; flex-wrap: wrap">
-    <span class="pill pill--ontime"></span>
-    <span class="pill pill--late"></span>
-    <span class="pill pill--alert"></span>
-  </div>
-
-  <!-- Buttons -->
-  <h2 class="subtitle">Buttons</h2>
-  <div class="buttons-container" style="display: flex; flex-wrap: wrap">
-    <button class="button button--primary">Guardar</button>
-    <button class="button button--edit">Editar</button>
-    <button class="button button--discard">Descartar</button>
-    <button class="button button--delete">Eliminar</button>
-  </div>
-
-  <h2 class="subtitle">Toggle Buttons</h2>
-  <div class="toggle-buttons-container toggle-buttons-container--primary">
-    <button class="toggle-button toggle-button--active">Activo</button>
-    <button class="toggle-button">Inactivo</button>
-  </div>
-  <div class="toggle-buttons-container toggle-buttons-container--primary">
-    <button class="toggle-button toggle-button--active">Activo</button>
-    <button class="toggle-button">Inactivo</button>
-    <button class="toggle-button">Cancelado</button>
-  </div>
-
-  <!-- Inputs -->
-  <h2 class="subtitle">Inputs</h2>
-  <div class="input-container">
-    <label class="input__label" for=""></label>
-    <input class="input" type="text" placeholder="Input" />
-  </div>
-
-  <div class="input search-bar">
-    <span class="icon search-bar__icon"></span>
-    <input type="text" placeholder="Buscar" />
-  </div>
-
-  <!-- Select -->
-  <h2 class="subtitle">Select</h2>
-  <div class="select-container">
-    <select class="select">
-      <option value="1">Opción 1</option>
-      <option value="2">Opción 2</option>
-      <option value="3">Opción 3</option>
-    </select>
-  </div>
-
-  <!-- Charts -->
-  <h2 class="subtitle">Charts</h2>
-
-  <div class="charts-container">
-    <div class="chart-container">
-      <canvas id="data-chart"></canvas>
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">Equipos</h1>
+      <p class="description">
+        Visualiza tu equipo o selecciona uno al cual unirte
+      </p>
     </div>
-
-    <div class="chart-container">
-      <canvas id="data-chart-line"></canvas>
-    </div>
-
-    <div class="chart-container">
-      <canvas id="data-stacked"></canvas>
+    <div class="banner__section">
+      <a class="button button--primary" href="#">Crear Equipo</a>
     </div>
   </div>
+  <span class="line"></span>
+
+  <!-- USER TEAMS -->
+  <h2 class="subtitle">Mis Equipos</h2>
+  <div class="cards-container">
+    <div class="card card--team">
+      <h3 class="card__title">
+        Equipo 1
+      </h3>
+      <p class="description">Una descripción igual de increíble para el equipo</p>
+      <p class="card__subtitle">
+        Miembros
+      </p>
+      <div class="users__list">
+        <div class="user__item">
+          <span class="user__avatar">R</span>
+          <span class="user__name">Richard Dawkins</span>
+        </div>
+        <div class="user__item">
+          <span class="user__avatar">R</span>
+          <span class="user__name">Richard Dawkins</span>
+        </div>
+        <div class="user__item">
+          <span class="user__avatar">R</span>
+          <span class="user__name">Richard Dawkins</span>
+        </div>
+        <div class="user__item">
+          <span class="user__avatar">R</span>
+          <span class="user__name">Richard Dawkins</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="line"></span>
+
+  <!-- ALL TEAMS -->
+  <div class="banner banner--nomargin">
+    <h2 class="subtitle">Todos los equipos</h2>
+    <div class="toggle-buttons-container toggle-buttons-container--primary">
+      <button class="toggle-button toggle-button--active">Activo</button>
+      <button class="toggle-button">Inactivo</button>
+    </div>
+  </div>
+  <!-- TEAMS LIST -->
+  <% if(teams && teams.length> 0) { %>
+    <div class="cards-container">
+      <% for(let i=0; i < teams.length; i++) { %>
+        <div class="card card--team">
+          <h3 class="card__title">
+            <%= teams[i].name %>
+          </h3>
+          <p class="description">Una descripción igual de increíble para el equipo</p>
+          <p class="card__subtitle">
+            Miembros
+          </p>
+          <div class="users__list">
+            <div class="user__item">
+              <span class="user__avatar">R</span>
+              <span class="user__name">Richard Dawkins</span>
+            </div>
+            <div class="user__item">
+              <span class="user__avatar">R</span>
+              <span class="user__name">Richard Dawkins</span>
+            </div>
+            <div class="user__item">
+              <span class="user__avatar">R</span>
+              <span class="user__name">Richard Dawkins</span>
+            </div>
+            <div class="user__item">
+              <span class="user__avatar">R</span>
+              <span class="user__name">Richard Dawkins</span>
+            </div>
+          </div>
+        </div>
+        <% } %>
+          <% } %>
 </section>

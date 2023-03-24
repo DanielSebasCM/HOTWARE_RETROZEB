@@ -5,6 +5,7 @@ const messages = require("../utils/messages");
 const getAll = async (_, res) => {
   try {
     const teams = await Team.getAll();
+    console.log(teams);
     res
       .status(200)
       .render("teams/index", { title: "Equipos", teams, user: "Hotware" });

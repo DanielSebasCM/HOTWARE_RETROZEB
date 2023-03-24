@@ -27,6 +27,7 @@
   --color-font-inactive: #141824;
   --color-bg-inactive: #e3e6ed;
   --color-border-inactive: #cbd0dd;
+  --color-line: #dcdcdc;
 
   /* OTHER */
   --box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -45,6 +46,9 @@
   /* MARGINS */
   --component-mb: 1rem;
   --component-mr: 1rem;
+  --banner-mb: 3rem;
+  --container-mb: 3rem;
+  --container-pt: 3rem;
   --card-mb: 2rem;
 }
 
