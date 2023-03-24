@@ -35,7 +35,7 @@ app.get("/dashboard", (_, res) => {
   res.render("dashboard", { title: "Dashboard", user: "Hotware" });
 });
 
-app.get("/dashboard_metrics", dashboardController.getMetrics);
+app.get("/dashboard_metrics/:id", dashboardController.renderDashboardMetrics);
 
 // SERVER
 app.listen(PORT, () => {

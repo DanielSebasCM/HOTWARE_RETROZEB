@@ -31,9 +31,9 @@ function createFilteredChart(
     data: {
       labels: labels_data.map((row) => row.label),
       datasets: variations.map((variation, index) => ({
-        label: variation,
+        label: variation.label,
         data: labels_data.map((row) => row.data[index]),
-        backgroundColor: colors[index],
+        backgroundColor: variation.color,
       })),
     },
     options: {

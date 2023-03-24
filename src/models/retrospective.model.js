@@ -17,6 +17,8 @@ class Retrospective {
       `SELECT * FROM retrospective WHERE id = ?`,
       [id]
     );
+
+    if (retrospective.length === 0) throw new Error("Retrospective not found");
     return new Retrospective(retrospective[0]);
   }
   static async getAll() {
@@ -94,6 +96,30 @@ class Retrospective {
     // Sprint id is valid
     if (!Number.isInteger(retrospective.id_sprint))
       throw new Error("Ingresa un id de sprint");
+  }
+
+  async getMetricsTotal() {
+    const [res, _] = await db.execute(
+      "SELECT i.state, SUM(i.story_points) as 'Story Points' FROM retrospective as r JOIN sprint as s ON r.id_sprint = s.id JOIN issues as i ON i.id_sprint = s.id WHERE r.id = ? GROUP BY i.state",
+      [this.id]
+    );
+    return res;
+  }
+
+  async getMetricsEpics() {
+    const [res, _] = await db.execute(
+      "SELECT i.state, SUM(i.story_points) as 'Story Points', i.epic_name FROM retrospective as r JOIN sprint as s ON r.id_sprint = s.id JOIN issues as i ON i.id_sprint = s.id WHERE r.id = ? GROUP BY i.state, i.epic_name ORDER BY i.epic_name;",
+      [this.id]
+    );
+    return res;
+  }
+
+  async getMetricsTypes() {
+    const [res, _] = await db.execute(
+      "SELECT i.state, SUM(i.story_points) as 'Story Points', i.type FROM retrospective as r JOIN sprint as s ON r.id_sprint = s.id JOIN issues as i ON i.id_sprint = s.id WHERE r.id = ? GROUP BY i.state, i.type ORDER BY i.type;",
+      [this.id]
+    );
+    return res;
   }
   async post() {
     const [res, _] = await db.execute(
