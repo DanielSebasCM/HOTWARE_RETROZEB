@@ -1,5 +1,5 @@
 const db = require("../utils/db");
-
+const Issue = require("./issue.model");
 class Retrospective {
   constructor(retrospective) {
     Retrospective.verify(retrospective);
@@ -96,6 +96,23 @@ class Retrospective {
     // Sprint id is valid
     if (!Number.isInteger(retrospective.id_sprint))
       throw new Error("Ingresa un id de sprint");
+  }
+
+  async getIssues() {
+    const [issues, _] = await db.execute(
+      "SELECT i.* FROM retrospective AS r JOIN sprint AS s ON r.id = 1 AND s.id = r.id_sprint JOIN issues AS i ON i.id_sprint = s.id;",
+      [this.id]
+    );
+
+    for (let issue of issues) {
+      const [labels, __] = await db.execute(
+        `SELECT label FROM issues_labels WHERE id_issue = ?`,
+        [issue.id]
+      );
+      issue.labels = labels.map((label) => label.label);
+    }
+
+    return issues.map((issue) => new Issue(issue));
   }
 
   async getMetricsTotal() {
