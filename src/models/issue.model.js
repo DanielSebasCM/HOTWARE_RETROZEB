@@ -9,6 +9,7 @@ class Issue {
     this.story_points = issue.story_points || null;
     this.priority = issue.priority || "Medium";
     this.state = issue.state || "To Do";
+    this.type = issue.type || "Task";
     this.uid = issue.uid || null;
     this.id_sprint = issue.id_sprint;
     this.labels = issue.labels || null;
