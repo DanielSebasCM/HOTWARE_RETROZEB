@@ -9,16 +9,14 @@
       </a>
     </div>
     <ul class="nav__list">
-      <% if(teams.length> 0) { %>
+      <% if(activeTeams.length> 0) { %>
         <li class="nav__item">
           <div class="select-container">
             <select class="select" id="team-options">
-              <% for(let i=0; i < teams.length; i++) { %>
-                <option 
-                  value="<%= teams[i].id %>" 
-                  data-name="<%= teams[i].name %>"
-                  <% if(teams[i].id == selectedTeam.id) { %> selected <% } %>  >
-                  <%= teams[i].name %>
+              <% for(let i=0; i < activeTeams.length; i++) { %>
+                <option value="<%= activeTeams[i].id %>" data-name="<%= activeTeams[i].name %>" <%
+                  if(activeTeams[i].id==selectedTeam.id) { %> selected <% } %> >
+                    <%= activeTeams[i].name %>
                 </option>
                 <% } %>
             </select>

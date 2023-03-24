@@ -8,6 +8,7 @@ const path = require("path");
 const PORT = process.env.PORT || 3000;
 const expressLayouts = require("express-ejs-layouts");
 const initRoutes = require("./src/routes/index.routes");
+const { routes } = require("./src/utils/utils");
 
 // SET VIEW ENGINE
 app.set("view engine", "ejs");
@@ -35,11 +36,11 @@ app.get("/login", (_, res) => {
 
 const teamController = require("./src/controllers/team.controller");
 app.get("/dashboard", async (req, res) => {
-  if (req.app.locals.teams.length == 0)
+  if (req.app.locals.activeTeams.length == 0)
     await teamController.setLocalTeams(req, res);
 
   if (req.query.team)
-    req.app.locals.selectedTeam = req.app.locals.teams.find(
+    req.app.locals.selectedTeam = req.app.locals.activeTeams.find(
       (team) => team.id == req.query.team
     );
 
@@ -53,15 +54,10 @@ app.use((_, res) => {
   res.status(404).render("404/index");
 });
 
-// 500
-app.use((err, _, res, __) => {
-  res.locals.title = "Error 500";
-  res.status(500).render("500/index", { error: err });
-});
-
 // LOCALS
-app.locals.teams = [];
+app.locals.activeTeams = [];
 app.locals.selectedTeam;
+app.locals.routes = routes;
 
 // SERVER
 app.listen(PORT, () => {

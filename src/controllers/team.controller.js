@@ -5,7 +5,9 @@ const messages = require("../utils/messages");
 const getAll = async (_, res) => {
   try {
     const teams = await Team.getAll();
-    res.status(200).json(teams);
+    res
+      .status(200)
+      .render("teams/index", { title: "Equipos", teams, user: "Hotware" });
   } catch (err) {
     console.log(err.message);
     if (
@@ -74,10 +76,11 @@ const addUserToTeam = async (req, res) => {
   }
 };
 
+// UTILS
 const setLocalTeams = async (req, res, next) => {
   try {
     const teams = await Team.getAllActive();
-    req.app.locals.teams = teams;
+    req.app.locals.activeTeams = teams;
     if (!req.app.locals.selectedTeam) req.app.locals.selectedTeam = teams[0];
     if (next) next();
     return teams;
