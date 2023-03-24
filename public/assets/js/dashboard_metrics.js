@@ -1,6 +1,15 @@
+console.log(decodeURI(states));
+states = JSON.parse(states);
 createFilteredChart("general-chart", "General", [data_general], states, true);
 createFilteredChart("epics-chart", "Epics", data_epics, states, true);
 createFilteredChart("types-chart", "Types", data_types, states, true);
+createFilteredChart(
+  "priorities-chart",
+  "Priorities",
+  data_priorities,
+  states,
+  true
+);
 
 function createFilteredChart(
   canvasId,

@@ -1,10 +1,11 @@
 <!-- SEND DATA TO SCRIPT -->
 
 <script>
-  const states = <%- JSON.stringify(locals.states) %>;
-  const data_general = <%- JSON.stringify(data_general) %>;
-  const data_epics = <%- JSON.stringify(data_epics) %>;
-  const data_types = <%- JSON.stringify(data_types) %>;
+  let states = <%- JSON.stringify(locals.states) %>;
+  let data_general = <%- JSON.stringify(data_general) %>;
+  let data_epics = <%- JSON.stringify(data_epics) %>;
+  let data_types = <%- JSON.stringify(data_types) %>;
+  let data_priorities = <%- JSON.stringify(data_priorities) %>;
 </script>
 
 <section class="dashboard">
@@ -38,5 +39,8 @@
   </div>
   <div class="chart-container">
     <canvas id="types-chart"></canvas>
+  </div>
+  <div class="chart-container">
+    <canvas id="priorities-chart"></canvas>
   </div>
 </section>

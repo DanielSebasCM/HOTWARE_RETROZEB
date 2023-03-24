@@ -8,7 +8,7 @@ const states_colors = [
   { label: "Blocked", color: "rgba(153, 102, 255, 0.6)" },
   { label: "Done", color: "rgba(255, 159, 64, 0.6)" },
 ];
-const states = ["To Do", "En curso", "Pull request", "QA", "Blocked", "Done"];
+// const states = ["To Do", "En curso", "Pull request", "QA", "Blocked", "Done"];
 // const colors = [
 //   "rgba(255, 99, 132, 0.6)",
 //   "rgba(54, 162, 235, 0.6)",
@@ -28,6 +28,7 @@ const renderDashboardMetrics = async (req, res) => {
     return res.status(500).send("Id de retrospectiva no válido");
   }
 
+  // General metrics
   const raw_data_general = await retrospective.getMetricsTotal();
   let data_general = {
     label: "Total",
@@ -42,43 +43,31 @@ const renderDashboardMetrics = async (req, res) => {
     }
   });
 
+  // Epics metrics
   const raw_data_epics = await retrospective.getMetricsEpics();
   const epics = new Set(raw_data_epics.map((d) => d.epic_name));
-
-  let data_epics = [];
-  epics.forEach((epic) => {
-    let data = [];
-    states_colors.forEach((state) => {
-      const state_data = raw_data_epics.find((d) => {
-        return d.state === state.label && d.epic_name === epic;
-      });
-      if (state_data) {
-        data.push(Number(state_data["Story Points"]));
-      } else {
-        data.push(0);
-      }
-    });
-    data_epics.push({ label: epic, data });
+  epics.add(null);
+  const data_epics = parseGroupedIssues(raw_data_epics, "epic_name", epics);
+  // replace null with "Sin epic"
+  data_epics.forEach((epic) => {
+    if (epic.label === null) {
+      epic.label = "Sin epic";
+    }
   });
 
-  const raw_data_types = await retrospective.getMetricsTypes();
-  const types = new Set(raw_data_types.map((d) => d.type));
+  // Types metrics
+  const rawDataTypes = await retrospective.getMetricsTypes();
+  const types = new Set(rawDataTypes.map((d) => d.type));
+  const data_types = parseGroupedIssues(rawDataTypes, "type", types);
 
-  let data_types = [];
-  types.forEach((type) => {
-    let data = [];
-    states_colors.forEach((state) => {
-      const state_data = raw_data_types.find((d) => {
-        return d.state === state.label && d.type === type;
-      });
-      if (state_data) {
-        data.push(Number(state_data["Story Points"]));
-      } else {
-        data.push(0);
-      }
-    });
-    data_types.push({ label: type, data });
-  });
+  // Priorities metrics
+  const rawDataPriorities = await retrospective.getMetricsPriorities();
+  const priorities = ["Lowest", "Low", "Medium", "High", "Highest"];
+  const data_priorities = parseGroupedIssues(
+    rawDataPriorities,
+    "priority",
+    priorities
+  );
 
   res.render("dashboard_metrics", {
     title: "Dashboard Metricas",
@@ -88,9 +77,29 @@ const renderDashboardMetrics = async (req, res) => {
     data_general,
     data_epics,
     data_types,
+    data_priorities,
   });
 };
 
 module.exports = {
   renderDashboardMetrics: renderDashboardMetrics,
 };
+
+function parseGroupedIssues(rawData, filter, filterValues) {
+  const data = [];
+  filterValues.forEach((filterValue) => {
+    let filterData = [];
+    states_colors.forEach((state) => {
+      const state_data = rawData.find((d) => {
+        return d.state === state.label && d[filter] === filterValue;
+      });
+      if (state_data) {
+        filterData.push(Number(state_data["Story Points"]));
+      } else {
+        filterData.push(0);
+      }
+    });
+    data.push({ label: filterValue, data: filterData });
+  });
+  return data;
+}

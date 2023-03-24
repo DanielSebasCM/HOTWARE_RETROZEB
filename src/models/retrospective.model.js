@@ -121,6 +121,15 @@ class Retrospective {
     );
     return res;
   }
+
+  async getMetricsPriorities() {
+    const [res, _] = await db.execute(
+      "SELECT i.state, SUM(i.story_points) as 'Story Points', i.priority FROM retrospective as r JOIN sprint as s ON r.id_sprint = s.id JOIN issues as i ON i.id_sprint = s.id WHERE r.id = ? GROUP BY i.state, i.priority ORDER BY i.priority;",
+      [this.id]
+    );
+    return res;
+  }
+
   async post() {
     const [res, _] = await db.execute(
       `INSERT INTO retrospective (name, start_date, end_date, state, id_team, id_sprint) VALUES (?, ?, ?, ?, ?, ?)`,
