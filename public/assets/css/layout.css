@@ -80,8 +80,8 @@
 }
 
 .users__list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
   gap: 2rem 3rem;
   margin-bottom: var(--card-mb);
 }

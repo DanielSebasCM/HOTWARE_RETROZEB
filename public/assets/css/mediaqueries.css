@@ -18,6 +18,10 @@
   .user__name {
     display: block;
   }
+
+  .users__list {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* TABLET BREAKPOINT */

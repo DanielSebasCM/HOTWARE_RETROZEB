@@ -28,37 +28,45 @@ class Team {
   }
 
   static async getAllWithUsers() {
-    let [teams, _] = await db.execute(
+    let [teams] = await db.execute(
+      `SELECT DISTINCT * FROM team WHERE active = 1`
+    );
+
+    let [members, _] = await db.execute(
       `
-      SELECT tu.id_team, t.name, t.creation_date, u.first_name, u.last_name
-      FROM team as t, user as u, team_users as tu 
-      WHERE t.id = tu.id_team
-      AND u.uid = tu.uid
-      AND t.active = 1
+      SELECT tu.id_team, u.first_name, u.last_name
+      FROM user as u, team_users as tu 
+      WHERE u.uid = tu.uid
       AND u.active = 1
       AND tu.active = 1
+      ORDER BY u.first_name ASC
       `
     );
 
-    const teamNames = new Set(teams.map((team) => team.name));
     const teamsWithMembers = Object.fromEntries(
-      Array.from(teamNames).map((name) => [
-        name,
-        { name: "", id: "", members: [], creation_date: "" },
-      ])
+      Array.from(teams).map((team) => {
+        team.members = [];
+        return [team.id, team];
+      })
     );
 
-    teams.forEach((team) => {
-      teamsWithMembers[team.name].members.push({
+    members.forEach((team) => {
+      teamsWithMembers[team.id_team].members.push({
         first_name: team.first_name,
         last_name: team.last_name,
       });
-      teamsWithMembers[team.name].name = team.name;
-      teamsWithMembers[team.name].id = team.id_team;
-      teamsWithMembers[team.name].creation_date = team.creation_date;
     });
 
     return Object.values(teamsWithMembers).map((team) => new Team(team));
+  }
+
+  static async getUserById(id_team, uid) {
+    // TODO - TEST THIS
+    let [user, _] = await db.execute(
+      `SELECT * FROM team_users WHERE id_team = ? AND uid = ?`,
+      [id_team, uid]
+    );
+    return user[0];
   }
 
   static async addUserToTeam(id_team, uid) {
@@ -66,6 +74,27 @@ class Team {
     let [res, _] = await db.execute(
       `INSERT INTO team_users(id_team, uid)
       VALUES (?, ?)`,
+      [id_team, uid]
+    );
+
+    return res;
+  }
+
+  static async removeUserFromTeam(id_team, uid) {
+    // TODO - TEST THIS
+    let [res, _] = await db.execute(
+      `UPDATE team_users 
+      SET active = 0, end_date = ?
+      WHERE id_team = ? AND uid = ?`,
+      [new Date(), id_team, uid]
+    );
+    return res;
+  }
+
+  static async activateUserInTeam(id_team, uid) {
+    // TODO - TEST THIS
+    let [res, _] = await db.execute(
+      `UPDATE team_users SET active = 1 WHERE id_team = ? AND uid = ?`,
       [id_team, uid]
     );
     return res;

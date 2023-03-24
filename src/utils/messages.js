@@ -6,12 +6,14 @@ const messages = {
       duplicateName: "El nombre del equipo ya existe",
       duplicateTeamMember: "El usuario ya pertenece a este equipo",
       teamDoesNotExist: "El equipo no existe",
+      teamMemberDoesNotExist: "El usuario no pertenece a este equipo",
     },
     success: {
       teamCreated: "Equipo creado correctamente",
       teamDeleted: "Equipo eliminado correctamente",
       teamActivated: "Equipo activado correctamente",
       teamMemberAdded: "Usuario agregado al equipo correctamente",
+      teamMemberRemoved: "Usuario eliminado del equipo correctamente",
     }
   },
 };

@@ -27,7 +27,7 @@
           </h3>
           <span class="line"></span>
           <p class="card__subtitle">
-            Miembros
+            Miembros <span class="meta"> (<%=teams[i].members.length %>) </span>
           </p>
           <div class="users__list">
             <% for(let j=0; j < teams[i].members.length; j++) { %>
@@ -42,7 +42,8 @@
               </div>
               <% } %>
           </div>
-          <a class="button button--delete-alt" href="#">Abandonar equipo</a>
+          <button class="button button--delete-alt remove-team-user-btn" data-uid=12 data-id_team=<%=teams[i].id %>
+            >Abandonar equipo</button>
         </div>
         <% } %>
           <% } %>
@@ -70,7 +71,7 @@
         </h3>
         <span class="line"></span>
         <p class="card__subtitle">
-          Miembros
+          Miembros <span class="meta"> (<%=teams[i].members.length %>) </span>
         </p>
         <div class="users__list">
           <% for(let j=0; j < teams[i].members.length; j++) { %>
@@ -85,7 +86,7 @@
             </div>
             <% } %>
         </div>
-        <button class="button button--primary add-team-user-btn" data-uid=1 data-id_team=<%=teams[i].id %>>
+        <button class="button button--primary add-team-user-btn" data-uid=12 data-id_team=<%=teams[i].id %>>
           Unirme
         </button>
       </div>
