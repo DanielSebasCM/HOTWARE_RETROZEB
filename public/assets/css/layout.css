@@ -76,6 +76,20 @@
 .user__name {
   font-size: 1.4rem;
   display: none;
+  display: inline-block;
+}
+
+.users__list {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 2rem 3rem;
+  margin-bottom: var(--card-mb);
+}
+
+.user__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 /* -------- SIDEBAR -------- */
