@@ -2,6 +2,7 @@
   const sidebar = document.getElementById("sidebar");
   const togglerBtn = document.getElementById("sidebar-toggler");
 
+  if (!sidebar || !togglerBtn) return;
   togglerBtn.addEventListener("click", () => {
     sidebar.classList.toggle("show");
     sidebar.classList.add("transition");
@@ -22,6 +23,28 @@
         });
         button.classList.add("toggle-button--active");
       });
+    });
+  });
+})();
+
+(function selectactiveTeams() {
+  const teamOptions = document.getElementById("team-options");
+  if(!teamOptions) return;
+  const teamList = teamOptions.querySelectorAll("option");
+
+  teamOptions.addEventListener("change", (event) => {
+    teamList.forEach((team) => {
+      if (team.value == event.target.value) {
+        return fetch(`http://localhost:3000/dashboard?team=${team.value}`, {
+          method: "GET",
+        })
+          .then(() => {
+            location.reload();
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
     });
   });
 })();

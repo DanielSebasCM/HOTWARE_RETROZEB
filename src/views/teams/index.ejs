@@ -1,0 +1,99 @@
+<!-- MAIN -->
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">Equipos <span class="meta"> (<%=teams.length %>)</span></h1>
+      <p class="description">
+        Visualiza tu equipo o selecciona uno al cual unirte
+      </p>
+    </div>
+    <div class="banner__section">
+      <a class="button button--primary" href="#">Crear Equipo</a>
+    </div>
+  </div>
+  <span class="line"></span>
+
+  <!-- USER TEAMS -->
+  <h2 class="subtitle">Mis Equipos <span class="meta">
+      (<%=teams.filter(team=> team.isMember).length %>)
+    </span>
+  </h2>
+  <% if(teams && teams.length> 0) { %>
+    <div class="cards-container">
+      <% for(let i=0; i < teams.length; i++) { %>
+        <% if(teams[i].isMember) { %>
+          <div class="card card--team">
+            <h3 class="card__title">
+              <%= teams[i].name %>
+            </h3>
+            <span class="line"></span>
+            <p class="card__subtitle">
+              Miembros <span class="meta"> (<%=teams[i].members.length %>) </span>
+            </p>
+            <div class="users__list">
+              <% for(let j=0; j < teams[i].members.length; j++) { %>
+                <div class="user__item">
+                  <span class="user__avatar">
+                    <%= teams[i].members[j].first_name[0] %>
+                  </span>
+                  <span class="user__name">
+                    <%= teams[i].members[j].first_name%>
+                      <%= teams[i].members[j].last_name%>
+                  </span>
+                </div>
+                <% } %>
+            </div>
+            <button class="button button--delete-alt remove-team-user-btn" data-uid=12 data-id_team=<%=teams[i].id %>
+              >Abandonar equipo</button>
+          </div>
+          <% } %>
+            <% } %>
+              <% } %>
+</section>
+<span class="line"></span>
+
+<!-- ALL TEAMS -->
+<div class="banner banner--nomargin">
+  <h2 class="subtitle">
+    Todos los equipos
+    <span class="meta"> (<%=teams.filter(team=> !team.isMember).length %>) </span>
+  </h2>
+  <div class="toggle-buttons-container toggle-buttons-container--primary">
+    <button class="toggle-button toggle-button--active">Activo</button>
+    <button class="toggle-button">Inactivo</button>
+  </div>
+</div>
+<!-- TEAMS LIST -->
+<% if(teams && teams.length> 0) { %>
+  <div class="cards-container">
+    <% for(let i=0; i < teams.length; i++) { %>
+      <% if(!teams[i].isMember) { %>
+        <div class="card card--team">
+          <h3 class="card__title">
+            <%= teams[i].name %>
+          </h3>
+          <span class="line"></span>
+          <p class="card__subtitle">
+            Miembros <span class="meta"> (<%=teams[i].members.length %>) </span>
+          </p>
+          <div class="users__list">
+            <% for(let j=0; j < teams[i].members.length; j++) { %>
+              <div class="user__item">
+                <span class="user__avatar">
+                  <%= teams[i].members[j].first_name[0] %>
+                </span>
+                <span class="user__name">
+                  <%= teams[i].members[j].first_name%>
+                    <%= teams[i].members[j].last_name%>
+                </span>
+              </div>
+              <% } %>
+          </div>
+          <button class="button button--primary add-team-user-btn" data-uid=12 data-id_team=<%=teams[i].id %>>
+            Unirme
+          </button>
+        </div>
+        <% } %>
+          <% } %>
+            <% } %>
+              </section>

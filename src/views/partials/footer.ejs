@@ -1,19 +1,13 @@
-<!-- SCRIPTS -->
-<script
-  src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
-  crossorigin="anonymous"
-></script>
-
 <!-- CHARTJS -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script src="./assets/js/app.js"></script>
 <script type="module" src="./assets/js/data.js"></script>
+<script src="./assets/js/team.js"></script>
 
 <% if (locals.user) { %>
-<!-- FOOTER -->
-<footer class="footer">
-  Designed by Hotware | <%= new Date().getFullYear() %> © Zebrands
-</footer>
-<% } %>
+  <!-- FOOTER -->
+  <footer class="footer">
+    Designed by Hotware | <%= new Date().getFullYear() %> © Zebrands
+  </footer>
+  <% } %>
