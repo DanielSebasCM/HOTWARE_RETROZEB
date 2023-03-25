@@ -21,18 +21,19 @@ const getAllWithUsers = async (req, res) => {
 
 const addUserToTeam = async (req, res) => {
   try {
-    // await setLocalTeams(req, res);
     const { id_team, uid } = req.body;
 
     // Verify if user is deactivated in the team
+    let userAlreayExists = false;
     const userData = await Team.getUserById(id_team, uid);
-    if (userData && userData.active == 0) {
-      await Team.activateUserInTeam(id_team, uid);
+    userData.forEach((user) => {
+      if (user.active == 1) userAlreayExists = true;
+    });
+
+    if (userAlreayExists)
       return res
-        .status(200)
-        .json({ message: messages.team.success.teamMemberAdded });
-      return;
-    }
+        .status(409)
+        .json({ message: messages.team.error.duplicateTeamMember });
 
     // Verify that the team exists
     Team.getById(id_team).catch(() => {
@@ -48,7 +49,7 @@ const addUserToTeam = async (req, res) => {
     //     .json({ message: messages.team.user.userDoesNotExist });
     // });
 
-    const data = await Team.addUserToTeam(id_team, uid);
+    await Team.addUserToTeam(id_team, uid);
 
     res.status(200).json({ message: messages.team.success.teamMemberAdded });
   } catch (err) {
@@ -71,12 +72,16 @@ const addUserToTeam = async (req, res) => {
 
 const removeUserFromTeam = async (req, res) => {
   try {
-    // await setLocalTeams(req, res);
     const { id_team, uid } = req.body;
 
     // Verify if user exists in the team
+    let userInTeam = false;
     const userData = await Team.getUserById(id_team, uid);
-    if (!userData || userData.active == 0) {
+    userData.forEach((user) => {
+      if (user.active == 1) userInTeam = true;
+    });
+
+    if (!userData || !userInTeam) {
       return res
         .status(404)
         .json({ message: messages.team.error.teamMemberDoesNotExist });
