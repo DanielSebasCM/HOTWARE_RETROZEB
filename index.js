@@ -24,32 +24,6 @@ app.use(expressLayouts);
 // ROUTER
 initRoutes(app);
 
-// -------------------------- TEST --------------------------
-app.get("/", (_, res) => {
-  res.redirect("/login");
-});
-
-app.get("/login", (_, res) => {
-  app.locals.teams = [];
-  app.locals.currentUser = null;
-  res.render("index", { title: "Login" });
-});
-
-const teamController = require("./src/controllers/team.controller");
-app.get("/dashboard", teamController.setLocalTeams, async (req, res) => {
-
-  if (req.app.locals.activeTeams.length == 0)
-    await teamController.setLocalTeams(req, res);
-
-  if (req.query.team)
-    req.app.locals.selectedTeam = req.app.locals.activeTeams.find(
-      (team) => team.id == req.query.team
-    );
-
-  res.render("dashboard", { title: "Dashboard" });
-});
-// -------------------------- FINISH TEST --------------------------
-
 // 404
 app.use((_, res) => {
   res.locals.title = "Error 404";
