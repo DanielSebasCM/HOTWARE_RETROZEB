@@ -49,12 +49,17 @@
 }
 
 @media screen and (min-width: 1200px) {
-  .charts-container,
+  .charts-container {
+    display: grid;
+    grid-template-columns: repeat(1, fr);
+    max-width: 98%;
+  }
   .cards-container {
     display: grid;
     grid-template-columns: repeat(2, 50%);
     max-width: 98%;
   }
+
   .chart-container,
   .card {
     max-width: 100%;
