@@ -5,11 +5,10 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const app = express();
 const path = require("path");
+const PORT = process.env.PORT || 3000;
 const expressLayouts = require("express-ejs-layouts");
-
-const dashboardController = require("./src/controllers/dashboard.controller");
-
-let PORT = process.env.PORT || 3000;
+const initRoutes = require("./src/routes/index.routes");
+const { routes } = require("./src/utils/utils");
 
 // SET VIEW ENGINE
 app.set("view engine", "ejs");
@@ -22,28 +21,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(expressLayouts);
 
-// ROUTES
-app.get("/", (_, res) => {
-  res.redirect("/login");
-});
-
-app.get("/login", (_, res) => {
-  res.render("index", { title: "Login" });
-});
-
-app.get("/dashboard", (_, res) => {
-  res.render("dashboard", { title: "Dashboard", user: "Hotware" });
-});
-
-app.get("/dashboard_metrics/:id", dashboardController.renderDashboardMetrics);
-
-// SERVER
-app.listen(PORT, () => {
-  console.log(`Server is running on port http://localhost:${PORT}`);
-});
+// ROUTER
+initRoutes(app);
 
 // 404
 app.use((_, res) => {
   res.locals.title = "Error 404";
   res.status(404).render("404/index");
+});
+
+// LOCALS
+app.locals.activeTeams = [];
+app.locals.selectedTeam;
+app.locals.routes = routes;
+app.locals.currentUser;
+
+// SERVER
+app.listen(PORT, () => {
+  console.log(`Server is running on port http://localhost:${PORT}`);
 });

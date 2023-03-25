@@ -18,6 +18,10 @@
   .user__name {
     display: block;
   }
+
+  .users__list {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* TABLET BREAKPOINT */
@@ -38,7 +42,8 @@
 
 /* DESKTOP BREAKPOIN */
 @media screen and (min-width: 992px) {
-  .chart-container {
+  .chart-container,
+  .card {
     max-width: 80%;
   }
 }
@@ -46,16 +51,24 @@
 @media screen and (min-width: 1200px) {
   .charts-container {
     display: grid;
+    grid-template-columns: repeat(1, fr);
+    max-width: 98%;
+  }
+  .cards-container {
+    display: grid;
     grid-template-columns: repeat(2, 50%);
     max-width: 98%;
   }
-  .chart-container {
+
+  .chart-container,
+  .card {
     max-width: 100%;
   }
 }
 
 @media screen and (min-width: 1400px) {
-  .charts-container {
+  .charts-container,
+  .cards-container {
     grid-template-columns: repeat(3, 33%);
   }
 }

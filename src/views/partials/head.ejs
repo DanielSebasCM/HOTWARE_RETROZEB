@@ -22,15 +22,15 @@
     <link rel="stylesheet" href="/assets/css/components.css" />
 
     <!-- USER CSS -->
-    <% if(locals.user) { %>
-    <link rel="stylesheet" href="/assets/css/style.css" />
-    <link rel="stylesheet" href="/assets/css/layout.css" />
-    <link rel="stylesheet" href="/assets/css/mediaqueries.css" />
+    <% if(locals.currentUser) { %>
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="./assets/css/layout.css" />
+    <link rel="stylesheet" href="./assets/css/mediaqueries.css" />
     <% } %>
 
     <!-- LOGIN CSS -->
-    <% if(!locals.user) { %>
-    <link rel="stylesheet" href="/assets/css/login.css" />
+    <% if(!locals.currentUser) { %>
+    <link rel="stylesheet" href="./assets/css/login.css" />
     <% } %>
 
     <!-- FONTS -->

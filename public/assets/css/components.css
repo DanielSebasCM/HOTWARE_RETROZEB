@@ -8,7 +8,7 @@
 
 .subtitle {
   font-size: 1.8rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--color-font-primary);
   margin-bottom: var(--component-mb);
   margin-top: 3rem;
@@ -21,15 +21,113 @@
   margin-bottom: var(--component-mb);
 }
 
-/* CARDS */
-.card-container {
+.line {
   width: 100%;
-  height: 100%;
+  height: 1px;
+  display: block;
+  background-color: var(--color-line);
+  margin-bottom: var(--container-mb);
+}
+
+.line--sm {
+  width: 10%;
+  height: 2px;
+  display: block;
+  background-color: var(--color-border-inactive);
+  margin-bottom: var(--component-mb);
+}
+
+.meta {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--color-font-secondary);
+  margin-bottom: var(--component-mb);
+}
+
+/* CONTAINERS */
+.cards-container,
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: var(--container-mb);
+  padding-top: var(--container-pt);
+}
+
+/* CARDS */
+.card {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
   background-color: var(--color-white);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
   padding: 2rem;
   margin-bottom: var(--card-mb);
+}
+
+.card .line {
+  margin-bottom: var(--component-mb);
+}
+
+.card__title {
+  font-size: 2.4rem;
+  font-weight: 600;
+  color: var(--color-font-primary);
+  margin-bottom: var(--component-mb);
+}
+
+.card__subtitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--color-font-primary);
+  margin-bottom: var(--component-mb);
+}
+
+.card--team .button {
+  margin: 0 auto;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.card--team .user__avatar {
+  width: 3.2rem;
+  height: 3.2rem;
+}
+
+.card--team .user__name {
+  font-size: 1.3rem;
+}
+
+/* CHARTS */
+.chart-container {
+  position: relative;
+  height: 100%;
+  min-height: 30rem;
+  width: 100%;
+  max-width: 40rem;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+}
+
+.banner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: var(--banner-mb);
+}
+
+.banner--nomargin *,
+.banner--nomargin div {
+  margin: 0 !important;
 }
 
 /* ICONS */
@@ -120,12 +218,16 @@
 
 /* BUTTON */
 .button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: var(--button-width);
   height: var(--input-height);
   margin-right: var(--component-mr);
   margin-bottom: var(--component-mb);
   font-weight: 600;
   font-family: "Poppins", sans-serif;
+  font-size: 1.4rem;
   border: 1px solid;
   border-radius: var(--border-radius);
   cursor: pointer;
@@ -169,6 +271,17 @@
 .button--delete:hover {
   background-color: var(--color-bg-alert);
   color: var(--color-font-alert);
+}
+
+.button--delete-alt {
+  background-color: var(--color-bg-alert);
+  color: var(--color-font-alert);
+}
+
+.button--delete-alt:hover {
+  background-color: var(--color-font-alert);
+  color: var(--color-white);
+  border-color: var(--color-font-alert);
 }
 
 .button--discard {
