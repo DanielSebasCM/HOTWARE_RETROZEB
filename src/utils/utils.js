@@ -3,6 +3,7 @@ const routes = {
   login: "/login",
   dashboard: "/dashboard",
   teams: "/equipos",
+  answers: "/respuestas",
 };
 
 module.exports = { routes };

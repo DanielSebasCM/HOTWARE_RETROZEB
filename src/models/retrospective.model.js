@@ -95,6 +95,16 @@ class Retrospective {
     if (!Number.isInteger(retrospective.id_sprint))
       throw new Error("Ingresa un id de sprint");
   }
+
+  async getQuestions() {
+    const [questions, _] = await db.execute(
+      "SELECT q.* FROM question q, retrospective r, retrospective_question rq WHERE r.id = ? AND r.id = rq.id_retrospective AND rq.id_question = q.id",
+      [this.id]
+    );
+
+    return questions;
+  }
+
   async post() {
     const [res, _] = await db.execute(
       `INSERT INTO retrospective (name, start_date, end_date, state, id_team, id_sprint) VALUES (?, ?, ?, ?, ?, ?)`,
