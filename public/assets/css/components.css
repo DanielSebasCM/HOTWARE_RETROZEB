@@ -216,6 +216,15 @@
   border-color: var(--color-font-alert);
 }
 
+.pill--small {
+  height: 1.2rem;
+  max-width: 2rem;
+  min-width: 2rem;
+  border-radius: 0.3rem;
+  margin-bottom: 0;
+  background-color: var(--color-font-active);
+  border-color: var(--color-font-active);
+}
 /* BUTTON */
 .button {
   display: flex;
