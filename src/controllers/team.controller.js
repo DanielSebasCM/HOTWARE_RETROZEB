@@ -13,9 +13,9 @@ const getAllWithUsers = async (req, res) => {
       err.code == sqlErrorCodes.unknownDB ||
       !err.code
     )
-      return res.status(500).render("500/index");
+      return res.status(500).render("errors/500");
 
-    return res.status(500).render("500/index");
+    return res.status(500).render("errors/500");
   }
 };
 
@@ -64,9 +64,9 @@ const addUserToTeam = async (req, res) => {
       err.code == sqlErrorCodes.unknownDB ||
       !err.code
     )
-      return res.status(500).render("500/index");
+      return res.status(500).render("errors/500");
 
-    return res.status(500).render("500/index");
+    return res.status(500).render("errors/500");
   }
 };
 
@@ -116,9 +116,9 @@ const removeUserFromTeam = async (req, res) => {
       err.code == sqlErrorCodes.unknownDB ||
       !err.code
     )
-      return res.status(500).render("500/index");
+      return res.status(500).render("errors/500");
 
-    return res.status(500).render("500/index");
+    return res.status(500).render("errors/500");
   }
 };
 
@@ -141,9 +141,9 @@ const setLocalTeams = async (req, res, next) => {
       err.code == sqlErrorCodes.unknownDB ||
       !err.code
     )
-      return res.status(500).render("500/index");
+      return res.status(500).render("errors/500");
 
-    return res.status(500).render("500/index");
+    return res.status(500).render("errors/500");
   }
 };
 

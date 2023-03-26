@@ -27,7 +27,7 @@ initRoutes(app);
 // 404
 app.use((_, res) => {
   res.locals.title = "Error 404";
-  res.status(404).render("404/index");
+  res.status(404).render("errors/404");
 });
 
 // LOCALS

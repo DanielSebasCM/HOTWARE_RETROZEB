@@ -29,7 +29,7 @@
 
 (function selectactiveTeams() {
   const teamOptions = document.getElementById("team-options");
-  if(!teamOptions) return;
+  if (!teamOptions) return;
   const teamList = teamOptions.querySelectorAll("option");
 
   teamOptions.addEventListener("change", (event) => {
@@ -45,6 +45,15 @@
             console.log(err);
           });
       }
+    });
+  });
+})();
+
+(function closeNotification() {
+  const closeBtn = document.querySelectorAll(".notification__close");
+  closeBtn.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      btn.parentElement.classList.add("hide");
     });
   });
 })();
