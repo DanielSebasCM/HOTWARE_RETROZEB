@@ -9,6 +9,7 @@ const PORT = process.env.PORT || 3000;
 const expressLayouts = require("express-ejs-layouts");
 const initRoutes = require("./src/routes/index.routes");
 const { routes } = require("./src/utils/utils");
+const errorHandler = require("./src/middlewares/errorHandler");
 
 // SET VIEW ENGINE
 app.set("view engine", "ejs");
@@ -29,6 +30,9 @@ app.use((_, res) => {
   res.locals.title = "Error 404";
   res.status(404).render("404/index");
 });
+
+// ERROR HANDLER
+app.use(errorHandler);
 
 // LOCALS
 app.locals.activeTeams = [];
