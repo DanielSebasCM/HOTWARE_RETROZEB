@@ -1,15 +1,33 @@
+const states = [
+  { label: "To Do", color: "rgba(255, 99, 132, 0.6)" },
+  { label: "En curso", color: "rgba(54, 162, 235, 0.6)" },
+  { label: "Pull request", color: "rgba(255, 206, 86, 0.6)" },
+  { label: "QA", color: "rgba(75, 192, 192, 0.6)" },
+  { label: "Blocked", color: "rgba(153, 102, 255, 0.6)" },
+  { label: "Done", color: "rgba(255, 159, 64, 0.6)" },
+];
+
+const data = await fetch("/retrospectiva/1/issues");
+const issues = await data.json();
+
 let groupedByState = {};
 states.forEach((state) => {
   let state_data = issues.filter((d) => d.state === state.label);
   groupedByState[state.label] = state_data;
 });
-console.log(groupedByState);
 
-const label_select = document.getElementById("label-select");
-let selected_label = label_select.value;
+const label_options = document.getElementById("label-options");
+let selected_label = label_options.value;
 
-label_select.onchange = function () {
+label_options.onchange = function () {
   selected_label = this.value;
+  updateCharts();
+};
+
+const team_options = document.getElementById("team-options");
+let selected_team = team_options.value;
+team_options.onchange = function () {
+  selected_team = this.value;
   updateCharts();
 };
 
@@ -108,7 +126,7 @@ function createFilteredChart(
             display: true,
             text: "Story points",
           },
-          // suggestedMax: max_data,
+          // max: max_data,
         },
         [mainAxis]: {
           stacked: true,
@@ -138,25 +156,28 @@ function updateCharts() {
 
 function updateFilteredChart(canvasId, labels_data) {
   const chart = Chart.getChart(canvasId);
-  chart.data.datasets.forEach((dataset, index) => {
-    dataset.data = labels_data.map((row) => row.data[index]);
-  });
-  // update tooltip percentage
+
+  const mainAxis = chart.options.indexAxis === "y" ? "x" : "y";
+  const secundaryAxis = chart.options.indexAxis === "y" ? "x" : "y";
+
   const totals = {};
   labels_data.forEach((row) => {
     totals[row.label] = row.data.reduce((a, b) => a + b, 0);
   });
+
+  chart.data.datasets.forEach((dataset, index) => {
+    dataset.data = labels_data.map((row) => row.data[index]);
+  });
+
   chart.options.plugins.tooltip.callbacks.afterLabel = function (context) {
-    let axis = context.chart.options.indexAxis === "y" ? "x" : "y";
     return (
-      context.parsed[axis].toFixed(2) +
+      context.parsed[mainAxis].toFixed(2) +
       " story points" +
       "\n" +
-      ((context.parsed[axis] / totals[context.label]) * 100).toFixed(2) +
+      ((context.parsed[mainAxis] / totals[context.label]) * 100).toFixed(2) +
       "%"
     );
   };
-
   chart.update();
 }
 

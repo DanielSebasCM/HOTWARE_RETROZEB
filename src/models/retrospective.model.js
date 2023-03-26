@@ -97,7 +97,6 @@ class Retrospective {
     if (!Number.isInteger(retrospective.id_sprint))
       throw new Error("Ingresa un id de sprint");
   }
-
   async getIssues() {
     const [issues, _] = await db.execute(
       "SELECT i.* FROM retrospective AS r JOIN sprint AS s ON r.id = 1 AND s.id = r.id_sprint JOIN issues AS i ON i.id_sprint = s.id;",
@@ -114,37 +113,12 @@ class Retrospective {
 
     return issues.map((issue) => new Issue(issue));
   }
-
-  async getMetricsTotal() {
-    const [res, _] = await db.execute(
-      "SELECT i.state, SUM(i.story_points) as 'Story Points' FROM retrospective as r JOIN sprint as s ON r.id_sprint = s.id JOIN issues as i ON i.id_sprint = s.id WHERE r.id = ? GROUP BY i.state",
+  async getLabels() {
+    const [labels, _] = await db.execute(
+      `select distinct label from issues_labels as l, issues as i, sprint as s, retrospective as r where r.id = ? and r.id_sprint = s.id and s.id = i.id_sprint and i.id = l.id_issue`,
       [this.id]
     );
-    return res;
-  }
-
-  async getMetricsEpics() {
-    const [res, _] = await db.execute(
-      "SELECT i.state, SUM(i.story_points) as 'Story Points', i.epic_name FROM retrospective as r JOIN sprint as s ON r.id_sprint = s.id JOIN issues as i ON i.id_sprint = s.id WHERE r.id = ? GROUP BY i.state, i.epic_name ORDER BY i.epic_name;",
-      [this.id]
-    );
-    return res;
-  }
-
-  async getMetricsTypes() {
-    const [res, _] = await db.execute(
-      "SELECT i.state, SUM(i.story_points) as 'Story Points', i.type FROM retrospective as r JOIN sprint as s ON r.id_sprint = s.id JOIN issues as i ON i.id_sprint = s.id WHERE r.id = ? GROUP BY i.state, i.type ORDER BY i.type;",
-      [this.id]
-    );
-    return res;
-  }
-
-  async getMetricsPriorities() {
-    const [res, _] = await db.execute(
-      "SELECT i.state, SUM(i.story_points) as 'Story Points', i.priority FROM retrospective as r JOIN sprint as s ON r.id_sprint = s.id JOIN issues as i ON i.id_sprint = s.id WHERE r.id = ? GROUP BY i.state, i.priority ORDER BY i.priority;",
-      [this.id]
-    );
-    return res;
+    return labels.map((label) => label.label);
   }
 
   async post() {

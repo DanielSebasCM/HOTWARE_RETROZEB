@@ -1,8 +1,7 @@
 <!-- SEND DATA TO SCRIPT -->
 
 <script>
-  let states = <%- JSON.stringify(locals.states) %>;
-  let issues = <%- JSON.stringify(locals.issues) %>;
+  const currentUser = <%= JSON.stringify(locals.currentUser) %>;
 </script>
 
 <section class="dashboard">
@@ -25,7 +24,7 @@
       <% } %>
       <p class="subtitle" style="text-align: right">Labels</p>
       <div class="select-container">
-        <select class="select" id="label-select">
+        <select class="select" id="label-options">
           <option value="Todos">Todos</option>
           <option value="Sin Label">Sin Label</option>
           <% for (let i = 0; i < labels.length; i++) { %>
