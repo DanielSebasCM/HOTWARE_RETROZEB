@@ -1,5 +1,5 @@
 const db = require("../utils/db");
-const ValidationError = require("../errors/validationError");
+const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
   require("../utils/constants").enums.retrospectiveStates;
