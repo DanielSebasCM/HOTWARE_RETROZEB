@@ -54,6 +54,13 @@
   padding-top: var(--container-pt);
 }
 
+.cards-container--full {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: var(--container-mb);
+  padding-top: var(--container-pt);
+}
 /* CARDS */
 .card {
   width: 100%;
@@ -73,11 +80,24 @@
   margin-bottom: var(--component-mb);
 }
 
+.card__header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
 .card__title {
   font-size: 2.4rem;
   font-weight: 600;
+  justify-self: flex-start;
   color: var(--color-font-primary);
   margin-bottom: var(--component-mb);
+}
+
+.card__extra {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .card__subtitle {
@@ -98,7 +118,7 @@
   height: 3.2rem;
 }
 
-.card--team .user__name{
+.card--team .user__name {
   font-size: 1.3rem;
 }
 
@@ -199,6 +219,7 @@
   border: 1px solid;
   margin-right: var(--component-mr);
   margin-bottom: var(--component-mb);
+  text-align: center;
 }
 
 .pill--ontime {
@@ -209,6 +230,7 @@
 .pill--late {
   background-color: var(--color-bg-danger);
   border-color: var(--color-font-danger);
+  color: var(--color-font-alert);
 }
 
 .pill--alert {

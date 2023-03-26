@@ -98,11 +98,28 @@ class Retrospective {
 
   async getQuestions() {
     const [questions, _] = await db.execute(
-      "SELECT q.* FROM question q, retrospective r, retrospective_question rq WHERE r.id = ? AND r.id = rq.id_retrospective AND rq.id_question = q.id",
+      "SELECT q.*, rq.required FROM question q, retrospective r, retrospective_question rq WHERE r.id = ? AND r.id = rq.id_retrospective AND rq.id_question = q.id",
       [this.id]
     );
 
     return questions;
+  }
+
+  async getAnswers(question) {
+    if (question.type === "SELECTION") {
+      console.log(this.id, question.id);
+      const [answers, _] = await db.execute(
+        "SELECT a.*, o.description FROM answer a, `option` o WHERE a.id_retrospective = ? AND a.id_question = ? AND a.id = o.id_question",
+        [this.id, question.id]
+      );
+      return answers;
+    }
+    const [answers, _] = await db.execute(
+      "SELECT * FROM answer WHERE id_retrospective = ? AND id_question = ?",
+      [this.id, question.id]
+    );
+
+    return answers;
   }
 
   async post() {
