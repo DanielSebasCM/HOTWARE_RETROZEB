@@ -13,25 +13,28 @@ const getAllWithUsers = async (req, res) => {
       err.code == sqlErrorCodes.unknownDB ||
       !err.code
     )
-      return res.status(500).render("500/index");
+      return res.status(500).render("errors/500");
 
-    return res.status(500).render("500/index");
+    return res.status(500).render("errors/500");
   }
 };
 
 const addUserToTeam = async (req, res) => {
   try {
-    // await setLocalTeams(req, res);
     const { id_team, uid } = req.body;
 
     // Verify if user is deactivated in the team
+    let userAlreayExists = false;
     const userData = await Team.getUserById(id_team, uid);
-    if (userData && userData.active == 0) {
-      await Team.activateUserInTeam(id_team, uid);
+    userData.forEach((user) => {
+      if (user.active == 1) userAlreayExists = true;
+    });
+
+    if (userAlreayExists) {
+      req.session.errorMessage = messages.team.error.duplicateTeamMember;
       return res
-        .status(200)
-        .json({ message: messages.team.success.teamMemberAdded });
-      return;
+        .status(409)
+        .json({ message: messages.team.error.duplicateTeamMember });
     }
 
     // Verify that the team exists
@@ -48,54 +51,70 @@ const addUserToTeam = async (req, res) => {
     //     .json({ message: messages.team.user.userDoesNotExist });
     // });
 
-    const data = await Team.addUserToTeam(id_team, uid);
+    await Team.addUserToTeam(id_team, uid);
+    req.session.successMessage = messages.team.success.teamMemberAdded;
 
     res.status(200).json({ message: messages.team.success.teamMemberAdded });
   } catch (err) {
     console.error(err);
-    if (err.code == sqlErrorCodes.duplicateEntry)
+
+    if (err.code == sqlErrorCodes.duplicateEntry) {
+      req.session.errorMessage = messages.team.error.duplicateTeamMember;
       return res
         .status(409)
         .json({ message: messages.team.error.duplicateTeamMember });
+    }
 
     if (
       err.code == sqlErrorCodes.errorConnecting ||
       err.code == sqlErrorCodes.unknownDB ||
       !err.code
     )
-      return res.status(500).render("500/index");
+      return res.status(500).render("errors/500");
 
-    return res.status(500).render("500/index");
+    return res.status(500).render("errors/500");
   }
 };
 
 const removeUserFromTeam = async (req, res) => {
   try {
-    // await setLocalTeams(req, res);
     const { id_team, uid } = req.body;
 
+    // Verify that the team exists
+    try {
+      await Team.getById(id_team);
+    } catch (err) {
+      console.log(err.message);
+      req.session.errorMessage = messages.team.error.teamDoesNotExist;
+      return res
+        .status(404)
+        .json({ message: messages.team.error.teamDoesNotExist });
+    }
+
+    // Verify that the user exists
+    // try {
+    //   await User.getById(uid);
+    // } catch (err) {
+    //   console.log(err.message);
+    //   req.session.errorMessage = messages.team.user.userDoesNotExist;
+    //   return res
+    //     .status(404)
+    //     .json({ message: messages.team.user.userDoesNotExist });
+    // }
+
     // Verify if user exists in the team
+    let userInTeam = false;
     const userData = await Team.getUserById(id_team, uid);
-    if (!userData || userData.active == 0) {
+    userData.forEach((user) => {
+      if (user.active == 1) userInTeam = true;
+    });
+
+    if (!userData || !userInTeam) {
+      req.session.errorMessage = messages.team.error.teamMemberDoesNotExist;
       return res
         .status(404)
         .json({ message: messages.team.error.teamMemberDoesNotExist });
     }
-
-    // Verify that the team exists
-    Team.getById(id_team).catch(() => {
-      return res
-
-        .status(404)
-        .json({ message: messages.team.error.teamDoesNotExist });
-    });
-
-    // Verify that the user exists
-    // User.getById(uid).catch(() => {
-    //   return res
-    //     .status(404)
-    //     .json({ message: messages.team.user.userDoesNotExist });
-    // });
 
     await Team.removeUserFromTeam(id_team, uid);
     res.status(200).json({ message: messages.team.success.teamMemberRemoved });
@@ -111,24 +130,18 @@ const removeUserFromTeam = async (req, res) => {
       err.code == sqlErrorCodes.unknownDB ||
       !err.code
     )
-      return res.status(500).render("500/index");
+      return res.status(500).render("errors/500");
 
-    return res.status(500).render("500/index");
+    return res.status(500).render("errors/500");
   }
 };
 
 // UTILS
-const setLocalTeams = async (req, res, next) => {
+const setLocalTeams = async (req, res) => {
   try {
-    req.app.locals.currentUser = {
-      first_name: "Mariane",
-      last_name: "Boyer",
-      id: 12,
-    };
     const teams = await Team.getAllActiveByUser(req.app.locals.currentUser.id);
     req.app.locals.activeTeams = teams;
     if (!req.app.locals.selectedTeam) req.app.locals.selectedTeam = teams[0];
-    next();
   } catch (err) {
     console.log(err);
     if (
@@ -136,9 +149,9 @@ const setLocalTeams = async (req, res, next) => {
       err.code == sqlErrorCodes.unknownDB ||
       !err.code
     )
-      return res.status(500).render("500/index");
+      return res.status(500).render("errors/500");
 
-    return res.status(500).render("500/index");
+    return res.status(500).render("errors/500");
   }
 };
 

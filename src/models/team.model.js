@@ -45,7 +45,7 @@ class Team {
     let [members, _] = await db.execute(
       `
       SELECT tu.id_team, u.uid, u.first_name, u.last_name
-      FROM user as u, team_users as tu 
+      FROM user as u, team_users as tu  
       WHERE u.uid = tu.uid
       AND u.active = 1
       AND tu.active = 1
@@ -78,7 +78,7 @@ class Team {
       `SELECT * FROM team_users WHERE id_team = ? AND uid = ?`,
       [id_team, uid]
     );
-    return user[0];
+    return user;
   }
 
   static async addUserToTeam(id_team, uid) {
@@ -103,17 +103,10 @@ class Team {
     return res;
   }
 
-  static async activateUserInTeam(id_team, uid) {
-    // TODO - TEST THIS
-    let [res, _] = await db.execute(
-      `UPDATE team_users SET active = 1 WHERE id_team = ? AND uid = ?`,
-      [id_team, uid]
-    );
-    return res;
-  }
-
   static verify(team) {
     // ALREADY TESTED
+    if(!team) throw new Error("El equipo no puede estar vacío")
+
     // name is not empty
     if (team.name?.length == 0 || team.name == null || !team.name)
       throw new Error("El nombre del equipo no puede estar vacío");

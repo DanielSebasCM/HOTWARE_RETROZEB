@@ -3,6 +3,7 @@ const routes = {
   login: "/login",
   retrospective: "/retrospectiva",
   teams: "/equipos",
+  locals: "/locals",
 };
 
 module.exports = { routes };
