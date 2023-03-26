@@ -105,6 +105,8 @@ class Team {
 
   static verify(team) {
     // ALREADY TESTED
+    if(!team) throw new Error("El equipo no puede estar vacío")
+
     // name is not empty
     if (team.name?.length == 0 || team.name == null || !team.name)
       throw new Error("El nombre del equipo no puede estar vacío");

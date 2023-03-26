@@ -4,9 +4,6 @@ const { routes } = require("../utils/utils");
 
 // GET
 router.get("/", async (req, res) => {
-  // if (req.app.locals.activeTeams.length == 0)
-  //   await teamController.setLocalTeams(req, res);
-
   if (req.query.team)
     req.app.locals.selectedTeam = req.app.locals.activeTeams.find(
       (team) => team.id == req.query.team
@@ -17,8 +14,14 @@ router.get("/", async (req, res) => {
 
 // LOGIN
 router.get(`${routes.login}`, (req, res) => {
+  // LOCALS
   req.app.locals.teams = [];
   req.app.locals.currentUser = null;
+
+  // SESSION
+  req.session.successMessage = "";
+  req.session.errorMessage = "";
+
   res.render("index", { title: "Login" });
 });
 
