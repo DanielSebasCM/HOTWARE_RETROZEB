@@ -52,8 +52,21 @@
 (function closeNotification() {
   const closeBtn = document.querySelectorAll(".notification__close");
   closeBtn.forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
       btn.parentElement.classList.add("hide");
+
+      const type = btn.dataset.type;
+      
+      try {
+        return await fetch(`http://localhost:3000/locals/mensajes/${type}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
     });
   });
 })();
