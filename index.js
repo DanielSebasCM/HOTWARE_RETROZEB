@@ -10,6 +10,7 @@ const session = require("express-session");
 const expressLayouts = require("express-ejs-layouts");
 const initRoutes = require("./src/routes/index.routes");
 const { routes } = require("./src/utils/utils");
+const errorHandler = require("./src/middlewares/errorHandler");
 
 // SET VIEW ENGINE
 app.set("view engine", "ejs");
@@ -42,6 +43,9 @@ app.use((_, res) => {
   res.locals.title = "Error 404";
   res.status(404).render("errors/404");
 });
+
+// ERROR HANDLER
+app.use(errorHandler);
 
 // LOCALS
 app.locals.activeTeams = [];
