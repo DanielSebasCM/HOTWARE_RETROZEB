@@ -18,7 +18,6 @@ states.forEach((state) => {
 
 const label_options = document.getElementById("label-options");
 let selected_label = label_options.value;
-
 label_options.onchange = function () {
   selected_label = this.value;
   updateCharts();
@@ -181,39 +180,36 @@ function updateFilteredChart(canvasId, labels_data) {
   chart.update();
 }
 
-function filterIssues(rawData, filter, filterValues) {
+function filterIssues(rawData, filter, filterValues = [undefined]) {
   const data = [];
-  filterValues = filterValues || [undefined];
+  console.log(selected_label);
+  // Por cada valor del filtro crear un objeto con los issues correspondinetes
   filterValues.forEach((filterValue) => {
     let filterData = [];
     states.forEach((state) => {
-      let stateData = rawData[state.label].filter(
-        (d) => d[filter] === filterValue
-      );
+      const stateData = rawData[state.label]
+        .filter((d) => {
+          // Filter by label
+          let hasLabel;
+          if (selected_label === "Todos") {
+            hasLabel = true;
+          } else if (selected_label === "Sin etiqueta") {
+            hasLabel = d.labels.length === 0;
+          } else {
+            hasLabel = d.labels.includes(selected_label);
+          }
 
-      if (selected_label === "Sin Label") {
-        stateData = stateData.filter(
-          (d) => d.labels === undefined || d.labels.length === 0
-        );
-      } else if (selected_label !== "Todos") {
-        stateData = stateData.filter((d) => d.labels.includes(selected_label));
-      }
-
-      stateData = stateData
+          //filter by team
+          return d[filter] === filterValue && hasLabel;
+        })
         .map((d) => d.story_points)
         .reduce((a, b) => a + b, 0);
 
-      if (stateData) {
-        filterData.push(stateData);
-      } else {
-        filterData.push(0);
-      }
+      filterData.push(stateData || 0);
     });
-    if (!filterValue) {
-      filterValue = "N/A";
-    }
+
     data.push({
-      label: filterValue,
+      label: filterValue || "N/A",
       data: filterData,
     });
   });

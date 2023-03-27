@@ -1,6 +1,6 @@
 const Retrospective = require("../models/retrospective.model");
 
-const getRetrospectiveDashboard = async (req, res) => {
+const getRetrospectiveDashboard = async (req, res, next) => {
   try {
     const id_retrospective = req.params.id;
     const retrospective = await Retrospective.getById(id_retrospective);
@@ -11,22 +11,20 @@ const getRetrospectiveDashboard = async (req, res) => {
       labels,
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).render("500/index", { title: "500" });
+    next(err);
   }
 };
 
 const getLiveSprintIssues = async (req, res) => {};
 
-const getRetrospectiveIssues = async (req, res) => {
+const getRetrospectiveIssues = async (req, res, next) => {
   try {
     const id_retrospective = req.params.id;
     const retrospective = await Retrospective.getById(id_retrospective);
     const issues = await retrospective.getIssues();
     res.json(issues);
   } catch (err) {
-    console.error(err);
-    res.status(500).render("500/index", { title: "500" });
+    next(err);
   }
 };
 
