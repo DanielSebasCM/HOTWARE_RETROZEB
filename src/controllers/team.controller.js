@@ -3,20 +3,13 @@ const sqlErrorCodes = require("../utils/db.errors");
 const messages = require("../utils/messages");
 
 const getAllWithUsers = async (req, res) => {
-  try {
-    const teams = await Team.getAllWithUsers(req.app.locals.currentUser.id);
-    res.status(200).render("teams/index", { title: "Equipos", teams });
-  } catch (err) {
-    console.error(err.message);
-    if (
-      err.code == sqlErrorCodes.errorConnecting ||
-      err.code == sqlErrorCodes.unknownDB ||
-      !err.code
-    )
-      return res.status(500).render("errors/500");
-
-    return res.status(500).render("errors/500");
+  const teams = await Team.getAllActive();
+  for (let team of teams) {
+    team.members = await team.getMembers();
   }
+  teams.filter((team) => team.members.includes(req.app.locals.currentUser.id));
+
+  res.status(200).render("teams/index", { title: "Equipos", teams });
 };
 
 const addUser = async (req, res) => {
@@ -123,7 +116,6 @@ const removeUser = async (req, res) => {
 
     await team.removeUser(uid);
     res.status(200).json({ message: messages.team.success.teamMemberRemoved });
-
   } catch (err) {
     console.error(err);
     if (err.code == sqlErrorCodes.duplicateEntry)

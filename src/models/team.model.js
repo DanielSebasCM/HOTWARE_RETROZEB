@@ -1,4 +1,5 @@
 const db = require("../utils/db");
+const User = require("./user.model");
 
 class Team {
   constructor(team) {
@@ -8,8 +9,6 @@ class Team {
     this.name = team.name;
     this.active = team.active != 0 ? 1 : 0;
     this.creation_date = team.creation_date || new Date();
-    this.members = team.members;
-    this.isMember = team.isMember || false;
   }
 
   static async getById(id) {
@@ -28,58 +27,13 @@ class Team {
     return teams.map((team) => new Team(team));
   }
 
-  static async getAllActiveByUser(uid) {
-    let [teams, _] = await db.execute(
-      `SELECT DISTINCT t.* FROM team as t, team_users as tu WHERE tu.id_team = t.id AND tu.uid = ? AND t.active = 1 AND tu.active = 1 ORDER BY t.name ASC`,
-      [uid]
-    );
-
-    return teams.map((team) => new Team(team));
-  }
-
-  static async getAllWithUsers(uid = null) {
-    let [teams] = await db.execute(
-      `SELECT DISTINCT * FROM team WHERE active = 1`
-    );
-
+  async getMembers() {
     let [members, _] = await db.execute(
-      `
-      SELECT tu.id_team, u.uid, u.first_name, u.last_name
-      FROM user as u, team_users as tu  
-      WHERE u.uid = tu.uid
-      AND u.active = 1
-      AND tu.active = 1
-      ORDER BY u.first_name ASC
-      `
+      "SELECT u.* FROM user u, team_users tu WHERE tu.id_team = ? AND tu.uid = u.uid AND tu.active = 1",
+      [this.id]
     );
 
-    const teamsWithMembers = Object.fromEntries(
-      Array.from(teams).map((team) => {
-        team.members = [];
-        return [team.id, team];
-      })
-    );
-
-    members.forEach((member) => {
-      teamsWithMembers[member.id_team].isMember =
-        member.uid === uid ? true : false;
-      teamsWithMembers[member.id_team].members.push({
-        first_name: member.first_name,
-        last_name: member.last_name,
-        uid: member.uid,
-      });
-    });
-
-    return Object.values(teamsWithMembers).map((team) => new Team(team));
-  }
-
-  static async getUserById(id_team, uid) {
-    // TODO - TEST THIS
-    let [user, _] = await db.execute(
-      `SELECT * FROM team_users WHERE id_team = ? AND uid = ?`,
-      [id_team, uid]
-    );
-    return user;
+    return members.map((member) => new User(member));
   }
 
   static verify(team) {

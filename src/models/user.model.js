@@ -18,16 +18,19 @@ class User {
     let [users, _] = await db.execute(`SELECT * FROM user`);
     return users.map((user) => new User(user));
   }
+
   static async getById(uid) {
     let [user, _] = await db.execute(`SELECT * FROM user WHERE uid = ?`, [uid]);
     return new User(user[0]);
   }
+
   static async getByJiraId(id_jira) {
     let [user, _] = await db.execute(`SELECT * FROM user WHERE id_jira = ?`, [
       id_jira,
     ]);
     return new User(user[0]);
   }
+
   static async getByGoogleId(id_google_auth) {
     let [user, _] = await db.execute(
       `SELECT * FROM user WHERE id_google_auth = ?`,
@@ -93,7 +96,7 @@ class User {
     return res;
   }
 
-  addRole(role) {
+  async addRole(role) {
     return db.execute(`INSERT INTO users_roles (uid, id_role) VALUES (?, ?)`, [
       this.uid,
       role.id,
