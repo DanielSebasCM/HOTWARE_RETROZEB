@@ -8,7 +8,7 @@ class Team {
     this.name = team.name;
     this.active = team.active != 0 ? 1 : 0;
     this.creation_date = team.creation_date || new Date();
-    this.members = team.members || [];
+    this.members = team.members;
     this.isMember = team.isMember || false;
   }
 
@@ -61,14 +61,15 @@ class Team {
     );
 
     members.forEach((member) => {
-      teamsWithMembers[member.id_team].isMember = member.uid === uid ? true : false;
+      teamsWithMembers[member.id_team].isMember =
+        member.uid === uid ? true : false;
       teamsWithMembers[member.id_team].members.push({
         first_name: member.first_name,
         last_name: member.last_name,
         uid: member.uid,
       });
     });
-    
+
     return Object.values(teamsWithMembers).map((team) => new Team(team));
   }
 
@@ -81,31 +82,9 @@ class Team {
     return user;
   }
 
-  static async addUserToTeam(id_team, uid) {
-    // TODO - TEST THIS
-    let [res, _] = await db.execute(
-      `INSERT INTO team_users(id_team, uid)
-      VALUES (?, ?)`,
-      [id_team, uid]
-    );
-
-    return res;
-  }
-
-  static async removeUserFromTeam(id_team, uid) {
-    // TODO - TEST THIS
-    let [res, _] = await db.execute(
-      `UPDATE team_users 
-      SET active = 0, end_date = ?
-      WHERE id_team = ? AND uid = ?`,
-      [new Date(), id_team, uid]
-    );
-    return res;
-  }
-
   static verify(team) {
     // ALREADY TESTED
-    if(!team) throw new Error("El equipo no puede estar vacío")
+    if (!team) throw new Error("El equipo no puede estar vacío");
 
     // name is not empty
     if (team.name?.length == 0 || team.name == null || !team.name)
@@ -139,6 +118,28 @@ class Team {
     const res = await db.execute(`UPDATE team SET active = 1 WHERE id = ?`, [
       this.id,
     ]);
+    return res;
+  }
+
+  async addUser(uid) {
+    // TODO - TEST THIS
+    let [res, _] = await db.execute(
+      `INSERT INTO team_users(id_team, uid)
+      VALUES (?, ?)`,
+      [this.id, uid]
+    );
+    console.log(res);
+    return res;
+  }
+
+  async removeUser(uid) {
+    // TODO - TEST THIS
+    let [res, _] = await db.execute(
+      `UPDATE team_users 
+      SET active = 0, end_date = ?
+      WHERE id_team = ? AND uid = ?`,
+      [new Date(), this.id, uid]
+    );
     return res;
   }
 }

@@ -135,13 +135,13 @@
   flex-direction: column;
   gap: 2rem;
   margin-bottom: var(--container-mb);
-  padding-top: var(--container-pt);
+  /* padding-top: var(--container-pt); */
 }
 
 /* CARDS */
 .card {
   width: 100%;
-  height: fit-content;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -184,6 +184,10 @@
 
 .card--team .user__name {
   font-size: 1.3rem;
+}
+
+.card__footer {
+  margin-top: auto !important;
 }
 
 /* CHARTS */
@@ -519,6 +523,8 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
+}
 
 .hide {
   display: none;
+}
