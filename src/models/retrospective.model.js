@@ -1,4 +1,5 @@
 const db = require("../utils/db");
+const Issue = require("./issue.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
@@ -21,6 +22,8 @@ class Retrospective {
       `SELECT * FROM retrospective WHERE id = ?`,
       [id]
     );
+
+    if (retrospective.length === 0) throw new Error("Retrospective not found");
     return new Retrospective(retrospective[0]);
   }
   static async getAll() {
@@ -103,6 +106,30 @@ class Retrospective {
     if (!retrospective.id_sprint)
       throw new ValidationError("id_sprint", validationMessages.isMandatory);
   }
+  async getIssues() {
+    const [issues, _] = await db.execute(
+      "SELECT i.* FROM retrospective AS r JOIN sprint AS s ON r.id = 1 AND s.id = r.id_sprint JOIN issues AS i ON i.id_sprint = s.id;",
+      [this.id]
+    );
+
+    for (let issue of issues) {
+      const [labels, __] = await db.execute(
+        `SELECT label FROM issues_labels WHERE id_issue = ?`,
+        [issue.id]
+      );
+      issue.labels = labels.map((label) => label.label);
+    }
+
+    return issues.map((issue) => new Issue(issue));
+  }
+  async getLabels() {
+    const [labels, _] = await db.execute(
+      `select distinct label from issues_labels as l, issues as i, sprint as s, retrospective as r where r.id = ? and r.id_sprint = s.id and s.id = i.id_sprint and i.id = l.id_issue`,
+      [this.id]
+    );
+    return labels.map((label) => label.label);
+  }
+
   async post() {
     const [res, _] = await db.execute(
       `INSERT INTO retrospective (name, start_date, end_date, state, id_team, id_sprint) VALUES (?, ?, ?, ?, ?, ?)`,

@@ -1,3 +1,4 @@
+const Issue = require("../models/issue.model");
 const Retrospective = require("../models/retrospective.model");
 const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
@@ -195,4 +196,25 @@ test("Retrospective has an id_sprint", () => {
     thrownError = error;
   }
   expect(thrownError).toEqual(expectedError);
+});
+
+// ------------------ GETTERS ------------------
+test("Retrospective getById", async () => {
+  const retrospective = await Retrospective.getById(1);
+  expect(retrospective.id).toBe(1);
+});
+
+test("Retrospective getAll", async () => {
+  await expect(async () => {
+    await Retrospective.getAll();
+  }).not.toThrow();
+});
+
+test("Retrospective getIssues", async () => {
+  const retrospective = await Retrospective.getById(1);
+  const issues = await retrospective.getIssues();
+  expect(issues[0] instanceof Issue).toBe(true);
+  for (let issue of issues) {
+    expect(issue).toEqual(await Issue.getById(issue.id));
+  }
 });
