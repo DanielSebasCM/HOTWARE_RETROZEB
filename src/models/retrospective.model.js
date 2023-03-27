@@ -1,4 +1,6 @@
 const db = require("../utils/db");
+const Question = require("./question.model");
+const Answer = require("./answer.model");
 
 class Retrospective {
   constructor(retrospective) {
@@ -102,24 +104,35 @@ class Retrospective {
       [this.id]
     );
 
-    return questions;
+    for (let question of questions) {
+      if (question.type === "SELECTION") {
+        const [options, _] = await db.execute(
+          "SELECT * FROM `option` WHERE id_question = ?",
+          [question.id]
+        );
+        question.options = options;
+      }
+    }
+
+    return questions.map((question) => new Question(question));
   }
 
   async getAnswers(question) {
-    if (question.type === "SELECTION") {
-      console.log(this.id, question.id);
-      const [answers, _] = await db.execute(
-        "SELECT a.*, o.description FROM answer a, `option` o WHERE a.id_retrospective = ? AND a.id_question = ? AND a.id = o.id_question",
-        [this.id, question.id]
-      );
-      return answers;
-    }
     const [answers, _] = await db.execute(
       "SELECT * FROM answer WHERE id_retrospective = ? AND id_question = ?",
       [this.id, question.id]
     );
 
-    return answers;
+    if (question.type === "SELECTION") {
+      for (let answer of answers) {
+        const [newValue, _] = await db.execute(
+          "SELECT description FROM `option` WHERE id = ?",
+          [answer.value]
+        );
+        answer.value = newValue[0].description;
+      }
+    }
+    return answers.map((answer) => new Answer(answer));
   }
 
   async post() {

@@ -64,7 +64,7 @@
 /* CARDS */
 .card {
   width: 100%;
-  height: fit-content;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

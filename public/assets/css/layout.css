@@ -179,7 +179,7 @@
   margin-bottom: var(--card-mb);
   align-items: flex-start;
   justify-content: center;
-  max-height: 30vh;
+  max-height: auto;
   overflow-y: scroll;
 }
 

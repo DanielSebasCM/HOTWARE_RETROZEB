@@ -15,7 +15,7 @@
     </div>
   </div>
   <span class="line"></span>
-  <section class="cards-container--full">
+  <section class="cards-container">
     <% for(question of questions) { %>
     <article class="card">
       <div class="card__header">
@@ -36,30 +36,7 @@
         <% } %>
       </ul>
       <% }} else { %>
-      <canvas id="myChart"></canvas>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      <script>
-        const ctx = document.getElementById('myChart');
-
-        new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-              label: '# of Votes',
-              data: [12, 19, 3, 5, 2, 3],
-              borderWidth: 1
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: true
-              }
-            }
-          }
-        });
-      </script>
+      <canvas id="chart-<%= question.id %>"></canvas>
       <% } %>
     </article>
     <% } %>
