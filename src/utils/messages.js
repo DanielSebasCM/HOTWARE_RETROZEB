@@ -14,7 +14,19 @@ const messages = {
       teamActivated: "Equipo activado correctamente",
       teamMemberAdded: "Usuario agregado al equipo correctamente",
       teamMemberRemoved: "Usuario eliminado del equipo correctamente",
-    }
+    },
+  },
+  validation: {
+    isMandatory: "El campo es obligatorio",
+    mustBeString: "El campo debe ser una cadena de caracteres",
+    mustBeNumber: "El campo debe ser un número",
+    mustBeDate: "El campo debe ser una fecha",
+    mustBeBoolean: "El campo debe ser un booleano",
+    mustBeEnum: (variations) =>
+      `El campo debe ser uno de los siguientes valores: ${variations}`,
+    mustBeLongerThan: (n) => `El campo debe tener más de ${n} caracteres`,
+    mustBeShorterThan: (n) => `El campo debe tener menos de ${n} caracteres`,
+    mustBeAfter: (date) => `El campo debe ser posterior a ${date}`,
   },
 };
 
