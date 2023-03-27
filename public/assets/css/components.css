@@ -44,6 +44,90 @@
   margin-bottom: var(--component-mb);
 }
 
+/* NOTIFICATIONS */
+.notification-container {
+  position: fixed;
+  top: 85px;
+  left: 2rem;
+  right: 2rem;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+}
+
+.notification {
+  min-height: 5rem;
+  width: 100%;
+  max-width: 40rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  margin: 0 auto;
+  margin-bottom: var(--component-mb);
+  border-radius: var(--border-radius);
+}
+
+.notification__content {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+}
+
+.notification__icon {
+  width: 3rem;
+  min-width: 3rem;
+  height: 3rem;
+  min-height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-white);
+  border-radius: 50%;
+}
+
+.notification__icon .icon {
+  width: 50%;
+  height: 50%;
+}
+
+.notification__message {
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--color-black);
+}
+
+.notification__close {
+  background-image: url("/assets/icon/close.svg");
+}
+
+.notification__close:hover {
+  background-color: var(--color-white);
+  border-radius: 50%;
+}
+
+.notification--success {
+  background: var(--color-bg-success);
+  border: 1px solid var(--color-border-success);
+  color: var(--color-font-success);
+}
+
+.notification--success .notification__icon .icon {
+  background-image: url("/assets/icon/check.svg");
+}
+
+.notification--error {
+  background: var(--color-bg-alert);
+  border: 1px solid var(--color-border-alert);
+  color: var(--color-font-alert);
+}
+
+.notification--error .notification__icon .icon {
+  background-image: url("/assets/icon/error.svg");
+}
+
 /* CONTAINERS */
 .cards-container,
 .charts-container {
@@ -51,7 +135,7 @@
   flex-direction: column;
   gap: 2rem;
   margin-bottom: var(--container-mb);
-  padding-top: var(--container-pt);
+  /* padding-top: var(--container-pt); */
 }
 
 .cards-container--full {
@@ -120,6 +204,10 @@
 
 .card--team .user__name {
   font-size: 1.3rem;
+}
+
+.card__footer {
+  margin-top: auto !important;
 }
 
 /* CHARTS */
@@ -413,7 +501,52 @@
   font-family: "Poppins", sans-serif;
 }
 
-/* TRANSITION */
+/* UTILS */
 .transition {
   transition: all 0.3s ease-in-out;
+}
+
+/* CHARTS */
+.charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.charts-container--vertical {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.chart-container {
+  position: relative;
+  height: 100%;
+  min-height: 30rem;
+  width: 100%;
+  max-width: 40rem;
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  background-color: var(--color-white);
+  box-shadow: var(--box-shadow);
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hide {
+  display: none;
 }

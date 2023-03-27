@@ -1,9 +1,10 @@
 const routes = {
   home: "/",
   login: "/login",
-  dashboard: "/dashboard",
+  retrospective: "/retrospectiva",
   teams: "/equipos",
   retrospectives: "/retrospectivas",
+  locals: "/locals",
 };
 
 module.exports = { routes };

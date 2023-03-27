@@ -1,5 +1,6 @@
 <!-- MAIN -->
 <section class="dashboard">
+
   <div class="banner">
     <div class="banner__section">
       <h1 class="title">Equipos <span class="meta"> (<%=teams.length %>)</span></h1>
@@ -14,10 +15,12 @@
   <span class="line"></span>
 
   <!-- USER TEAMS -->
-  <h2 class="subtitle">Mis Equipos <span class="meta">
-      (<%=teams.filter(team=> team.isMember).length %>)
-    </span>
-  </h2>
+  <div class="banner banner--nomargin">
+    <h2 class="subtitle">Mis Equipos <span class="meta">
+        (<%=teams.filter(team=> team.isMember).length %>)
+      </span>
+    </h2>
+  </div>
   <% if(teams && teams.length> 0) { %>
     <div class="cards-container">
       <% for(let i=0; i < teams.length; i++) { %>
@@ -43,7 +46,8 @@
                 </div>
                 <% } %>
             </div>
-            <button class="button button--delete-alt remove-team-user-btn" data-uid=12 data-id_team=<%=teams[i].id %>
+            <button class="button button--delete-alt remove-team-user-btn card__footer" data-uid=12
+              data-id_team=<%=teams[i].id %>
               >Abandonar equipo</button>
           </div>
           <% } %>
@@ -89,7 +93,8 @@
               </div>
               <% } %>
           </div>
-          <button class="button button--primary add-team-user-btn" data-uid=12 data-id_team=<%=teams[i].id %>>
+          <button class="button button--primary add-team-user-btn card__footer" data-uid=12 data-id_team=<%=teams[i].id
+            %>>
             Unirme
           </button>
         </div>

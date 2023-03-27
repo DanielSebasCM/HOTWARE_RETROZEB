@@ -1,6 +1,13 @@
 const db = require("../utils/db");
+
 const Question = require("./question.model");
 const Answer = require("./answer.model");
+const Issue = require("./issue.model");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
+const retrospectiveStates =
+  require("../utils/constants").enums.retrospectiveStates;
+
 
 class Retrospective {
   constructor(retrospective) {
@@ -19,6 +26,8 @@ class Retrospective {
       `SELECT * FROM retrospective WHERE id = ?`,
       [id]
     );
+
+    if (retrospective.length === 0) throw new Error("Retrospective not found");
     return new Retrospective(retrospective[0]);
   }
   static async getAll() {
@@ -53,49 +62,69 @@ class Retrospective {
   }
   static verify(retrospective) {
     // Name is not empty
-    if (!retrospective.name) throw new Error("Ingresa un nombre");
+    if (!retrospective.name)
+      throw new ValidationError("name", validationMessages.isMandatory);
 
     // Length of name is less than 40
     if (retrospective.name.length > 40)
-      throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
+      throw new ValidationError(
+        "name",
+        validationMessages.mustBeShorterThan(40)
+      );
 
     // Has start date
     if (!retrospective.start_date)
-      throw new Error("Ingresa una fecha de inicio");
+      throw new ValidationError("start_date", validationMessages.isMandatory);
 
     // Start date is valid
     if (!(retrospective.start_date instanceof Date))
-      throw new Error("Fecha debe ser una instancia de Date");
+      throw new ValidationError("start_date", validationMessages.mustBeDate);
 
     if (retrospective.end_date) {
       // End date is valid
       if (!(retrospective.end_date instanceof Date))
-        throw new Error("Fecha debe ser una instancia de Date");
+        throw new ValidationError("end_date", validationMessages.mustBeDate);
 
       // Start date is before end date
       if (retrospective.start_date >= retrospective.end_date)
-        throw new Error("La fecha de inicio debe ser menor a la fecha de fin");
+        throw new ValidationError(
+          "end_date",
+          validationMessages.mustBeAfter("start_date")
+        );
     }
     // If state exists, it is either PENDING, IN_PROGRESS or CLOSED
     if (retrospective.state) {
-      const options = ["PENDING", "IN_PROGRESS", "CLOSED"];
+      const options = retrospectiveStates;
       if (!options.includes(retrospective.state))
-        throw new Error("Estado inválido");
+        throw new ValidationError(
+          "state",
+          validationMessages.mustBeEnum(options)
+        );
     }
 
     // Team id exists
-    if (!retrospective.id_team) throw new Error("Ingresa un id de equipo");
-
-    // Team id is valid
-    if (!Number.isInteger(retrospective.id_team))
-      throw new Error("Id de equipo inválido");
+    if (!retrospective.id_team)
+      throw new ValidationError("id_team", validationMessages.isMandatory);
 
     // Sprint id exists
-    if (!retrospective.id_sprint) throw new Error("Ingresa un id de sprint");
+    if (!retrospective.id_sprint)
+      throw new ValidationError("id_sprint", validationMessages.isMandatory);
+  }
+  async getIssues() {
+    const [issues, _] = await db.execute(
+      "SELECT i.* FROM retrospective AS r JOIN sprint AS s ON r.id = 1 AND s.id = r.id_sprint JOIN issues AS i ON i.id_sprint = s.id;",
+      [this.id]
+    );
 
-    // Sprint id is valid
-    if (!Number.isInteger(retrospective.id_sprint))
-      throw new Error("Ingresa un id de sprint");
+    for (let issue of issues) {
+      const [labels, __] = await db.execute(
+        `SELECT label FROM issues_labels WHERE id_issue = ?`,
+        [issue.id]
+      );
+      issue.labels = labels.map((label) => label.label);
+    }
+
+    return issues.map((issue) => new Issue(issue));
   }
 
   async getQuestions() {
@@ -133,6 +162,14 @@ class Retrospective {
       }
     }
     return answers.map((answer) => new Answer(answer));
+  }
+  
+  async getLabels() {
+    const [labels, _] = await db.execute(
+      `select distinct label from issues_labels as l, issues as i, sprint as s, retrospective as r where r.id = ? and r.id_sprint = s.id and s.id = i.id_sprint and i.id = l.id_issue`,
+      [this.id]
+    );
+    return labels.map((label) => label.label);
   }
 
   async post() {

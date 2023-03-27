@@ -9,8 +9,10 @@ class Issue {
     this.story_points = issue.story_points || null;
     this.priority = issue.priority || "Medium";
     this.state = issue.state || "To Do";
+    this.type = issue.type || "Task";
     this.uid = issue.uid || null;
     this.id_sprint = issue.id_sprint;
+    this.labels = issue.labels || null;
   }
 
   static async getById(id) {
@@ -18,12 +20,29 @@ class Issue {
       id,
     ]);
 
+    if (issue.length == 0) throw new Error("Issue no encontrado");
+
+    const [labels, __] = await db.execute(
+      `SELECT label FROM issues_labels WHERE id_issue = ?`,
+      [id]
+    );
+
+    issue[0].labels = labels.map((label) => label.label);
     return new Issue(issue[0]);
   }
 
   static async getAll() {
-    let [issue, _] = await db.execute(`SELECT * FROM issues`);
-    return issue.map((issue) => new Issue(issue));
+    let [issues, _] = await db.execute(`SELECT * FROM issues`);
+
+    for (let issue of issues) {
+      const [labels, __] = await db.execute(
+        `SELECT label FROM issues_labels WHERE id_issue = ?`,
+        [issue.id]
+      );
+      issue.labels = labels.map((label) => label.label);
+    }
+
+    return issues.map((issue) => new Issue(issue));
   }
 
   static verify(issue) {
@@ -77,8 +96,15 @@ class Issue {
         this.id_sprint,
       ]
     );
-    this.id = res.insertId;
 
+    if (this.labels.length > 0) {
+      let query = `INSERT INTO issues_labels (id_issue, label) VALUES (?, ?)`;
+      for (let label of this.labels) {
+        db.execute(query, [res.insertId, label]);
+      }
+    }
+
+    this.id = res.insertId;
     return res;
   }
 }
