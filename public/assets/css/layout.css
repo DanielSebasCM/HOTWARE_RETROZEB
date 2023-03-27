@@ -170,3 +170,23 @@
   border-width: 1px 0 0 0;
   z-index: 1000;
 }
+
+/*--------------LIST--------------*/
+.items__list {
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--card-mb);
+  align-items: flex-start;
+  justify-content: center;
+  max-height: auto;
+  overflow-y: scroll;
+}
+
+.items__item {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  padding: 0.75rem;
+}

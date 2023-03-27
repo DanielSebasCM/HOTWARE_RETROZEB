@@ -1,9 +1,13 @@
 const db = require("../utils/db");
+
+const Question = require("./question.model");
+const Answer = require("./answer.model");
 const Issue = require("./issue.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
   require("../utils/constants").enums.retrospectiveStates;
+
 
 class Retrospective {
   constructor(retrospective) {
@@ -122,6 +126,44 @@ class Retrospective {
 
     return issues.map((issue) => new Issue(issue));
   }
+
+  async getQuestions() {
+    const [questions, _] = await db.execute(
+      "SELECT q.*, rq.required FROM question q, retrospective r, retrospective_question rq WHERE r.id = ? AND r.id = rq.id_retrospective AND rq.id_question = q.id",
+      [this.id]
+    );
+
+    for (let question of questions) {
+      if (question.type === "SELECTION") {
+        const [options, _] = await db.execute(
+          "SELECT * FROM `option` WHERE id_question = ?",
+          [question.id]
+        );
+        question.options = options;
+      }
+    }
+
+    return questions.map((question) => new Question(question));
+  }
+
+  async getAnswers(question) {
+    const [answers, _] = await db.execute(
+      "SELECT * FROM answer WHERE id_retrospective = ? AND id_question = ?",
+      [this.id, question.id]
+    );
+
+    if (question.type === "SELECTION") {
+      for (let answer of answers) {
+        const [newValue, _] = await db.execute(
+          "SELECT description FROM `option` WHERE id = ?",
+          [answer.value]
+        );
+        answer.value = newValue[0].description;
+      }
+    }
+    return answers.map((answer) => new Answer(answer));
+  }
+  
   async getLabels() {
     const [labels, _] = await db.execute(
       `select distinct label from issues_labels as l, issues as i, sprint as s, retrospective as r where r.id = ? and r.id_sprint = s.id and s.id = i.id_sprint and i.id = l.id_issue`,
