@@ -1,38 +1,62 @@
 const Team = require("../models/team.model");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
 
 // ------------------ VERIFIER ------------------
 test("name is not included", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
     new Team({});
-  }).toThrow("El nombre del equipo no puede estar vacío");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("name is not empty", () => {
-  expect(() => {
-    new Team({
-      name: "",
-    });
-  }).toThrow("El nombre del equipo no puede estar vacío");
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
+    new Team({ name: "" });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("name is not null", () => {
-  expect(() => {
-    new Team({
-      name: null,
-      active: true,
-      creation_date: new Date(),
-    });
-  }).toThrow("El nombre del equipo no puede estar vacío");
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
+    new Team({ name: null });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("name is not null and length <= 40", () => {
-  expect(() => {
-    new Team({
-      name: "a".repeat(41),
-      active: true,
-      creation_date: new Date(),
-    });
-  }).toThrow("El nombre del equipo debe tener máximo 40 caracteres");
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.mustBeShorterThan(40)
+  );
+  try {
+    new Team({ name: "a".repeat(41) });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 // ------------------ METHODS ------------------

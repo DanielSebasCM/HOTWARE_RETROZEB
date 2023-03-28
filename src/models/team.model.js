@@ -1,4 +1,6 @@
 const db = require("../utils/db");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
 
 class Team {
   constructor(team) {
@@ -84,15 +86,19 @@ class Team {
 
   static verify(team) {
     // ALREADY TESTED
-    if (!team) throw new Error("El equipo no puede estar vacío");
+    if (!team)
+      throw new ValidationError("name", validationMessages.isMandatory);
 
     // name is not empty
     if (team.name?.length == 0 || team.name == null || !team.name)
-      throw new Error("El nombre del equipo no puede estar vacío");
+      throw new ValidationError("name", validationMessages.isMandatory);
 
     // name is less than 41 characters
     if (team.name?.length > 40)
-      throw new Error("El nombre del equipo debe tener máximo 40 caracteres");
+      throw new ValidationError(
+        "name",
+        validationMessages.mustBeShorterThan(40)
+      );
 
     return true;
   }

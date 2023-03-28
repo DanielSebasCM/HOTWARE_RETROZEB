@@ -1,4 +1,7 @@
 const db = require("../utils/db");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
+
 class User {
   constructor(user) {
     User.verify(user);
@@ -44,25 +47,34 @@ class User {
 
   static verify(user) {
     if (!user.first_name) {
-      throw new Error("El nombre no puede estar vacío");
+      throw new ValidationError("first_name", validationMessages.isMandatory);
     }
     if (user.first_name.length > 40) {
-      throw new Error("El nombre no puede tener más de 40 caracteres");
+      throw new ValidationError(
+        "first_name",
+        validationMessages.mustBeShorterThan(40)
+      );
     }
 
     if (!user.last_name) {
-      throw new Error("El apellido no puede estar vacío");
+      throw new ValidationError("last_name", validationMessages.isMandatory);
     }
     if (user.last_name.length > 40) {
-      throw new Error("El apellido no puede tener más de 40 caracteres");
+      throw new ValidationError(
+        "last_name",
+        validationMessages.mustBeShorterThan(40)
+      );
     }
 
     if (!user.email) {
-      throw new Error("El email no puede estar vacío");
+      throw new ValidationError("email", validationMessages.isMandatory);
     }
 
     if (user.email.length > 40) {
-      throw new Error("El email no puede tener más de 40 caracteres");
+      throw new ValidationError(
+        "email",
+        validationMessages.mustBeShorterThan(40)
+      );
     }
   }
 
