@@ -1,110 +1,145 @@
 const Answer = require("../models/answer.model");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
 
 // ------------------ VERIFIER ------------------
 test("value is in range value.length < 400", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "value",
+    validationMessages.mustBeShorterThan(400)
+  );
+  try {
     new Answer({
       value: "a".repeat(401),
     });
-  }).toThrow("El tamaño de la respuesta debe ser menor a 400 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("value is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "value",
+    validationMessages.isMandatory
+  );
+  try {
     new Answer({
       value: "",
     });
-  }).toThrow("Ingresa una respuesta");
-});
-
-test("uid is a valid integer", () => {
-  expect(() => {
-    new Answer({
-      value: "a",
-      uid: "Esto no sirve",
-    });
-  }).toThrow("El id del usuario debe ser un número entero");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("uid is not null", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "uid",
+    validationMessages.isMandatory
+  );
+  try {
     new Answer({
       value: "a",
       uid: null,
     });
-  }).toThrow("El id del usuario no debe ser nulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("uid is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "uid",
+    validationMessages.isMandatory
+  );
+  try {
     new Answer({
       value: "a",
     });
-  }).toThrow("El id del usuario no debe ser nulo");
-});
-
-test("id_question is a valid integer", () => {
-  expect(() => {
-    new Answer({
-      value: "a",
-      uid: 1,
-      id_retrospective: 1,
-      id_question: "Esto no sirve",
-    });
-  }).toThrow("id_question debe ser un número entero");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("id_question is not null", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_question",
+    validationMessages.isMandatory
+  );
+  try {
     new Answer({
       value: "a",
       uid: 1,
       id_retrospective: 1,
       id_question: null,
     });
-  }).toThrow("id_question no debe ser nulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("id_question is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_question",
+    validationMessages.isMandatory
+  );
+  try {
     new Answer({
       value: "a",
       uid: 1,
-      id_retrospective: 1,
+      id_retrospective: null,
     });
-  }).toThrow("id_question no debe ser nulo");
-});
-
-test("id_retrospective is a valid integer", () => {
-  expect(() => {
-    new Answer({
-      value: "a",
-      uid: 1,
-      id_question: 1,
-      id_retrospective: "Esto no sirve",
-    });
-  }).toThrow("id_retrospective debe ser un número entero");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("id_retrospective is not null", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_retrospective",
+    validationMessages.isMandatory
+  );
+  try {
     new Answer({
       value: "a",
       uid: 1,
       id_question: 1,
       id_retrospective: null,
     });
-  }).toThrow("id_retrospective no debe ser nulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("id_retrospective is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_retrospective",
+    validationMessages.isMandatory
+  );
+  try {
     new Answer({
       value: "a",
       uid: 1,
       id_question: 1,
     });
-  }).toThrow("id_retrospective no debe ser nulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 // ------------------ METHODS ------------------

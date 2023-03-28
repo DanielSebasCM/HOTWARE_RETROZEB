@@ -1,4 +1,8 @@
 const db = require("../utils/db");
+
+const Question = require("./question.model");
+const Answer = require("./answer.model");
+const Issue = require("./issue.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
@@ -21,10 +25,12 @@ class Retrospective {
       `SELECT * FROM retrospective WHERE id = ?`,
       [id]
     );
+
+    if (retrospective.length === 0) throw new Error("Retrospective not found");
     return new Retrospective(retrospective[0]);
   }
   static async getAll() {
-    let [retrospectives, _] = await db.execute(`SELECT * FROM retrospective`);
+    let [retrospectives, _] = await db.execute(`SELECT * FROM retrospective ORDER BY start_date DESC`);
     return retrospectives.map(
       (retrospective) => new Retrospective(retrospective)
     );
@@ -103,6 +109,68 @@ class Retrospective {
     if (!retrospective.id_sprint)
       throw new ValidationError("id_sprint", validationMessages.isMandatory);
   }
+  async getIssues() {
+    const [issues, _] = await db.execute(
+      "SELECT i.* FROM retrospective AS r JOIN sprint AS s ON r.id = ? AND s.id = r.id_sprint JOIN issues AS i ON i.id_sprint = s.id;",
+      [this.id]
+    );
+
+    for (let issue of issues) {
+      const [labels, __] = await db.execute(
+        `SELECT label FROM issues_labels WHERE id_issue = ?`,
+        [issue.id]
+      );
+      issue.labels = labels.map((label) => label.label);
+    }
+
+    return issues.map((issue) => new Issue(issue));
+  }
+
+  async getQuestions() {
+    const [questions, _] = await db.execute(
+      "SELECT q.*, rq.required FROM question q, retrospective r, retrospective_question rq WHERE r.id = ? AND r.id = rq.id_retrospective AND rq.id_question = q.id",
+      [this.id]
+    );
+
+    for (let question of questions) {
+      if (question.type === "SELECTION") {
+        const [options, _] = await db.execute(
+          "SELECT * FROM `option` WHERE id_question = ?",
+          [question.id]
+        );
+        question.options = options;
+      }
+    }
+
+    return questions.map((question) => new Question(question));
+  }
+
+  async getAnswers(question) {
+    const [answers, _] = await db.execute(
+      "SELECT * FROM answer WHERE id_retrospective = ? AND id_question = ?",
+      [this.id, question.id]
+    );
+
+    if (question.type === "SELECTION") {
+      for (let answer of answers) {
+        const [newValue, _] = await db.execute(
+          "SELECT description FROM `option` WHERE id = ?",
+          [answer.value]
+        );
+        answer.value = newValue[0].description;
+      }
+    }
+    return answers.map((answer) => new Answer(answer));
+  }
+
+  async getLabels() {
+    const [labels, _] = await db.execute(
+      `select distinct label from issues_labels as l, issues as i, sprint as s, retrospective as r where r.id = ? and r.id_sprint = s.id and s.id = i.id_sprint and i.id = l.id_issue`,
+      [this.id]
+    );
+    return labels.map((label) => label.label);
+  }
+
   async post() {
     const [res, _] = await db.execute(
       `INSERT INTO retrospective (name, start_date, end_date, state, id_team, id_sprint) VALUES (?, ?, ?, ?, ?, ?)`,
@@ -115,6 +183,9 @@ class Retrospective {
         this.id_sprint,
       ]
     );
+
+    this.id = res.insertId;
+
     return res;
   }
 

@@ -16,6 +16,15 @@ const messages = {
       teamMemberRemoved: "Usuario eliminado del equipo correctamente",
     },
   },
+  actionables: {
+    error: {
+      actionableNotRegistered: "El accionable no ha sido registrado en Jira",
+    },
+    success: {
+      statusActionableUpdated:
+        "Estado del accionable actualizado correctamente",
+    },
+  },
   validation: {
     isMandatory: "El campo es obligatorio",
     mustBeString: "El campo debe ser una cadena de caracteres",

@@ -1,4 +1,8 @@
 const db = require("../utils/db");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
+const Team = require("./team.model");
+
 class User {
   constructor(user) {
     User.verify(user);
@@ -18,16 +22,37 @@ class User {
     let [users, _] = await db.execute(`SELECT * FROM user`);
     return users.map((user) => new User(user));
   }
+
   static async getById(uid) {
     let [user, _] = await db.execute(`SELECT * FROM user WHERE uid = ?`, [uid]);
     return new User(user[0]);
   }
+
   static async getByJiraId(id_jira) {
     let [user, _] = await db.execute(`SELECT * FROM user WHERE id_jira = ?`, [
       id_jira,
     ]);
     return new User(user[0]);
   }
+
+  async getTeams() {
+    const [teams, _] = await db.execute(
+      `SELECT t.* FROM team t, team_users tu WHERE tu.uid = ? AND tu.id_team = t.id`,
+      [this.uid]
+    );
+
+    return teams.map((team) => new Team(team));
+  }
+
+  async getActiveTeams() {
+    const [teams, _] = await db.execute(
+      `SELECT t.* FROM team t, team_users tu WHERE tu.uid = ? AND tu.id_team = t.id AND tu.active = 1`,
+      [this.uid]
+    );
+    teams.map((team) => new Team(team));
+    return teams;
+  }
+
   static async getByGoogleId(id_google_auth) {
     let [user, _] = await db.execute(
       `SELECT * FROM user WHERE id_google_auth = ?`,
@@ -41,28 +66,36 @@ class User {
   }
 
   //----------------------------VERIFY--------------------------------
-
   static verify(user) {
     if (!user.first_name) {
-      throw new Error("El nombre no puede estar vacío");
+      throw new ValidationError("first_name", validationMessages.isMandatory);
     }
     if (user.first_name.length > 40) {
-      throw new Error("El nombre no puede tener más de 40 caracteres");
+      throw new ValidationError(
+        "first_name",
+        validationMessages.mustBeShorterThan(40)
+      );
     }
 
     if (!user.last_name) {
-      throw new Error("El apellido no puede estar vacío");
+      throw new ValidationError("last_name", validationMessages.isMandatory);
     }
     if (user.last_name.length > 40) {
-      throw new Error("El apellido no puede tener más de 40 caracteres");
+      throw new ValidationError(
+        "last_name",
+        validationMessages.mustBeShorterThan(40)
+      );
     }
 
     if (!user.email) {
-      throw new Error("El email no puede estar vacío");
+      throw new ValidationError("email", validationMessages.isMandatory);
     }
 
     if (user.email.length > 40) {
-      throw new Error("El email no puede tener más de 40 caracteres");
+      throw new ValidationError(
+        "email",
+        validationMessages.mustBeShorterThan(40)
+      );
     }
   }
 
@@ -93,7 +126,7 @@ class User {
     return res;
   }
 
-  addRole(role) {
+  async addRole(role) {
     return db.execute(`INSERT INTO users_roles (uid, id_role) VALUES (?, ?)`, [
       this.uid,
       role.id,

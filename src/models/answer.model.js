@@ -1,5 +1,8 @@
 const db = require("../utils/db");
 
+const ValidationError = require("../errors/validationError");
+const validationMessages = require("../utils/messages").validation;
+
 class Answer {
   constructor(answer) {
     Answer.verify(answer);
@@ -26,33 +29,29 @@ class Answer {
   static verify(answer) {
     // Length of value is less than 400
     if (answer.value?.length > 400)
-      throw new Error(
-        "El tamaño de la respuesta debe ser menor a 400 caracteres"
+      throw new ValidationError(
+        "value",
+        validationMessages.mustBeShorterThan(400)
       );
 
     // Value is not empty or null
-    if (
-      answer.value?.length == 0 ||
-      answer.value?.length == null ||
-      !answer.value
-    )
-      throw new Error("Ingresa una respuesta");
+    if (!answer.value)
+      throw new ValidationError("value", validationMessages.isMandatory);
 
     //Uid is a number
-    if (!answer.uid) throw new Error("El id del usuario no debe ser nulo");
-    if (isNaN(answer.uid))
-      throw new Error("El id del usuario debe ser un número entero");
+    if (!answer.uid)
+      throw new ValidationError("uid", validationMessages.isMandatory);
 
     //Id_retrospective is a number
     if (!answer.id_retrospective)
-      throw new Error("id_retrospective no debe ser nulo");
-    if (isNaN(answer.id_retrospective))
-      throw new Error("id_retrospective debe ser un número entero");
+      throw new ValidationError(
+        "id_retrospective",
+        validationMessages.isMandatory
+      );
 
     //Id_question is a number
-    if (!answer.id_question) throw new Error("id_question no debe ser nulo");
-    if (isNaN(answer.id_question))
-      throw new Error("id_question debe ser un número entero");
+    if (!answer.id_question)
+      throw new ValidationError("id_question", validationMessages.isMandatory);
 
     return true;
   }

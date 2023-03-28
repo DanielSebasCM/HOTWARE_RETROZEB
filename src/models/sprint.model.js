@@ -1,4 +1,6 @@
 const db = require("../utils/db");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
 
 class Sprint {
   constructor(sprint) {
@@ -27,30 +29,32 @@ class Sprint {
   static verify(sprint) {
     // Length of name is less than 40
     if (sprint.name?.length > 40)
-      throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
+      throw new ValidationError(
+        "name",
+        validationMessages.mustBeShorterThan(40)
+      );
 
     // Name is not empty
     if (sprint.name?.length == 0)
-      throw new Error("Ingresa un nombre para el sprint");
+      throw new ValidationError("name", validationMessages.isMandatory);
 
-    if (!sprint.name) throw new Error("Ingresa un nombre para el sprint");
+    if (!sprint.name)
+      throw new ValidationError("name", validationMessages.isMandatory);
 
     if (sprint.start_date == 0 || sprint.start_date == null) {
-      throw new Error("Ingresa una fecha de inicio");
-    }
-
-    // Solo cambié el uso de la funcion de is Valid Date por el instanceof Date
-    if (!(sprint.start_date instanceof Date)) {
-      throw new Error("Fecha debe ser una instancia de Date");
+      throw new ValidationError("start_date", validationMessages.isMandatory);
     }
 
     if (sprint.end_date) {
       if (!(sprint.end_date instanceof Date)) {
-        throw new Error("Fecha debe ser una instancia de Date");
+        throw new ValidationError("end_date", validationMessages.isMandatory);
       }
 
       if (sprint.end_date <= sprint.start_date) {
-        throw new Error("La fecha de inicio debe ser menor a la fecha de fin");
+        throw new ValidationError(
+          "end_date",
+          validationMessages.mustBeAfter(sprint.start_date)
+        );
       }
     }
 

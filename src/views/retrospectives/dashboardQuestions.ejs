@@ -1,0 +1,47 @@
+<!-- MAIN -->
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title"><%= retrospective.name %></h1>
+      <p class="description">
+        Visualiza las respuestas a las preguntas de la retrospectiva
+      </p>
+    </div>
+    <div class="banner__section">
+      <div class="toggle-buttons-container toggle-buttons-container--primary">
+        <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
+        <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
+      </div>
+    </div>
+    <span class="line"></span>
+  </div>
+  <section class="cards-container">
+    <% for(question of questions) { %>
+    <article class="card card--answers">
+      <div class="card__header">
+        <h3 class="card__title"><%= question.description %></h3>
+          <span class="label
+          <%= question.required ? "label--late" : "label--success" %>">
+            <%= question.required ? "OBLIGATORIA" : "OPCIONAL" %>
+          </span>
+      </div>
+      <% if(question.type === 'OPEN') { %>
+      <% if(question.answers?.value?.length === 0) { %>
+      <h2 class="subtitle">No hay respuestas aún</h2>
+      <% } else { %>
+      <ol class="items__list">
+        <% let index = 1 %>
+        <% for(answer of question.answers){ %>
+        <li class="items__item description"><span class="index"><%= index %>.</span> <%= answer.value %></li>
+        <% index++ %>
+        <% } %>
+      </ol>
+      <% }} else { %>
+      <canvas id="chart-<%= question.id %>"></canvas>
+      <% } %>
+    </article>
+    <% } %>
+  </section>
+</section>
+
+<script type="module" src="/assets/js/dashboardQuestions.js"></script>

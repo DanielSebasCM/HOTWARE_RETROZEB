@@ -1,150 +1,86 @@
 const Team = require("../models/team.model");
-const sqlErrorCodes = require("../utils/db.errors");
 const messages = require("../utils/messages");
 
-const getAllWithUsers = async (req, res) => {
-  try {
-    const teams = await Team.getAllWithUsers(req.app.locals.currentUser.id);
-    res.status(200).render("teams/index", { title: "Equipos", teams });
-  } catch (err) {
-    console.error(err.message);
-    if (
-      err.code == sqlErrorCodes.errorConnecting ||
-      err.code == sqlErrorCodes.unknownDB ||
-      !err.code
-    )
-      return res.status(500).render("500/index");
-
-    return res.status(500).render("500/index");
+const renderTeams = async (req, res) => {
+  const teams = await Team.getAllActive();
+  for (let team of teams) {
+    team.members = await team.getMembers();
   }
+
+  const userTeams = teams.filter((team) =>
+    team.members.find(
+      (member) =>
+        member.uid == req.app.locals.currentUser.uid && member.active == 1
+    )
+  );
+
+  const availableTeams = teams.filter(
+    (team) =>
+      !team.members.find(
+        (member) =>
+          member.uid == req.app.locals.currentUser.uid && member.active == 1
+      )
+  );
+
+  res
+    .status(200)
+    .render("teams/index", { title: "Equipos", userTeams, availableTeams });
 };
 
-const addUserToTeam = async (req, res) => {
+const addUser = async (req, res, next) => {
   try {
-    // await setLocalTeams(req, res);
     const { id_team, uid } = req.body;
-
-    // Verify if user is deactivated in the team
-    const userData = await Team.getUserById(id_team, uid);
-    if (userData && userData.active == 0) {
-      await Team.activateUserInTeam(id_team, uid);
-      return res
-        .status(200)
-        .json({ message: messages.team.success.teamMemberAdded });
-      return;
-    }
 
     // Verify that the team exists
-    Team.getById(id_team).catch(() => {
-      return res
-        .status(404)
-        .json({ message: messages.team.error.teamDoesNotExist });
-    });
+    const team = await Team.getById(id_team);
 
     // Verify that the user exists
-    // User.getById(uid).catch(() => {
-    //   return res
-    //     .status(404)
-    //     .json({ message: messages.team.user.userDoesNotExist });
-    // });
-
-    const data = await Team.addUserToTeam(id_team, uid);
-
-    res.status(200).json({ message: messages.team.success.teamMemberAdded });
-  } catch (err) {
-    console.error(err);
-    if (err.code == sqlErrorCodes.duplicateEntry)
-      return res
-        .status(409)
-        .json({ message: messages.team.error.duplicateTeamMember });
-
-    if (
-      err.code == sqlErrorCodes.errorConnecting ||
-      err.code == sqlErrorCodes.unknownDB ||
-      !err.code
-    )
-      return res.status(500).render("500/index");
-
-    return res.status(500).render("500/index");
-  }
-};
-
-const removeUserFromTeam = async (req, res) => {
-  try {
-    // await setLocalTeams(req, res);
-    const { id_team, uid } = req.body;
+    // const user = await User.getById(uid);
 
     // Verify if user exists in the team
-    const userData = await Team.getUserById(id_team, uid);
-    if (!userData || userData.active == 0) {
-      return res
-        .status(404)
-        .json({ message: messages.team.error.teamMemberDoesNotExist });
-    }
+    const members = await team.getMembers();
+    const userInTeam = members.find((member) => member.uid == uid);
 
-    // Verify that the team exists
-    Team.getById(id_team).catch(() => {
-      return res
+    if (userInTeam)
+      throw new Error(messages.team.error.teamMemberAlreadyExists);
 
-        .status(404)
-        .json({ message: messages.team.error.teamDoesNotExist });
-    });
-
-    // Verify that the user exists
-    // User.getById(uid).catch(() => {
-    //   return res
-    //     .status(404)
-    //     .json({ message: messages.team.user.userDoesNotExist });
-    // });
-
-    await Team.removeUserFromTeam(id_team, uid);
-    res.status(200).json({ message: messages.team.success.teamMemberRemoved });
+    await team.addUser(uid);
+    req.session.successMessage = messages.team.success.teamMemberAdded;
+    return res
+      .status(200)
+      .json({ message: messages.team.success.teamMemberAdded });
   } catch (err) {
-    console.error(err);
-    if (err.code == sqlErrorCodes.duplicateEntry)
-      return res
-        .status(409)
-        .json({ message: messages.team.error.duplicateTeamMember });
-
-    if (
-      err.code == sqlErrorCodes.errorConnecting ||
-      err.code == sqlErrorCodes.unknownDB ||
-      !err.code
-    )
-      return res.status(500).render("500/index");
-
-    return res.status(500).render("500/index");
+    next(err);
   }
 };
 
-// UTILS
-const setLocalTeams = async (req, res, next) => {
+const removeUser = async (req, res, next) => {
   try {
-    req.app.locals.currentUser = {
-      first_name: "Mariane",
-      last_name: "Boyer",
-      id: 12,
-    };
-    const teams = await Team.getAllActiveByUser(req.app.locals.currentUser.id);
-    req.app.locals.activeTeams = teams;
-    if (!req.app.locals.selectedTeam) req.app.locals.selectedTeam = teams[0];
-    next();
-  } catch (err) {
-    console.log(err);
-    if (
-      err.code == sqlErrorCodes.errorConnecting ||
-      err.code == sqlErrorCodes.unknownDB ||
-      !err.code
-    )
-      return res.status(500).render("500/index");
+    const { id_team, uid } = req.body;
 
-    return res.status(500).render("500/index");
+    // Verify that the team exists
+    const team = await Team.getById(id_team);
+
+    // Verify that the user exists
+    // const user = await User.getById(uid);
+
+    // Verify if user exists in the team
+    const members = await team.getMembers();
+    const userInTeam = members.find((member) => member.uid == uid);
+
+    if (!userInTeam)
+      throw new Error(messages.team.error.teamMemberDoesNotExist);
+
+    await team.removeUser(uid);
+    req.session.successMessage = messages.team.success.teamMemberRemoved;
+    res.status(200).json({ message: messages.team.success.teamMemberRemoved });
+  } catch (err) {
+    next(err);
   }
 };
 
 module.exports = {
-  getAllWithUsers,
-  addUserToTeam,
-  removeUserFromTeam,
-  setLocalTeams,
+  renderTeams,
+  addUser,
+  removeUser,
 };
