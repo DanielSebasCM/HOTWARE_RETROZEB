@@ -1,5 +1,4 @@
 const teamController = require("../controllers/team.controller");
-const { routes } = require("../utils/utils");
 
 const setLocals = async (req, res, next) => {
   try {
@@ -10,7 +9,7 @@ const setLocals = async (req, res, next) => {
     };
     res.locals.successMessage = req.session.successMessage;
     res.locals.errorMessage = req.session.errorMessage;
-    res.locals.routes = routes;
+
     await teamController.setLocalTeams(req, res, next);
     next();
   } catch (err) {
