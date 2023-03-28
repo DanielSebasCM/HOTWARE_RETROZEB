@@ -27,20 +27,23 @@
   <!-- USER CSS -->
   <% if(locals.currentUser) { %>
 
-    <link rel="stylesheet" href="/assets/css/style.css" />
-    <link rel="stylesheet" href="/assets/css/layout.css" />
-    <link rel="stylesheet" href="/assets/css/mediaqueries.css" />
-    <% } %>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/layout.css" />
+  <link rel="stylesheet" href="/assets/css/mediaqueries.css" />
+  <% } %>
 
-      <!-- LOGIN CSS -->
-      <% if(!locals.currentUser) { %>
-        <link rel="stylesheet" href="/assets/css/login.css" />
-        <% } %>
+  <!-- LOGIN CSS -->
+  <% if(!locals.currentUser) { %>
+  <link rel="stylesheet" href="/assets/css/login.css" />
+  <% } %>
 
-          <!-- FONTS -->
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-          <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
-            rel="stylesheet" />
+  <!-- FONTS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- CHARTJS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 </html>
