@@ -37,7 +37,7 @@ class Question {
     for (let question of questions) {
       if (question.type == "SELECTION") {
         let [options, _] = await db.execute(
-          `SELECT description FROM option WHERE id_question = ? ORDER BY id`,
+          "SELECT description FROM `option` WHERE id_question = ? ORDER BY id",
           [question.id]
         );
         question.options = options.map((option) => option.description);

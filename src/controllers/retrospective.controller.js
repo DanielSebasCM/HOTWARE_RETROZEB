@@ -5,55 +5,111 @@ const moment = require("moment");
 moment.locale("es");
 
 const getRetrospective = async (req, res, next) => {
-    try{
-        const retrospectives = await Retrospective.getAll();
-        for (let retrospective of retrospectives) {
-            const sprint = await Sprint.getById(retrospective.id_sprint);
-            retrospective.sprint_name = sprint.name;
-
-        }
-            console.log(retrospectives);
-        res.status(200).render("retrospectives/index",{
-            title: "Retrospectivas", 
-            retrospectives, 
-            moment,
-        });
+  try {
+    const retrospectives = await Retrospective.getAll();
+    for (let retrospective of retrospectives) {
+      const sprint = await Sprint.getById(retrospective.id_sprint);
+      retrospective.sprint_name = sprint.name;
     }
-    catch(err){
-        next(err);
-    }
+    console.log(retrospectives);
+    res.status(200).render("retrospectives/index", {
+      title: "Retrospectivas",
+      retrospectives,
+      moment,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 const get_nuevo = async (request, response, next) => {
-    const questions = await Question.getAll();
-    response.render('retrospectives/initRetrospective', {
-        title: "Preguntas", questions
-    });
+  const questions = await Question.getAll();
+  response.render("retrospectives/initRetrospective", {
+    title: "Preguntas",
+    questions,
+  });
 };
 
 const InitRetrospective = (request, response, next) => {
-    const retrospective = new Retrospective({
-        name: request.body.name,
-        start_date: request.body.start_date,
-        end_date: request.body.end_date,
-        state: request.body.state,
-        id_team: request.body.id_team,
-        id_sprint: request.body.id_sprint,
-    });
+  const retrospective = new Retrospective({
+    name: request.body.name,
+    start_date: request.body.start_date,
+    end_date: request.body.end_date,
+    state: request.body.state,
+    id_team: request.body.id_team,
+    id_sprint: request.body.id_sprint,
+  });
 
-    retrospective.save()
+  retrospective
+    .save()
     .then(([rows, fieldData]) => {
-        request.session.last_retrospective = retrospective.name;
+      request.session.last_retrospective = retrospective.name;
 
-        response.status(300).redirect('/retrospectivas');
+      response.status(300).redirect("/retrospectivas");
     })
-    .catch(error => console.log(error));
-
+    .catch((error) => console.log(error));
 };
 
+const renderRetrospectiveQuestions = async (req, res, next) => {
+  try {
+    const id_retrospective = req.params.id;
+    const retrospective = await Retrospective.getById(id_retrospective);
+    const questions = await retrospective.getQuestions();
+    for (let question of questions) {
+      question.answers = await retrospective.getAnswers(question);
+    }
+    res.render("retrospectives/dashboardQuestions", {
+      title: "Dashboard",
+      retrospective,
+      questions,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const renderRetrospectiveMetrics = async (req, res, next) => {
+  try {
+    const id_retrospective = req.params.id;
+    const retrospective = await Retrospective.getById(id_retrospective);
+    const labels = await retrospective.getLabels();
+    res.render("retrospectives/dashboardMetrics", {
+      title: "Dashboard",
+      retrospective,
+      labels,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const getRetrospectiveAnswers = async (req, res) => {
+  const retroId = req.params.id;
+  const retrospective = await Retrospective.getById(retroId);
+  const questions = await retrospective.getQuestions();
+  for (let question of questions) {
+    question.answers = await retrospective.getAnswers(question);
+  }
+  res.send(questions);
+};
+
+const getRetrospectiveIssues = async (req, res, next) => {
+  try {
+    const id_retrospective = req.params.id;
+    const retrospective = await Retrospective.getById(id_retrospective);
+    const issues = await retrospective.getIssues();
+    res.json(issues);
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
-    getRetrospective,
-    InitRetrospective, 
-    get_nuevo
-  };
+  renderRetrospectiveMetrics,
+  renderRetrospectiveQuestions,
+  getRetrospectiveIssues,
+  getRetrospectiveAnswers,
+  getRetrospective,
+  InitRetrospective,
+  get_nuevo,
+};
