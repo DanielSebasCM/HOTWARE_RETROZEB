@@ -6,9 +6,11 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const PORT = process.env.PORT || 3000;
+const session = require("express-session");
 const expressLayouts = require("express-ejs-layouts");
 const initRoutes = require("./src/routes/index.routes");
 const { routes } = require("./src/utils/utils");
+const errorHandler = require("./src/middlewares/errorHandler");
 
 // SET VIEW ENGINE
 app.set("view engine", "ejs");
@@ -20,6 +22,18 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(expressLayouts);
+app.use(
+  session({
+    // CREATE NEW UNIQUE SECRET AND SAVE
+    // TO CREATE IT, RUN THIS CODE IN THE TERMINAL:
+    // node
+    // require("crypto").randomBytes(64).toString("hex")
+    secret:
+      "0168ca0eeb6a22290e3b2988dd2e0c5f097c8a8ec4c77dcc5168774bdacb4a89146f3aed08c5812a39c6d329c4422d4446ea3a24e769dd4006e12d29384c49f5",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // ROUTER
 initRoutes(app);
@@ -27,8 +41,11 @@ initRoutes(app);
 // 404
 app.use((_, res) => {
   res.locals.title = "Error 404";
-  res.status(404).render("404/index");
+  res.status(404).render("errors/404");
 });
+
+// ERROR HANDLER
+app.use(errorHandler);
 
 // LOCALS
 app.locals.activeTeams = [];

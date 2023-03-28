@@ -6,9 +6,9 @@ const controller = require("../controllers/team.controller");
 router.get("/", controller.getAllWithUsers);
 
 // POST
-router.post("/nuevo/usuario", controller.addUserToTeam);
+router.post("/nuevo/usuario", controller.addUser);
 
 // DELETE
-router.patch("/eliminar/usuario", controller.removeUserFromTeam);
+router.patch("/eliminar/usuario", controller.removeUser);
 
 module.exports = router;

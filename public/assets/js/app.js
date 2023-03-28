@@ -15,7 +15,7 @@
   );
 
   toggleButtonContainer.forEach((container) => {
-    const toggleButtons = container.querySelectorAll("button");
+    const toggleButtons = container.querySelectorAll(".toggle-button");
     toggleButtons.forEach((button) => {
       button.addEventListener("click", () => {
         toggleButtons.forEach((button) => {
@@ -29,7 +29,7 @@
 
 (function selectactiveTeams() {
   const teamOptions = document.getElementById("team-options");
-  if(!teamOptions) return;
+  if (!teamOptions) return;
   const teamList = teamOptions.querySelectorAll("option");
 
   teamOptions.addEventListener("change", (event) => {
@@ -44,6 +44,28 @@
           .catch((err) => {
             console.log(err);
           });
+      }
+    });
+  });
+})();
+
+(function closeNotification() {
+  const closeBtn = document.querySelectorAll(".notification__close");
+  closeBtn.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      btn.parentElement.classList.add("hide");
+
+      const type = btn.dataset.type;
+
+      try {
+        return await fetch(`http://localhost:3000/locals/mensajes/${type}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      } catch (error) {
+        console.log(error);
       }
     });
   });

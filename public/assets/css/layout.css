@@ -171,14 +171,16 @@
   z-index: 1000;
 }
 
-
 /*--------------LIST--------------*/
 .items__list {
+  padding-top: 1rem;
   display: flex;
+  flex-direction: column;
   margin-bottom: var(--card-mb);
   align-items: flex-start;
   justify-content: center;
-
+  max-height: auto;
+  overflow-y: scroll;
 }
 
 .items__item {
@@ -187,7 +189,6 @@
   flex-direction: row;
   width: 100%;
   padding: 0.75rem;
-
 }
 
 .horizontal_list {
@@ -205,3 +206,4 @@
   justify-content: center;
   gap: 1rem;
 }
+

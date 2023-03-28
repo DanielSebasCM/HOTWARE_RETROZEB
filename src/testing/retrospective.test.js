@@ -1,61 +1,111 @@
+const Issue = require("../models/issue.model");
 const Retrospective = require("../models/retrospective.model");
+const ValidationError = require("../errors/validationError");
+const validationMessages = require("../utils/messages").validation;
+const retrospectiveStates =
+  require("../utils/constants").enums.retrospectiveStates;
 
 // ------------------ VERIFIER ------------------
 test("Retrospective name is in range name.length < 40", () => {
-  expect(() => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "name",
+    validationMessages.mustBeShorterThan(40)
+  );
+  try {
     new Retrospective({
       name: "a".repeat(41),
       start_date: new Date("2021-01-01 00:00:00"),
       id_team: 1,
       id_sprint: 1,
     });
-  }).toThrow("El tamaño del nombre debe ser menor a 40 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Retrospective name is not empty", () => {
-  expect(() => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
     new Retrospective({
       name: "",
       start_date: new Date("2021-01-01 00:00:00"),
       id_team: 1,
       id_sprint: 1,
     });
-  }).toThrow("Ingresa un nombre");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Retrospective has a name", () => {
-  expect(() => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
     new Retrospective({
       start_date: new Date("2021-01-01 00:00:00"),
       id_team: 1,
       id_sprint: 1,
     });
-  }).toThrow("Ingresa un nombre");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Retrospective has a start date", () => {
-  expect(() => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "start_date",
+    validationMessages.isMandatory
+  );
+  try {
     new Retrospective({
       name: "a".repeat(40),
       id_team: 1,
       id_sprint: 1,
     });
-  }).toThrow("Ingresa una fecha de inicio");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Retrospective has a valid start date", () => {
-  expect(() => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "start_date",
+    validationMessages.mustBeDate
+  );
+  try {
     new Retrospective({
       name: "a".repeat(40),
       start_date: "Esto no sirve",
       id_team: 1,
       id_sprint: 1,
     });
-  }).toThrow("Fecha debe ser una instancia de Date");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Retrospective has a valid end date", () => {
-  expect(() => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "end_date",
+    validationMessages.mustBeDate
+  );
+  try {
     new Retrospective({
       name: "a".repeat(40),
       start_date: new Date("2021-01-01 00:00:00"),
@@ -63,11 +113,19 @@ test("Retrospective has a valid end date", () => {
       id_team: 1,
       id_sprint: 1,
     });
-  }).toThrow("Fecha debe ser una instancia de Date");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Retrospective star_date is before end_date", () => {
-  expect(() => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "end_date",
+    validationMessages.mustBeAfter("start_date")
+  );
+  try {
     new Retrospective({
       name: "a".repeat(40),
       start_date: new Date("2021-01-01 00:00:00"),
@@ -75,40 +133,88 @@ test("Retrospective star_date is before end_date", () => {
       id_team: 1,
       id_sprint: 1,
     });
-  }).toThrow("La fecha de inicio debe ser menor a la fecha de fin");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Retrospective has a valid state", () => {
-  expect(() => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "state",
+    validationMessages.mustBeEnum(retrospectiveStates)
+  );
+  try {
     new Retrospective({
       name: "a".repeat(40),
       start_date: new Date("2021-01-01 00:00:00"),
       end_date: new Date("2021-01-01 00:00:01"),
-      state: "Esto no sirve",
       id_team: 1,
       id_sprint: 1,
+      state: "Esto no sirve",
     });
-  }).toThrow("Estado inválido");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Retrospective has an id_team", () => {
-  expect(() => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "id_team",
+    validationMessages.isMandatory
+  );
+  try {
     new Retrospective({
       name: "a".repeat(40),
       start_date: new Date("2021-01-01 00:00:00"),
       end_date: new Date("2021-01-01 00:00:01"),
       id_sprint: 1,
     });
-  }).toThrow("Ingresa un id de equipo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Retrospective has an id_sprint", () => {
-  expect(() => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "id_sprint",
+    validationMessages.isMandatory
+  );
+  try {
     new Retrospective({
       name: "a".repeat(40),
       start_date: new Date("2021-01-01 00:00:00"),
       end_date: new Date("2021-01-01 00:00:01"),
       id_team: 1,
     });
-  }).toThrow("Ingresa un id de sprint");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+// ------------------ GETTERS ------------------
+test("Retrospective getById", async () => {
+  const retrospective = await Retrospective.getById(1);
+  expect(retrospective.id).toBe(1);
+});
+
+test("Retrospective getAll", async () => {
+  await expect(async () => {
+    await Retrospective.getAll();
+  }).not.toThrow();
+});
+
+test("Retrospective getIssues", async () => {
+  const retrospective = await Retrospective.getById(1);
+  const issues = await retrospective.getIssues();
+  expect(issues[0] instanceof Issue).toBe(true);
+  for (let issue of issues) {
+    expect(issue).toEqual(await Issue.getById(issue.id));
+  }
 });

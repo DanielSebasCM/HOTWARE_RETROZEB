@@ -1,0 +1,46 @@
+<!-- MAIN -->
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title"><%= retrospective.name %></h1>
+      <p class="description">
+        Visualiza las respuestas a las preguntas de la retrospectiva
+      </p>
+    </div>
+    <div class="banner__section">
+      <div class="toggle-buttons-container toggle-buttons-container--primary">
+        <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
+        <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
+      </div>
+    </div>
+  </div>
+  <span class="line"></span>
+  <section class="cards-container">
+    <% for(question of questions) { %>
+    <article class="card">
+      <div class="card__header">
+        <h3 class="card__title"><%= question.description %></h3>
+        <div class="card__extra"><span class="pill 
+          <%= question.required ? "pill--late" : "pill--ontime" %>">
+            <%= question.required ? "OBLIGATORIA" : "OPCIONAL" %>
+          </span></div>
+      </div>
+      <span class="line"></span>
+      <% if(question.type === 'OPEN') { %>
+      <% if(question.answers?.value?.length === 0) { %>
+      <h2 class="subtitle">No hay respuestas aún</h2>
+      <% } else { %>
+      <ul class="items__list">
+        <% for(answer of question.answers){ %>
+        <li class="items__item description"><%= answer.value %></li>
+        <% } %>
+      </ul>
+      <% }} else { %>
+      <canvas id="chart-<%= question.id %>"></canvas>
+      <% } %>
+    </article>
+    <% } %>
+  </section>
+</section>
+
+<script type="module" src="/assets/js/dashboardQuestions.js"></script>

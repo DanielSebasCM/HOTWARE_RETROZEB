@@ -65,6 +65,7 @@ test("Issue post", async () => {
   const mockIssue = new Issue({
     epic_name: "Test",
     id_sprint: 1,
+    labels: ["test", "test2"],
   });
 
   // Insert issue
