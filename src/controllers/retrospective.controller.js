@@ -30,26 +30,6 @@ const get_nuevo = async (request, response, next) => {
   });
 };
 
-const InitRetrospective = (request, response, next) => {
-  const retrospective = new Retrospective({
-    name: request.body.name,
-    start_date: request.body.start_date,
-    end_date: request.body.end_date,
-    state: request.body.state,
-    id_team: request.body.id_team,
-    id_sprint: request.body.id_sprint,
-  });
-
-  retrospective
-    .save()
-    .then(([rows, fieldData]) => {
-      request.session.last_retrospective = retrospective.name;
-
-      response.status(300).redirect("/retrospectivas");
-    })
-    .catch((error) => console.log(error));
-};
-
 const renderRetrospectiveQuestions = async (req, res, next) => {
   try {
     const id_retrospective = req.params.id;
@@ -110,6 +90,5 @@ module.exports = {
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
   getRetrospective,
-  InitRetrospective,
   get_nuevo,
 };
