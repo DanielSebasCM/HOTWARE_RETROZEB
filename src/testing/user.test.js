@@ -1,92 +1,175 @@
 const User = require("../models/user.model");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
 
 // ------------------ VERIFYER ------------------
 
 test("first_name is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "first_name",
+    validationMessages.isMandatory
+  );
+
+  try {
     new User({
       first_name: "",
       last_name: "Doe",
       email: "example@example.com",
     });
-  }).toThrow("El nombre no puede estar vacío");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("first_name is not too long", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "first_name",
+    validationMessages.mustBeShorterThan(40)
+  );
+
+  try {
     new User({
       first_name: "a".repeat(41),
       last_name: "Doe",
       email: "example@example.com",
     });
-  }).toThrow("El nombre no puede tener más de 40 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("first name exists", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "first_name",
+    validationMessages.isMandatory
+  );
+
+  try {
     new User({
       last_name: "Doe",
       email: "example@example.com",
     });
-  }).toThrow("El nombre no puede estar vacío");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("last_name is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "last_name",
+    validationMessages.isMandatory
+  );
+
+  try {
     new User({
-      first_name: "John",
+      first_name: "a",
       last_name: "",
       email: "example@example.com",
     });
-  }).toThrow("El apellido no puede estar vacío");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("last_name is not too long", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "last_name",
+    validationMessages.mustBeShorterThan(40)
+  );
+
+  try {
     new User({
-      first_name: "John",
+      first_name: "a",
       last_name: "a".repeat(41),
       email: "example@example.com",
     });
-  }).toThrow("El apellido no puede tener más de 40 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("last name exists", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "last_name",
+    validationMessages.isMandatory
+  );
+
+  try {
     new User({
-      first_name: "John",
+      first_name: "a",
       email: "example@example.com",
     });
-  }).toThrow("El apellido no puede estar vacío");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("email is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "email",
+    validationMessages.isMandatory
+  );
+
+  try {
     new User({
-      first_name: "John",
-      last_name: "Doe",
+      first_name: "a",
+      last_name: "asdasd",
       email: "",
     });
-  }).toThrow("El email no puede estar vacío");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("email is not too long", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "email",
+    validationMessages.mustBeShorterThan(40)
+  );
+
+  try {
     new User({
-      first_name: "John",
-      last_name: "Doe",
+      first_name: "a",
+      last_name: "asdasd",
       email: "a".repeat(41),
     });
-  }).toThrow("El email no puede tener más de 40 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("email exists", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "email",
+    validationMessages.isMandatory
+  );
+
+  try {
     new User({
-      first_name: "John",
-      last_name: "Doe",
+      first_name: "a",
+      last_name: "asdasd",
     });
-  }).toThrow("El email no puede estar vacío");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("getById return correct user", async () => {

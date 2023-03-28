@@ -16,7 +16,6 @@
     </div>
     <span class="line"></span>
   </div>
-
   <% if (state==="accepted" ) { %>
     <h2 class="subtitle"> Accionables Aprobados <span class="meta"></span></h2>
     <% } %>
@@ -43,7 +42,7 @@
                               <%= actionables[i].title %>
                             </h3>
                             <div class="pills-container" style="display: flex; flex-wrap: wrap">
-                              <%= moment( arrretros[i].start_date).fromNow(); %>
+                              <%= moment( arrRetros[i].start_date).fromNow(); %>
                                 <span class="pill pill--ontime"></span>
                             </div>
                           </div>
@@ -69,13 +68,13 @@
                             <li class="pills-container">
                               <span class="pill pill--small"></span>
                               <p>
-                                <%= moment(arrretros[i].end_date).format('LL') %>
+                                <%= moment(arrRetros[i].end_date).format('LL') %>
                               </p>
                             </li>
                             <li class="pills-container">
                               <span class="pill pill--small"></span>
                               <p>
-                                <%=arrretros[i].name %>
+                                <%=arrRetros[i].name %>
                               </p>
                             </li>
                           </ul>

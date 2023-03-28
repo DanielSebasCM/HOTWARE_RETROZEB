@@ -1,4 +1,7 @@
 const db = require("../utils/db");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
+const actionableStates = require("../utils/constants").enums.actionableStates;
 
 class SuggestedTodo {
   constructor(suggested_todo) {
@@ -41,7 +44,10 @@ class SuggestedTodo {
   static verify(suggested_todo) {
     // Length of title is less than 40
     if (suggested_todo.title?.length > 40)
-      throw new Error("El tamaño del titulo debe ser menor a 40 caracteres");
+      throw new ValidationError(
+        "title",
+        validationMessages.mustBeShorterThan(40)
+      );
 
     // Title is not empty or null
     if (
@@ -49,11 +55,14 @@ class SuggestedTodo {
       suggested_todo.title == null ||
       !suggested_todo.title
     )
-      throw new Error("Ingresa un titulo para este accionable");
+      throw new ValidationError("title", validationMessages.isMandatory);
 
     // Length of description is less than 255
     if (suggested_todo.description?.length > 255)
-      throw new Error("La descripcion debe ser menor a 255 caracteres");
+      throw new ValidationError(
+        "description",
+        validationMessages.mustBeShorterThan(255)
+      );
 
     // Description is not empty or null
     if (
@@ -61,28 +70,32 @@ class SuggestedTodo {
       suggested_todo.description == null ||
       !suggested_todo.description
     )
-      throw new Error("Ingresa una descripcion");
+      throw new ValidationError("description", validationMessages.isMandatory);
 
     //State is of type "PENDING", "ACCEPTED", "REJECTED"
-    const options = ["PENDING", "ACCEPTED", "REJECTED"];
-    if (!options.includes(suggested_todo.state))
-      throw new Error("El tipo de estado no es válido");
+    if (suggested_todo.state) {
+      if (!actionableStates.includes(suggested_todo.state))
+        throw new ValidationError(
+          "state",
+          validationMessages.mustBeEnum(actionableStates)
+        );
+    }
 
     //State is not null
     if (suggested_todo.state == null || !suggested_todo.state)
-      throw new Error("El tipo de estado no es válido");
+      throw new ValidationError("title", validationMessages.isMandatory);
 
-    //Id_user_author is a number
     if (!suggested_todo.id_user_author)
-      throw new Error("id_user_author no debe ser nulo");
-    if (isNaN(suggested_todo.id_user_author))
-      throw new Error("id_user_author debe ser un número entero");
+      throw new ValidationError(
+        "id_user_author",
+        validationMessages.isMandatory
+      );
 
-    //Id_retrospective is a number
     if (!suggested_todo.id_retrospective)
-      throw new Error("id_retrospective no debe ser nulo");
-    if (isNaN(suggested_todo.id_retrospective))
-      throw new Error("id_retrospective debe ser un número entero");
+      throw new ValidationError(
+        "id_retrospective",
+        validationMessages.isMandatory
+      );
 
     return true;
   }

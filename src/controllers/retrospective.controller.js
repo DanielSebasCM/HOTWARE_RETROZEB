@@ -4,7 +4,7 @@ const Sprint = require("../models/sprint.model");
 const moment = require("moment");
 moment.locale("es");
 
-const getRetrospective = async (_, res, next) => {
+const renderRetrospectives = async (req, res, next) => {
   try {
     const retrospectives = await Retrospective.getAll();
     for (let retrospective of retrospectives) {
@@ -21,12 +21,16 @@ const getRetrospective = async (_, res, next) => {
   }
 };
 
-const get_nuevo = async (request, response, next) => {
-  const questions = await Question.getAll();
-  response.render("retrospectives/initRetrospective", {
-    title: "Preguntas",
-    questions,
-  });
+const renderInitRetrospective = async (req, res, next) => {
+  try {
+    const questions = await Question.getAll();
+    res.render("retrospectives/initRetrospective", {
+      title: "Preguntas",
+      questions,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 const renderRetrospectiveQuestions = async (req, res, next) => {
@@ -62,14 +66,18 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
   }
 };
 
-const getRetrospectiveAnswers = async (req, res) => {
-  const retroId = req.params.id;
-  const retrospective = await Retrospective.getById(retroId);
-  const questions = await retrospective.getQuestions();
-  for (let question of questions) {
-    question.answers = await retrospective.getAnswers(question);
+const getRetrospectiveAnswers = async (req, res, next) => {
+  try {
+    const retroId = req.params.id;
+    const retrospective = await Retrospective.getById(retroId);
+    const questions = await retrospective.getQuestions();
+    for (let question of questions) {
+      question.answers = await retrospective.getAnswers(question);
+    }
+    res.send(questions);
+  } catch (err) {
+    console.log(err);
   }
-  res.send(questions);
 };
 
 const getRetrospectiveIssues = async (req, res, next) => {
@@ -84,10 +92,10 @@ const getRetrospectiveIssues = async (req, res, next) => {
 };
 
 module.exports = {
+  renderRetrospectives,
+  renderInitRetrospective,
   renderRetrospectiveMetrics,
   renderRetrospectiveQuestions,
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
-  getRetrospective,
-  get_nuevo,
 };

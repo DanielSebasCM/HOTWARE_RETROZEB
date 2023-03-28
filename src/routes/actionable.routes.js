@@ -2,10 +2,15 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/actionable.controller");
 
-router.get("/", controller.getDefault);
-router.get("/:state", controller.getActionables);
-// ruta con accionables pendientes
-router.post("/:id/accept", controller.accept);
-router.post("/:id/reject", controller.reject);
+// RENDERING ROUTES
+router.get("/", (req, res) => res.redirect(req.originalUrl + "/pending"));
+router.get("/:state", controller.renderActionables);
+
+// API ROUTES
+
+// POST
+// rutas para cambiar el estado del accionable
+router.post("/:id/accept", controller.acceptActionable);
+router.post("/:id/reject", controller.rejectActionable);
 
 module.exports = router;
