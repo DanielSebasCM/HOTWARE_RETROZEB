@@ -4,6 +4,7 @@ const routes = {
   retrospective: "/retrospectiva",
   teams: "/equipos",
   retrospectives: "/retrospectivas",
+  questions: "/preguntas",
   locals: "/locals",
 };
 
