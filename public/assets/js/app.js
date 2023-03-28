@@ -15,7 +15,7 @@
   );
 
   toggleButtonContainer.forEach((container) => {
-    const toggleButtons = container.querySelectorAll("button");
+    const toggleButtons = container.querySelectorAll(".toggle-button");
     toggleButtons.forEach((button) => {
       button.addEventListener("click", () => {
         toggleButtons.forEach((button) => {

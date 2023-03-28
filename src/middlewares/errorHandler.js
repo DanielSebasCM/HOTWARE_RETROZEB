@@ -9,6 +9,7 @@ const errorHandler = (err, req, res, next) => {
   if (err instanceof ValidationError) {
     validationErrorHandler(err, req, res, next);
   } else {
+    console.log(err);
     res.status(500).send("Internal Server Error");
   }
 };

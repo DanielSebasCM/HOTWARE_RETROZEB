@@ -1,9 +1,10 @@
 const routes = {
   home: "/",
   login: "/login",
-  retrospective: "/retrospectiva",
   teams: "/equipos",
+  actionables: "/accionables",
   retrospectives: "/retrospectivas",
+  questions: "/preguntas",
   locals: "/locals",
 };
 

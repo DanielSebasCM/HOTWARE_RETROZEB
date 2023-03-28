@@ -4,7 +4,12 @@ const { routes } = require("../utils/utils");
 
 // GET
 router.get("/", async (req, res) => {
-  res.render("dashboard/index", { title: "Dashboard" });
+  if (req.query.team)
+    req.app.locals.selectedTeam = req.app.locals.activeTeams.find(
+      (team) => team.id == req.query.team
+    );
+
+  res.render("utils", { title: "Utils" });
 });
 
 // LOGIN

@@ -42,7 +42,6 @@
 
 /* DESKTOP BREAKPOIN */
 @media screen and (min-width: 992px) {
-  .chart-container,
   .card {
     max-width: 80%;
   }

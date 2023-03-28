@@ -2,15 +2,15 @@
 <section class="dashboard">
   <div class="banner">
     <div class="banner__section">
-      <h1 class="title">Preguntas<span class="meta"></span></h1>
+      <h1 class="title"><%= retrospective.name %></h1>
       <p class="description">
         Visualiza las respuestas a las preguntas de la retrospectiva
       </p>
     </div>
     <div class="banner__section">
       <div class="toggle-buttons-container toggle-buttons-container--primary">
-        <button class="toggle-button">Métricas</button>
-        <button class="toggle-button toggle-button--active">Preguntas</button>
+        <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
+        <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
       </div>
     </div>
   </div>
@@ -43,4 +43,4 @@
   </section>
 </section>
 
-<script src="/assets/js/question.js"></script>
+<script type="module" src="/assets/js/dashboardQuestions.js"></script>
