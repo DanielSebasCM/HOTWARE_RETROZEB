@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
       (team) => team.id == req.query.team
     );
 
-  res.render("dashboard/index", { title: "Dashboard" });
+  res.render("utils", { title: "Utils" });
 });
 
 // LOGIN

@@ -7,7 +7,11 @@ const states = [
   { label: "Done", color: "rgba(255, 159, 64, 0.6)" },
 ];
 
-const data = await fetch("/retrospectiva/1/issues");
+let url = window.location.href.split("/");
+url[url.length - 1] = "issues";
+url = url.join("/");
+
+const data = await fetch(url);
 const issues = await data.json();
 
 let groupedByState = {};
