@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../middleware/locals.middleware");
+const controller = require("../middlewares/locals.middleware");
 
 router.post("/", () => {
   controller.setLocals;

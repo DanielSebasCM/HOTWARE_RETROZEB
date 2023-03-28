@@ -5,8 +5,8 @@ const retrospectiveRouter = require("./retrospective.routes");
 const answerRouter = require("./retrospective.routes");
 const questionRouter = require("./questions.routes");
 const localsRouter = require("./locals.routes");
-const { setLocals } = require("../middleware/locals.middleware");
-const { routes } = require("../utils/utils");
+const { setLocals } = require("../middlewares/locals.middleware");
+const { routes } = require("../utils/constants");
 
 const initRoutes = (app) => {
   app.use(setLocals); // MIDDLEWARE
