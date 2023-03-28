@@ -7,25 +7,66 @@
         Listado de todas las retrospectivas creadas
     </p>
 </div>
-<div class="banner__section">
+<div class="buttons-container" style="display: flex; flex-wrap: wrap">
     <button class="button button--edit">Comparar</button>
-    <a class="button button--primary" href="#">Iniciar Retrospectiva</a>
+    <a class="button button--primary" href="retrospectivas/iniciar">Iniciar Retrospectiva</a>
 </div>
 <span class="line"></span>
 
-<div class="cards-container">
-<div class="input search-bar">
-    <span class="icon search-bar__icon"></span>
-    <input type="text" placeholder="Buscar por título" />
+<div class="buttons-container" style="display: flex; flex-wrap: wrap">
+    <div class="input search-bar">
+        <span class="icon search-bar__icon"></span>
+        <input type="text" placeholder="Buscar por título" />
+    </div>
+
+    <div class="select-container" style="width: 50%;">
+        <select class="select">
+        <option value="1">Fecha Ascendente</option>
+        <option value="2">Fecha Descendente</option>
+        </select>
+    </div>
 </div>
 
-<div class="select-container">
-    <select class="select">
-      <option value="1">Fecha Ascendente</option>
-      <option value="2">Fecha Descendente</option>
-    </select>
-  </div>
+<% if(retrospectives && retrospectives.length> 0) { %>
+<div class="banner--nomargin" style="width: 100%;">
+    <% for(let i=0; i < retrospectives.length; i++) { %>
+    <div class="charts-container" style="width: 100%;">
+        <table class="table-rwd">
+            <thead>
+            <tr class="subtitle">
+                <td>Titulo</td>
+                <td>Estado</td>
+                <td>Sprint</td>
+                <td>Fecha</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr class="description">
+                <td><%= retrospectives[i].name %></td>
+                <td>
+                    <% if(retrospectives[i].state == 'PENDING') { %>
+                        <span class="label label--danger">Pendiente</span>
+                    <% } else if(retrospectives[i].state == 'IN_PROGRESS'){ %>
+                        <span class="label label--active">En progreso</span>
+                    <% } else if(retrospectives[i].state == 'CLOSED'){ %>
+                        <span class="label label--success">Terminado</span>
+                    <% } else { %>
+                        No se pudo cargar
+                    <% } %></td> 
+                <td><%=  retrospectives[i].sprint_name  %></td>
+                <td> <%= moment(retrospectives[i].start_date).format('LL') %> </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
 </div>
+    <% } %>
+<% } else { %>
+    <p class="description" style="text-align: right">
+      Por el momento no existe ninguna retrospectiva
+    </p>
+<% } %>
 
 
 </section>
