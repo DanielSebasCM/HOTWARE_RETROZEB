@@ -15,7 +15,7 @@
   );
 
   toggleButtonContainer.forEach((container) => {
-    const toggleButtons = container.querySelectorAll("button");
+    const toggleButtons = container.querySelectorAll(".toggle-button");
     toggleButtons.forEach((button) => {
       button.addEventListener("click", () => {
         toggleButtons.forEach((button) => {
@@ -56,7 +56,7 @@
       btn.parentElement.classList.add("hide");
 
       const type = btn.dataset.type;
-      
+
       try {
         return await fetch(`http://localhost:3000/locals/mensajes/${type}`, {
           method: "POST",
