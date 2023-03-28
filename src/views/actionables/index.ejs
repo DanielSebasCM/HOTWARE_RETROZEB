@@ -35,7 +35,7 @@
                   <h3 class="card__title"> <%= actionables[i].title %> </h3>
                   <span class="line"></span>
                   <div class="pills-container" style="display: flex; flex-wrap: wrap">
-                    <span class="pill pill--ontime"></span><%= moment( arrretros[i].start_date).fromNow(); %>
+                    <span class="pill pill--ontime"></span><%= moment( arrRetros[i].start_date).fromNow(); %>
                   </div>
                   <p class="description">
                     <%= actionables[i].description %>
@@ -58,12 +58,12 @@
                           <div class="pills-container" style="display: flex; flex-wrap: wrap">
                             <span class="pill pill--small"></span>
                           </div>
-                          <p> <%= moment(arrretros[i].end_date).format('LL') %> </p>
+                          <p> <%= moment(arrRetros[i].end_date).format('LL') %> </p>
                         <li class="items__item">
                           <div class="pills-container" style="display: flex; align-items: center; justify-content: center;">
                             <span class="pill pill--small"></span>
                           </div>
-                          <p> <%=arrretros[i].name %> </p>
+                          <p> <%=arrRetros[i].name %> </p>
                       </div>
                       <% if(state === "pending") { %>
                       <div class="horizontal_list">

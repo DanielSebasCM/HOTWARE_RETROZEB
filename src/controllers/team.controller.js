@@ -1,7 +1,7 @@
 const Team = require("../models/team.model");
 const messages = require("../utils/messages");
 
-const getAllWithUsers = async (req, res) => {
+const renderTeams = async (req, res) => {
   const teams = await Team.getAllActive();
   for (let team of teams) {
     team.members = await team.getMembers();
@@ -40,12 +40,9 @@ const addUser = async (req, res, next) => {
     // Verify if user exists in the team
     const members = await team.getMembers();
     const userInTeam = members.find((member) => member.uid == uid);
-    if (userInTeam) {
-      req.session.errorMessage = messages.team.error.duplicateTeamMember;
-      return res
-        .status(400)
-        .json({ message: messages.team.error.duplicateTeamMember });
-    }
+
+    if (userInTeam)
+      throw new Error(messages.team.error.teamMemberAlreadyExists);
 
     await team.addUser(uid);
     req.session.successMessage = messages.team.success.teamMemberAdded;
@@ -70,12 +67,9 @@ const removeUser = async (req, res, next) => {
     // Verify if user exists in the team
     const members = await team.getMembers();
     const userInTeam = members.find((member) => member.uid == uid);
-    if (!userInTeam) {
-      req.session.errorMessage = messages.team.error.teamMemberDoesNotExist;
-      return res
-        .status(400)
-        .json({ message: messages.team.error.teamMemberDoesNotExist });
-    }
+
+    if (!userInTeam)
+      throw new Error(messages.team.error.teamMemberDoesNotExist);
 
     await team.removeUser(uid);
     req.session.successMessage = messages.team.success.teamMemberRemoved;
@@ -86,7 +80,7 @@ const removeUser = async (req, res, next) => {
 };
 
 module.exports = {
-  getAllWithUsers,
+  renderTeams,
   addUser,
   removeUser,
 };
