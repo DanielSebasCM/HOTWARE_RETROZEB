@@ -1,4 +1,6 @@
 const db = require("../utils/db");
+const Team = require("./team.model");
+
 class User {
   constructor(user) {
     User.verify(user);
@@ -31,6 +33,25 @@ class User {
     return new User(user[0]);
   }
 
+  async getTeams() {
+    const [teams, _] = await db.execute(
+      `SELECT t.* FROM team t, team_users tu WHERE tu.uid = ? AND tu.id_team = t.id`,
+      [this.uid]
+    );
+
+    return teams.map((team) => new Team(team));
+  }
+
+  async getActiveTeams() {
+    const [teams, _] = await db.execute(
+      `SELECT t.* FROM team t, team_users tu WHERE tu.uid = ? AND tu.id_team = t.id AND tu.active = 1`,
+      [this.uid]
+    );
+    console.log(teams);
+    teams.map((team) => new Team(team));
+    return teams;
+  }
+
   static async getByGoogleId(id_google_auth) {
     let [user, _] = await db.execute(
       `SELECT * FROM user WHERE id_google_auth = ?`,
@@ -44,7 +65,6 @@ class User {
   }
 
   //----------------------------VERIFY--------------------------------
-
   static verify(user) {
     if (!user.first_name) {
       throw new Error("El nombre no puede estar vacío");

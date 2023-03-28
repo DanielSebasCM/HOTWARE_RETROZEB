@@ -5,7 +5,8 @@ const setLocals = async (req, res, next) => {
     req.app.locals.currentUser = {
       first_name: "Mariane",
       last_name: "Boyer",
-      id: 12,
+      uid: 12,
+      email: "mariane@boyer.com"
     };
     res.locals.successMessage = req.session.successMessage;
     res.locals.errorMessage = req.session.errorMessage;
