@@ -138,13 +138,14 @@
   /* padding-top: var(--container-pt); */
 }
 
-.cards-container--full {
+.centcontainer {
+
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-bottom: var(--container-mb);
-  padding-top: var(--container-pt);
+  align-items: center;
+  justify-content: center;
+  margin-top: 20vh;
 }
+
 /* CARDS */
 .card {
   width: 100%;
@@ -319,6 +320,15 @@
   border-color: var(--color-font-alert);
 }
 
+.pill--small {
+  height: 1.2rem;
+  max-width: 2rem;
+  min-width: 2rem;
+  border-radius: 0.3rem;
+  margin-bottom: 0;
+  background-color: var(--color-font-active);
+  border-color: var(--color-font-active);
+}
 /* BUTTON */
 .button {
   display: flex;
@@ -335,6 +345,10 @@
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: var(--transition);
+}
+
+.button--small {
+  width: 10rem;
 }
 
 .button:hover {
