@@ -1,0 +1,48 @@
+<section class="dashboard">
+    <div class="banner">
+      <div class="banner__section">
+        <h1 class="title">Iniciar Retrospectiva</h1>
+        <p class="description">
+            Registrar una nueva sesión de retrospectiva. Selecciona las preguntas que desees incluir 
+            o crea preguntas nuevas.
+        </p>
+      </div>
+    </div>
+    <div class="buttons-container" style="display: flex; flex-wrap: wrap">
+        <a class="button button--primary" href="#">Guardar</a>
+    </div>
+    <span class="line"></span>
+</section>
+
+<div class="chart-container" style="min-height: 5rem" >
+
+    <label class="subtitle">Nombre:</label> 
+    <div class="input-container">
+        <label class="input__label" for=""></label>
+        <input class="input" type="text" placeholder="Nombre de la Retrospectiva" />
+    </div>
+    
+</div>
+<br>
+
+<% if(questions.length> 0) { 
+    for(let i=0; i < questions.length; i++) { %>
+    
+    <div class="chart-container" style="min-height: 5rem" >
+        <input type="checkbox" checked=""/> 
+        <label class="subtitle">  <%= questions[i].description %>  </label> 
+        <span class="label label--active"> <%= questions[i].type %>  </span>
+    </div>
+    <br>
+<% } } else { %>
+    <p class="description" style="text-align: right">
+      Por el momento no hay preguntas registradas. Empieza a crear las tuyas!
+    </p>
+<% }  %>
+<br>
+
+<div class="buttons-container" style="display: flex; flex-wrap: wrap">
+    <a class="button button--primary" href="#">Guardar</a>
+    <a class="button button--edit" href="#">Crear pregunta</a>
+    <a class="button button--discard" href="<%=routes.retrospectives %>">Descartar</a>
+</div>

@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3000;
 const session = require("express-session");
 const expressLayouts = require("express-ejs-layouts");
 const initRoutes = require("./src/routes/index.routes");
-const { routes } = require("./src/utils/utils");
+const { routes } = require("./src/utils/constants");
 const errorHandler = require("./src/middlewares/errorHandler");
 
 // SET VIEW ENGINE
