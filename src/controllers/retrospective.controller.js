@@ -1,4 +1,34 @@
 const Retrospective = require("../models/retrospective.model");
+const Question = require("../models/question.model");
+const Sprint = require("../models/sprint.model");
+const moment = require("moment");
+moment.locale("es");
+
+const getRetrospective = async (req, res, next) => {
+  try {
+    const retrospectives = await Retrospective.getAll();
+    for (let retrospective of retrospectives) {
+      const sprint = await Sprint.getById(retrospective.id_sprint);
+      retrospective.sprint_name = sprint.name;
+    }
+    console.log(retrospectives);
+    res.status(200).render("retrospectives/index", {
+      title: "Retrospectivas",
+      retrospectives,
+      moment,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const get_nuevo = async (request, response, next) => {
+  const questions = await Question.getAll();
+  response.render("retrospectives/initRetrospective", {
+    title: "Preguntas",
+    questions,
+  });
+};
 
 const renderRetrospectiveQuestions = async (req, res, next) => {
   try {
@@ -59,4 +89,6 @@ module.exports = {
   renderRetrospectiveQuestions,
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
+  getRetrospective,
+  get_nuevo,
 };
