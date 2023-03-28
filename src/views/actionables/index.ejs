@@ -6,11 +6,11 @@
     </div>
     <div class="banner__section">
       <div class="toggle-buttons-container toggle-buttons-container--primary">
-        <a class="toggle-button <%= (state === " accepted") && "toggle-button--active" %>"
+        <a class="toggle-button <%= (state === "accepted") && "toggle-button--active" %>"
           href="/accionables/accepted">Aprobado</a>
-        <a class="toggle-button <%= (state === " pending") && "toggle-button--active" %>"
+        <a class="toggle-button <%= (state === "pending") && "toggle-button--active" %>"
           href="/accionables/pending">Por Aprobar</a>
-        <a class="toggle-button <%= (state === " rejected") && "toggle-button--active" %>"
+        <a class="toggle-button <%= (state === "rejected") && "toggle-button--active" %>"
           href="/accionables/rejected">Rechazado </a>
       </div>
     </div>
@@ -81,7 +81,7 @@
                           </ul>
 
                           <% if(state==="pending" ) { %>
-                            <div class="buttons-container">
+                            <div class="buttons-container card__footer">
                               <form action="<%= actionables[i].id %>/accept" method="POST">
                                 <button class="button button--primary" type="submit">Aprobar</button>
                               </form>

@@ -45,8 +45,9 @@
 .notification-container {
   position: fixed;
   top: 85px;
-  left: 2rem;
-  right: 2rem;
+  /* left: 2rem; */
+  /* right: 2rem; */
+  right: calc((100% - 266px) / 2);
   z-index: 999;
   display: flex;
   flex-direction: column;
@@ -710,6 +711,14 @@ a.toggle-button {
   font-weight: 600;
   margin-bottom: 1rem;
   color: var(--color-font-active);
+}
+
+/* PIN GRID */
+.pin_container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, var(--card_width)) !important;
+  grid-auto-rows: var(--row_increment) !important;
+  justify-content: center !important;
 }
 
 /* UTILS */
