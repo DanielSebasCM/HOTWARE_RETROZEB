@@ -15,7 +15,7 @@
   --color-font-active: #4376ec;
   --color-bg-active: #e5edff;
   --color-border-active: #adc5ff;
-  --color-font-alert: #b13c3c;
+  --color-font-alert: #ca5757;
   --color-bg-alert: #facfcf;
   --color-border-alert: #fd8d8d;
   --color-font-success: #2f6c11;
@@ -27,7 +27,7 @@
   --color-font-inactive: #141824;
   --color-bg-inactive: #e3e6ed;
   --color-border-inactive: #cbd0dd;
-  --color-line: #dcdcdc;
+  --color-line: #ededed;
 
   /* OTHER */
   --box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -44,12 +44,14 @@
   --input-height: 4rem;
 
   /* MARGINS */
-  --component-mb: 1rem;
-  --component-mr: 1rem;
-  --banner-mb: 1rem;
   --container-mb: 3rem;
   --container-pt: 3rem;
+  --banner-mb: 2rem;
+  --component-mb: 2rem;
+  --component-mr: 2rem;
   --card-mb: 2rem;
+  --text-mb: 1.3rem;
+  --line-m: 3rem;
 }
 
 /* -------------------------------------------- CONFIG -------------------------------------------- */

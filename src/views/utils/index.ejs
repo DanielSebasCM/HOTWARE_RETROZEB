@@ -1,8 +1,12 @@
 <!-- MAIN -->
 <section class="dashboard">
-  <h1 class="title">Sprint 19: Resumen Retrospectiva</h1>
-  <p class="description">Resumen del desempeño en la retrospectiva</p>
-  <span class="line"></span>
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">Sprint 19: Resumen Retrospectiva</h1>
+      <p class="description">Resumen del desempeño en la retrospectiva</p>
+    </div>
+    <span class="line"></span>
+  </div>
 
   <!-- Notifications -->
   <div class="notification-container">
@@ -38,7 +42,7 @@
   </div>
 
   <!-- Pills -->
-  <h2 class="subtitle">Pills</h2>
+  <h2 class="subtitle mt-4">Pills</h2>
   <div class="pills-container" style="display: flex; flex-wrap: wrap">
     <span class="pill pill--ontime"></span>
     <span class="pill pill--late"></span>
@@ -46,7 +50,7 @@
   </div>
 
   <!-- Buttons -->
-  <h2 class="subtitle">Buttons</h2>
+  <h2 class="subtitle mt-4">Buttons</h2>
   <div class="buttons-container" style="display: flex; flex-wrap: wrap">
     <button class="button button--primary">Guardar</button>
     <button class="button button--edit">Editar</button>
@@ -54,31 +58,31 @@
     <button class="button button--delete">Eliminar</button>
   </div>
 
-  <h2 class="subtitle">Toggle Buttons</h2>
+  <h2 class="subtitle mt-4">Toggle Buttons</h2>
   <div class="toggle-buttons-container toggle-buttons-container--primary">
     <button class="toggle-button toggle-button--active">Activo</button>
     <button class="toggle-button">Inactivo</button>
   </div>
-  <div class="toggle-buttons-container toggle-buttons-container--primary">
+  <div class="toggle-buttons-container toggle-buttons-container--primary mt-3">
     <button class="toggle-button toggle-button--active">Activo</button>
     <button class="toggle-button">Inactivo</button>
     <button class="toggle-button">Cancelado</button>
   </div>
 
   <!-- Inputs -->
-  <h2 class="subtitle">Inputs</h2>
+  <h2 class="subtitle mt-4">Inputs</h2>
   <div class="input-container">
     <label class="input__label" for=""></label>
     <input class="input" type="text" placeholder="Input" />
   </div>
 
-  <div class="input search-bar">
+  <div class="input search-bar mt-2">
     <span class="icon search-bar__icon"></span>
     <input type="text" placeholder="Buscar" />
   </div>
 
   <!-- Select -->
-  <h2 class="subtitle">Select</h2>
+  <h2 class="subtitle mt-4">Select</h2>
   <div class="select-container">
     <select class="select">
       <option value="1">Opción 1</option>
@@ -88,7 +92,7 @@
   </div>
 
   <!-- Charts -->
-  <h2 class="subtitle">Charts</h2>
+  <h2 class="subtitle mt-4">Charts</h2>
 
   <div class="charts-container">
     <div class="chart-container">
@@ -104,6 +108,5 @@
     </div>
   </div>
 </section>
-
 
 <script type="module" src="/assets/js/data.js"></script>

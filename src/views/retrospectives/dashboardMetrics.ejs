@@ -2,45 +2,60 @@
 <section class="dashboard">
   <!-- HEADER -->
   <div class="banner">
-    <div class="bannet__section">
+    <div class="banner__section">
       <h1 class="title"><%= retrospective.name %></h1>
       <p class="description">Resumen del desempeño en la retrospectiva</p>
     </div>
+
     <div class="banner__section">
       <div class="toggle-buttons-container toggle-buttons-container--primary">
-        <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
-        <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
+        <a
+          class="toggle-button toggle-button--active"
+          href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas"
+          >Métricas</a
+        >
+        <a
+          class="toggle-button"
+          href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas"
+          >Preguntas</a
+        >
       </div>
     </div>
+
+    <span class="line"></span>
   </div>
-  <span class="line"></span>
-  <div>
-    <p class="subtitle">Labels</p>
+
+  <!-- FILTERS -->
+  <h3 class="subtitle">Filtros</h3>
+  <div class="filters-container">
     <div class="select-container">
       <select class="select" id="label-options">
-        <option value="Todos">Todos</option>
+        <option value="Todos">Todos los Labels</option>
         <option value="Sin Label">Sin Label</option>
-        <% for (let i = 0; i < labels.length; i++) { %>
+        <% for (let i=0; i < labels.length; i++) { %>
         <option value="<%= labels[i] %>"><%= labels[i] %></option>
         <% } %>
       </select>
     </div>
   </div>
+
   <!-- CHARTS -->
   <div class="chart-container">
     <canvas id="general-chart"></canvas>
   </div>
 
-  <h2 class="subtitle">Otras métricas</h2>
   <span class="line"></span>
-  <div class="chart-container">
-    <canvas id="epics-chart"></canvas>
-  </div>
-  <div class="chart-container">
-    <canvas id="types-chart"></canvas>
-  </div>
-  <div class="chart-container">
-    <canvas id="priorities-chart"></canvas>
+  <h2 class="subtitle">Otras métricas</h2>
+  <div class="charts-container charts-container--no-col">
+    <div class="chart-container">
+      <canvas id="epics-chart"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="types-chart"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="priorities-chart"></canvas>
+    </div>
   </div>
 </section>
 

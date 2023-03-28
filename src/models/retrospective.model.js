@@ -31,7 +31,7 @@ class Retrospective {
     return new Retrospective(retrospective[0]);
   }
   static async getAll() {
-    let [retrospectives, _] = await db.execute(`SELECT * FROM retrospective`);
+    let [retrospectives, _] = await db.execute(`SELECT * FROM retrospective ORDER BY start_date DESC`);
     return retrospectives.map(
       (retrospective) => new Retrospective(retrospective)
     );

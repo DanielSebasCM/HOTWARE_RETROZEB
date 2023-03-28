@@ -4,14 +4,13 @@ const Sprint = require("../models/sprint.model");
 const moment = require("moment");
 moment.locale("es");
 
-const getRetrospective = async (req, res, next) => {
+const getRetrospective = async (_, res, next) => {
   try {
     const retrospectives = await Retrospective.getAll();
     for (let retrospective of retrospectives) {
       const sprint = await Sprint.getById(retrospective.id_sprint);
       retrospective.sprint_name = sprint.name;
     }
-    console.log(retrospectives);
     res.status(200).render("retrospectives/index", {
       title: "Retrospectivas",
       retrospectives,
