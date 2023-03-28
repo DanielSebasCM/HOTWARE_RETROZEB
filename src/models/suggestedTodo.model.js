@@ -31,9 +31,10 @@ class SuggestedTodo {
     );
   }
 
-  static async getAllState() {
+  static async getAllState(state) {
     let [suggested_todo_, _] = await db.execute(
-      `SELECT * FROM suggested_todo WHERE state = ('PENDING', 'ACCEPTED', 'REJECTED')`
+      `SELECT * FROM suggested_todo WHERE state = ?`,
+      [state]
     );
     return suggested_todo_.map(
       (suggested_todo) => new SuggestedTodo(suggested_todo)

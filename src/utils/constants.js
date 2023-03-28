@@ -6,6 +6,15 @@ const constants = {
     questionTypes: ["OPEN", "BOOLEAN", "SCALE", "SELECTION"],
     actionableStates: ["PENDING", "ACCEPTED", "REJECTED"],
   },
+  routes: {
+    home: "/",
+    login: "/login",
+    teams: "/equipos",
+    actionables: "/accionables",
+    retrospectives: "/retrospectivas",
+    questions: "/preguntas",
+    locals: "/locals",
+  },
 };
 
 module.exports = constants;

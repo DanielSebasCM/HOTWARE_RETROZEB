@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { routes } = require("../utils/utils");
+const { routes } = require("../utils/constants");
 
 // GET
 router.get("/", async (req, res) => {
@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
       (team) => team.id == req.query.team
     );
 
-  res.render("dashboard/index", { title: "Dashboard" });
+  res.render("utils", { title: "Utils" });
 });
 
 // LOGIN

@@ -15,7 +15,7 @@
   );
 
   toggleButtonContainer.forEach((container) => {
-    const toggleButtons = container.querySelectorAll("button");
+    const toggleButtons = container.querySelectorAll(".toggle-button");
     toggleButtons.forEach((button) => {
       button.addEventListener("click", () => {
         toggleButtons.forEach((button) => {
@@ -35,15 +35,15 @@
   teamOptions.addEventListener("change", (event) => {
     teamList.forEach((team) => {
       if (team.value == event.target.value) {
-        return fetch(`http://localhost:3000/dashboard?team=${team.value}`, {
-          method: "GET",
-        })
-          .then(() => {
-            location.reload();
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        return fetch(`http://localhost:3000/locals`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ activeTeam: team.value }),
+        }).catch((err) => {
+          console.log(err);
+        });
       }
     });
   });
@@ -56,7 +56,7 @@
       btn.parentElement.classList.add("hide");
 
       const type = btn.dataset.type;
-      
+
       try {
         return await fetch(`http://localhost:3000/locals/mensajes/${type}`, {
           method: "POST",

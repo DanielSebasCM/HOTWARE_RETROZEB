@@ -1,8 +1,14 @@
-const getById = async (req, res) => {};
+const Question = require("../models/question.model");
 
-const postOne = async (req, res) => {};
+const renderQuestions = async (req, res, next) => {
+  try {
+    const questions = await Question.getAll();
+    res.render("questions", { questions, title: "Preguntas" });
+  } catch (err) {
+    next(err);
+  }
+};
 
 module.exports = {
-  getById,
-  postOne,
+  renderQuestions,
 };
