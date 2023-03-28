@@ -209,6 +209,13 @@
 .card__footer {
   margin-top: auto !important;
 }
+
+.card--question {
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+/* CHARTS */
 .banner {
   width: 100%;
   display: flex;
