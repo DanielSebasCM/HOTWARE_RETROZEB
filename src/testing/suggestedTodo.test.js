@@ -1,116 +1,198 @@
 const SuggestedTodo = require("../models/suggestedTodo.model");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
+const actionableStates = require("../utils/constants").actionableStates;
 
 // ------------------ VERIFIER ------------------
 test("SuggestedTodo title is in range title.length < 40", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "title",
+    validationMessages.mustBeShorterThan(40)
+  );
+  try {
     new SuggestedTodo({
       title: "a".repeat(41),
     });
-  }).toThrow("El tamaño del titulo debe ser menor a 40 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("SuggestedTodo title.length > 0", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "title",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
       title: "",
     });
-  }).toThrow("Ingresa un titulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("SuggestedTodo title is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "title",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({});
-  }).toThrow("Ingresa un titulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("SuggestedTodo title is not null", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "title",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
       title: null,
     });
-  }).toThrow("Ingresa un titulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("SuggestedTodo description is in range description.length < 255", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "description",
+    validationMessages.mustBeShorterThan(255)
+  );
+  try {
     new SuggestedTodo({
-      title: "hola",
+      title: "q",
       description: "a".repeat(256),
     });
-  }).toThrow("La descripcion debe ser menor a 255 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("SuggestedTodo description.length > 0", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "description",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
-      title: "hola",
+      title: "a",
       description: "",
     });
-  }).toThrow("Ingresa una descripcion");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("SuggestedTodo description is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "description",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
-      title: "hola",
+      title: "a",
     });
-  }).toThrow("Ingresa una descripcion");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("SuggestedTodo description is not null", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "description",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
-      title: "hola",
+      title: "a",
       description: null,
     });
-  }).toThrow("Ingresa una descripcion");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("id_user_author is not null", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_user_author",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
-      title: "a".repeat(40),
-      state: "PENDING",
-      description: "...",
+      title: "a",
+      description: "asdas",
       id_user_author: null,
     });
-  }).toThrow("id_user_author no debe ser nulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("id_user_author is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_user_author",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
-      title: "a".repeat(40),
-      state: "PENDING",
-      description: "...",
+      title: "a",
+      description: "asdas",
       id_user_author: "",
     });
-  }).toThrow("id_user_author no debe ser nulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("id_user_author is included", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_user_author",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
-      title: "a".repeat(40),
-      state: "PENDING",
-      description: "...",
+      title: "a",
+      description: "asdas",
     });
-  }).toThrow("id_user_author no debe ser nulo");
-});
-
-test("id_user_author is number", () => {
-  expect(() => {
-    new SuggestedTodo({
-      title: "a".repeat(40),
-      state: "PENDING",
-      description: "...",
-      id_user_author: "Esto no sirve",
-    });
-  }).toThrow("id_user_author debe ser un número entero");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("id_retrospective is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_retrospective",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
       title: "a".repeat(40),
       state: "ACCEPTED",
@@ -118,11 +200,19 @@ test("id_retrospective is not empty", () => {
       id_user_author: 4,
       id_retrospective: "",
     });
-  }).toThrow("id_retrospective no debe ser nulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("id_retrospective is not null", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_retrospective",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
       title: "a".repeat(40),
       state: "ACCEPTED",
@@ -130,30 +220,29 @@ test("id_retrospective is not null", () => {
       id_user_author: 4,
       id_retrospective: null,
     });
-  }).toThrow("id_retrospective no debe ser nulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("id_retrospective is included", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_retrospective",
+    validationMessages.isMandatory
+  );
+  try {
     new SuggestedTodo({
       title: "a".repeat(40),
       state: "ACCEPTED",
       description: "...",
       id_user_author: 4,
     });
-  }).toThrow("id_retrospective no debe ser nulo");
-});
-
-test("id_retrospective is number", () => {
-  expect(() => {
-    new SuggestedTodo({
-      title: "a".repeat(40),
-      state: "ACCEPTED",
-      description: "...",
-      id_user_author: 4,
-      id_retrospective: "Esto no sirve",
-    });
-  }).toThrow("id_retrospective debe ser un número entero");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 // ------------------ METHODS ------------------

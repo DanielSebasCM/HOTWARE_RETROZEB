@@ -1,4 +1,8 @@
 const db = require("../utils/db");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
+const issuePriorities = require("../utils/constants").enums.issuePriorities;
+const issueStates = require("../utils/constants").enums.issueStates;
 
 class Issue {
   constructor(issue) {
@@ -48,37 +52,36 @@ class Issue {
   static verify(issue) {
     // Length of epic_name is not null
     if (issue.epic_name?.length == 0)
-      throw new Error("Ingresa un nombre de epic");
+      throw new ValidationError("epic_name", validationMessages.isMandatory);
 
     // Length of epic_name is less than 40
     if (issue.epic_name?.length > 40)
-      throw new Error(
-        "El tamaño del nombre de epic debe ser menor a 40 caracteres"
+      throw new ValidationError(
+        "epic_name",
+        validationMessages.mustBeShorterThan(40)
       );
 
     // Type is not null and of type LOWEST, LOW, MEDIUM, HIGH, HIGHEST
     if (issue.priority) {
-      const priority = ["Lowest", "Low", "Medium", "High", "Highest"];
-      if (!priority.includes(issue.priority))
-        throw new Error("La prioridad no es válida");
+      if (!issuePriorities.includes(issue.priority))
+        throw new ValidationError(
+          "priority",
+          validationMessages.mustBeEnum(issuePriorities)
+        );
     }
 
     // Type is not null and of type To Do, En curso, Pull requessts, QA, Blocked, Done
     if (issue.state) {
-      const state = [
-        "To Do",
-        "En curso",
-        "Pull request",
-        "QA",
-        "Blocked",
-        "Done",
-      ];
-      if (!state.includes(issue.state))
-        throw new Error("El estado no es válido");
+      if (!issueStates.includes(issue.state))
+        throw new ValidationError(
+          "state",
+          validationMessages.mustBeEnum(issueStates)
+        );
     }
 
     // Length of id_sprint is not null
-    if (!issue.id_sprint) throw new Error("id_sprint es obligatorio");
+    if (!issue.id_sprint)
+      throw new ValidationError("id_sprint", validationMessages.isMandatory);
 
     return true;
   }

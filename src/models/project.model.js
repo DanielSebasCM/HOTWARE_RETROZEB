@@ -1,4 +1,6 @@
 const db = require("../utils/db");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
 
 class Project {
   constructor(project) {
@@ -39,12 +41,15 @@ class Project {
   static verify(project) {
     // Lenght of name is less than 40
     if (project.name?.length > 40)
-      throw new Error("El nombre debe ser menor a 40 caracteres");
+      throw new ValidationError(
+        "name",
+        validationMessages.mustBeShorterThan(40)
+      );
 
     if (project.name?.length === 0)
-      throw new Error("El nombre no puede estar vacío");
-
-    if (!project.name) throw new Error("El nombre no puede ser nulo");
+      throw new ValidationError("name", validationMessages.isMandatory);
+    if (!project.name)
+      throw new ValidationError("name", validationMessages.isMandatory);
   }
 
   async post() {

@@ -1,26 +1,52 @@
 const Role = require("../models/role.model");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
 
 // ------------------ VERIFIER ------------------
 test("role name is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
     new Role({
       name: "",
     });
-  }).toThrow("Ingresa un nombre");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("role name is smaller than 40 characters", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.mustBeShorterThan(40)
+  );
+  try {
     new Role({
       name: "a".repeat(41),
     });
-  }).toThrow("El tamaño del nombre debe ser menor a 40 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("role name exists", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
     new Role({});
-  }).toThrow("Ingresa un nombre");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("get role by id", async () => {

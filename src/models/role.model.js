@@ -1,4 +1,6 @@
 const db = require("../utils/db");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
 
 class Role {
   constructor(role) {
@@ -28,10 +30,13 @@ class Role {
 
   static verify(role) {
     if (!role.name) {
-      throw new Error("Ingresa un nombre");
+      throw new ValidationError("name", validationMessages.isMandatory);
     }
     if (role.name?.length > 40) {
-      throw new Error("El tamaño del nombre debe ser menor a 40 caracteres");
+      throw new ValidationError(
+        "name",
+        validationMessages.mustBeShorterThan(40)
+      );
     }
   }
 

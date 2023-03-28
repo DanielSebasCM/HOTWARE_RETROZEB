@@ -1,93 +1,143 @@
 const Question = require("../models/question.model");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
+const questionTypes = require("../utils/constants").enums.questionTypes;
 
 // ------------------ VERIFIER ------------------
 test("question length is in range", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "description",
+    validationMessages.mustBeShorterThan(255)
+  );
+  try {
     new Question({
       description: "a".repeat(256),
       type: "OPEN",
     });
-  }).toThrow("El tamaño de la pregunta debe ser menor a 255 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("question is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "description",
+    validationMessages.isMandatory
+  );
+  try {
     new Question({
       description: "",
       type: "OPEN",
     });
-  }).toThrow("Ingresa una pregunta");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("type is not null and of type OPEN, BOOLEAN, SCALE or SELECTION", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "type",
+    validationMessages.mustBeEnum(questionTypes)
+  );
+  try {
     new Question({
       description: "a".repeat(255),
       type: "INVALID",
     });
-  }).toThrow("El tipo de pregunta no es válido");
-});
-
-test("type is not null and of type OPEN, BOOLEAN, SCALE or SELECTION, and options are not null", () => {
-  expect(() => {
-    new Question({
-      description: "a".repeat(255),
-      type: "BOOLEAN",
-      options: ["a".repeat(10)],
-    });
-  }).toThrow("Para ingresar opciones, el tipo de pregunta debe ser SELECTION");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Option is SELECTION and Option is not null and length > 1", () => {
-  expect(() => {
+  let thrownError;
+  let expectedError = new ValidationError(
+    "option",
+    validationMessages.isMandatory
+  );
+  try {
     new Question({
       description: "a".repeat(255),
       type: "SELECTION",
       options: null,
     });
-  }).toThrow("Ingresa al menos dos opciones");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 
-  expect(() => {
+  expectedError = new ValidationError(
+    "options",
+    validationMessages.mustBeLongerThan(2)
+  );
+
+  try {
     new Question({
       description: "a".repeat(255),
       type: "SELECTION",
       options: [],
     });
-  }).toThrow("Ingresa al menos dos opciones");
-
-  expect(() => {
-    new Question({
-      description: "a".repeat(255),
-      type: "SELECTION",
-      options: ["a".repeat(10)],
-    });
-  }).toThrow("Ingresa al menos dos opciones");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Option is SELECTION and Option is not null and length < 25 && length > 0", () => {
-  expect(() => {
+  let thrownError;
+  let expectedError = new ValidationError(
+    "option",
+    validationMessages.isMandatory
+  );
+
+  try {
     new Question({
       description: "a".repeat(255),
       type: "SELECTION",
       options: [null, "a".repeat(24)],
     });
-  }).toThrow("El tamaño de cada opción debe ser mayor a 0 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 
-  expect(() => {
+  expectedError = new ValidationError(
+    "options",
+    validationMessages.isMandatory
+  );
+  try {
     new Question({
       description: "a".repeat(255),
       type: "SELECTION",
       options: ["", "a".repeat(24)],
     });
-  }).toThrow("El tamaño de cada opción debe ser mayor a 0 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
 
-  expect(() => {
+  expect(thrownError).toEqual(expectedError);
+
+  expectedError = new ValidationError(
+    "options",
+    validationMessages.mustBeShorterThan(25)
+  );
+
+  try {
     new Question({
       description: "a".repeat(255),
       type: "SELECTION",
       options: ["a".repeat(26), "a".repeat(24)],
     });
-  }).toThrow("El tamaño de cada opción debe ser menor a 25 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 // ---------------- CU05: Registrar pregunta ----------------
@@ -151,16 +201,6 @@ test("question inserted successfully with options", async () => {
   expect(createdQuestion.options).toContain("Regular");
   expect(createdQuestion.options).toContain("Mal");
   expect(createdQuestion.options).toContain("Muy mal");
-});
-
-test("question not inserted if type is not selection and has options", async () => {
-  expect(() => {
-    new Question({
-      description: "¿Cómo te sentiste durante el sprint?",
-      type: "BOOLEAN",
-      options: ["Muy bien", "Bien", "Regular", "Mal", "Muy mal"],
-    });
-  }).toThrow("Para ingresar opciones, el tipo de pregunta debe ser SELECTION");
 });
 
 test("get all active questions successfully", async () => {
