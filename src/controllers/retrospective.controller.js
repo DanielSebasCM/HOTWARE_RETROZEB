@@ -11,7 +11,6 @@ const renderRetrospectives = async (req, res, next) => {
       const sprint = await Sprint.getById(retrospective.id_sprint);
       retrospective.sprint_name = sprint.name;
     }
-    console.log(retrospectives);
     res.status(200).render("retrospectives/index", {
       title: "Retrospectivas",
       retrospectives,

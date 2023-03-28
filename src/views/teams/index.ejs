@@ -11,24 +11,30 @@
     <div class="banner__section">
       <a class="button button--primary" href="#">Crear Equipo</a>
     </div>
+    <span class="line"></span>
   </div>
-  <span class="line"></span>
+
 
   <!-- USER TEAMS -->
-  <div class="banner banner--nomargin">
-    <h2 class="subtitle">Mis Equipos <span class="meta">
-        (<%=userTeams.length %>)
-      </span>
-    </h2>
-  </div>
+  <h2 class="subtitle">Mis Equipos <span class="meta">
+      (<%=userTeams.length %>)
+    </span>
+  </h2>
   <% if(userTeams && userTeams.length> 0) { %>
     <div class="cards-container">
       <% for(let i=0; i < userTeams.length; i++) { %>
         <div class="card card--team">
-          <h3 class="card__title">
-            <%= userTeams[i].name %>
-          </h3>
-          <span class="line"></span>
+          <div class="card__header">
+
+            <h3 class="card__title">
+              <%= userTeams[i].name %>
+            </h3>
+
+            <button class="button button--sm button--delete-alt remove-team-user-btn" data-uid=<%=locals.currentUser.uid
+              %>
+              data-id_team=<%=userTeams[i].id %>
+                >Abandonar</button>
+          </div>
           <p class="card__subtitle">
             Miembros <span class="meta"> (<%=userTeams[i].members.length %>) </span>
           </p>
@@ -45,18 +51,15 @@
               </div>
               <% } %>
           </div>
-          <button class="button button--delete-alt remove-team-user-btn card__footer" data-uid=<%=locals.currentUser.uid
-            %>
-            data-id_team=<%=userTeams[i].id %>
-              >Abandonar equipo</button>
+
         </div>
         <% } %>
           <% } %>
 </section>
-<span class="line"></span>
+<!-- <span class="line"></span> -->
 
 <!-- ALL TEAMS -->
-<div class="banner banner--nomargin">
+<div class="banner">
   <h2 class="subtitle">
     Todos los equipos
     <span class="meta"> (<%=availableTeams.length %>) </span>
@@ -71,10 +74,13 @@
   <div class="cards-container">
     <% for(let i=0; i < availableTeams.length; i++) { %>
       <div class="card card--team">
-        <h3 class="card__title">
-          <%= availableTeams[i].name %>
-        </h3>
-        <span class="line"></span>
+        <div class="card__header">
+
+          <h3 class="card__title">
+            <%= availableTeams[i].name %>
+          </h3>
+        </div>
+
         <p class="card__subtitle">
           Miembros <span class="meta"> (<%=availableTeams[i].members.length %>) </span>
         </p>
@@ -90,11 +96,15 @@
               </span>
             </div>
             <% } %>
+
         </div>
-        <button class="button button--primary add-team-user-btn card__footer" data-uid=<%=locals.currentUser.uid %>
-          data-id_team=<%=availableTeams[i].id %>>
-            Unirme
-        </button>
+        <div class="card__footer">
+
+          <button class="button button--primary add-team-user-btn" data-uid=<%=locals.currentUser.uid %>
+            data-id_team=<%=availableTeams[i].id %>>
+              Unirme
+          </button>
+        </div>
       </div>
       <% } %>
         <% } %>
