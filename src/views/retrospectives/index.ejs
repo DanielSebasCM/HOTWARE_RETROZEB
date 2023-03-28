@@ -29,7 +29,6 @@
 
     <% if(retrospectives && retrospectives.length> 0) { %>
     <div class="banner--nomargin" style="width: 100%;">
-      <% for(let i=0; i < retrospectives.length; i++) { %>
       <div class="charts-container" style="width: 100%;">
         <table class="table-rwd">
           <thead>
@@ -38,9 +37,11 @@
               <td>Estado</td>
               <td>Sprint</td>
               <td>Fecha</td>
+              <td></td>
             </tr>
           </thead>
           <tbody>
+            <% for(let i=0; i < retrospectives.length; i++) { %>
             <tr class="description">
               <td><%= retrospectives[i].name %></td>
               <td>
@@ -56,13 +57,14 @@
               </td>
               <td><%=  retrospectives[i].sprint_name  %></td>
               <td> <%= moment(retrospectives[i].start_date).format('LL') %> </td>
+              <td><a class="label label--active" href="<%= routes.retrospectives %>/<%= retrospectives[i].id %>">Detalles
+                </a></td>
             </tr>
+            <% } %>
           </tbody>
         </table>
-
       </div>
     </div>
-    <% } %>
     <% } else { %>
     <p class="description" style="text-align: right">
       Por el momento no existe ninguna retrospectiva
@@ -71,5 +73,3 @@
 
 
 </section>
-
-<script src="/assets/js/team.js"></script>
