@@ -47,7 +47,6 @@ class User {
       `SELECT t.* FROM team t, team_users tu WHERE tu.uid = ? AND tu.id_team = t.id AND tu.active = 1`,
       [this.uid]
     );
-    console.log(teams);
     teams.map((team) => new Team(team));
     return teams;
   }

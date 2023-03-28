@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
+const controller = require("../middleware/locals.middleware");
 
+router.post("/", () => {
+  controller.setLocals;
+});
 
 router.post("/mensajes/exito", (req, res) => {
   req.session.successMessage = "";
