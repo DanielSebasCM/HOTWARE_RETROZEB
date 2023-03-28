@@ -7,7 +7,6 @@ const messages = {
       duplicateTeamMember: "El usuario ya pertenece a este equipo",
       teamDoesNotExist: "El equipo no existe",
       teamMemberDoesNotExist: "El usuario no pertenece a este equipo",
-      actionableNotRegistered: "El accionable no ha sido registrado en Jira",
     },
     success: {
       teamCreated: "Equipo creado correctamente",
@@ -15,6 +14,15 @@ const messages = {
       teamActivated: "Equipo activado correctamente",
       teamMemberAdded: "Usuario agregado al equipo correctamente",
       teamMemberRemoved: "Usuario eliminado del equipo correctamente",
+    },
+  },
+  actionables: {
+    error: {
+      actionableNotRegistered: "El accionable no ha sido registrado en Jira",
+    },
+    success: {
+      statusActionableUpdated:
+        "Estado del accionable actualizado correctamente",
     },
   },
 };
