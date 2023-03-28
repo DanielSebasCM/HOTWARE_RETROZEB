@@ -713,14 +713,6 @@ a.toggle-button {
   color: var(--color-font-active);
 }
 
-/* PIN GRID */
-.pin_container {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fill, var(--card_width)) !important;
-  grid-auto-rows: var(--row_increment) !important;
-  justify-content: center !important;
-}
-
 /* UTILS */
 .transition {
   transition: all 0.3s ease-in-out;
