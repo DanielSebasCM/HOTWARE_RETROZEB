@@ -1,46 +1,76 @@
 const Answer = require("../models/answer.model");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
 
 // ------------------ VERIFIER ------------------
 test("value is in range value.length < 400", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = ValidationError(
+    "value",
+    validationMessages.mustBeShorterThan(400)
+  );
+  try {
     new Answer({
       value: "a".repeat(401),
     });
-  }).toThrow("El tamaño de la respuesta debe ser menor a 400 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("value is not empty", () => {
-  expect(() => {
+  let thrownError;
+  let expectedError = ValidationError("value", validationMessages.isMandatory);
+  try {
     new Answer({
       value: "",
     });
-  }).toThrow("Ingresa una respuesta");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("uid is a valid integer", () => {
-  expect(() => {
+  let thrownError;
+  let expectedError = ValidationError("uid", validationMessages.mustBeInteger);
+  try {
     new Answer({
       value: "a",
       uid: "Esto no sirve",
     });
-  }).toThrow("El id del usuario debe ser un número entero");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(error).toEqual(expectedError);
 });
 
 test("uid is not null", () => {
-  expect(() => {
+  let thrownError;
+  let expectedError = ValidationError("uid", validationMessages.mustBeInteger);
+  try {
     new Answer({
       value: "a",
       uid: null,
     });
-  }).toThrow("El id del usuario no debe ser nulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(error).toEqual(expectedError);
 });
 
 test("uid is not empty", () => {
-  expect(() => {
+  let thrownError;
+  let expectedError = ValidationError("uid", validationMessages.mustBeInteger);
+  try {
     new Answer({
       value: "a",
     });
-  }).toThrow("El id del usuario no debe ser nulo");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(error).toEqual(expectedError);
 });
 
 test("id_question is a valid integer", () => {
