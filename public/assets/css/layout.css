@@ -163,7 +163,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
   margin-bottom: var(--card-mb);
   padding-top: 1rem;
   gap: 0.6rem;

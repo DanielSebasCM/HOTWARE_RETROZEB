@@ -20,10 +20,10 @@
     <article class="card card--answers">
       <div class="card__header">
         <h3 class="card__title"><%= question.description %></h3>
-          <span class="label
+        <span class="label
           <%= question.required ? "label--late" : "label--success" %>">
-            <%= question.required ? "OBLIGATORIA" : "OPCIONAL" %>
-          </span>
+          <%= question.required ? "OBLIGATORIA" : "OPCIONAL" %>
+        </span>
       </div>
       <% if(question.type === 'OPEN') { %>
       <% if(question.answers?.value?.length === 0) { %>
