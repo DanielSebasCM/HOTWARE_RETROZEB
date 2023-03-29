@@ -15,5 +15,6 @@ router.get("/:id/preguntas", controller.renderRetrospectiveQuestions);
 // GET
 router.get("/:id/issues", controller.getRetrospectiveIssues);
 router.get("/:id/respuestas", controller.getRetrospectiveAnswers);
+router.get("/:id/usuarios", controller.getRetrospectiveUsers);
 
 module.exports = router;

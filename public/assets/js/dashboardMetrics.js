@@ -7,30 +7,42 @@ const states = [
   { label: "Done", color: "rgba(255, 159, 64, 0.6)" },
 ];
 
-let url = window.location.href.split("/");
-url[url.length - 1] = "issues";
-url = url.join("/");
+const currentUserUid = document.querySelector("#current-user").dataset.uid;
 
-const data = await fetch(url);
-const issues = await data.json();
+let baseUrl = window.location.href.split("/");
+baseUrl.pop();
+baseUrl = baseUrl.join("/");
+
+const issuesUrl = baseUrl + "/issues";
+const usersUrl = baseUrl + "/usuarios";
+
+const issuesData = await fetch(issuesUrl);
+const issues = await issuesData.json();
 
 let groupedByState = {};
 states.forEach((state) => {
   let state_data = issues.filter((d) => d.state === state.label);
   groupedByState[state.label] = state_data;
 });
+console.log(groupedByState);
 
-const label_options = document.getElementById("label-options");
-let selected_label = label_options.value;
-label_options.onchange = function () {
+const usersData = await fetch(usersUrl);
+const users = await usersData.json();
+const usersUids = users.map((d) => d.uid);
+console.log(users);
+console.log(usersUids);
+
+const labelOptions = document.getElementById("label-options");
+let selected_label = labelOptions.value;
+labelOptions.onchange = function () {
   selected_label = this.value;
   updateCharts();
 };
 
-const team_options = document.getElementById("team-options");
-let selected_team = team_options.value;
-team_options.onchange = function () {
-  selected_team = this.value;
+const issuesOptions = document.getElementById("issues-options");
+let selected_issues = issuesOptions.value;
+issuesOptions.onchange = function () {
+  selected_issues = this.value;
   updateCharts();
 };
 
@@ -186,7 +198,6 @@ function updateFilteredChart(canvasId, labels_data) {
 
 function filterIssues(rawData, filter, filterValues = [undefined]) {
   const data = [];
-  console.log(selected_label);
   // Por cada valor del filtro crear un objeto con los issues correspondinetes
   filterValues.forEach((filterValue) => {
     let filterData = [];
@@ -195,16 +206,24 @@ function filterIssues(rawData, filter, filterValues = [undefined]) {
         .filter((d) => {
           // Filter by label
           let hasLabel;
-          if (selected_label === "Todos") {
+          if (selected_label === "All") {
             hasLabel = true;
-          } else if (selected_label === "Sin etiqueta") {
+          } else if (selected_label === "None") {
             hasLabel = d.labels.length === 0;
           } else {
             hasLabel = d.labels.includes(selected_label);
           }
 
-          //filter by team
-          return d[filter] === filterValue && hasLabel;
+          //filter by issue_option
+          let hasCorrectUser;
+          if (selected_issues === "All") {
+            hasCorrectUser = true;
+          } else if (selected_issues === "Personal") {
+            hasCorrectUser = d.uid == currentUserUid;
+          } else {
+            hasCorrectUser = usersUids.includes(d.uid);
+          }
+          return d[filter] === filterValue && hasLabel && hasCorrectUser;
         })
         .map((d) => d.story_points)
         .reduce((a, b) => a + b, 0);

@@ -1,4 +1,5 @@
 const Retrospective = require("../models/retrospective.model");
+const Team = require("../models/team.model");
 const Question = require("../models/question.model");
 const Sprint = require("../models/sprint.model");
 const moment = require("moment");
@@ -55,6 +56,8 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
   try {
     const id_retrospective = req.params.id;
     const retrospective = await Retrospective.getById(id_retrospective);
+    const team = await Team.getById(retrospective.id_team);
+    retrospective.team_name = team.name;
     const labels = await retrospective.getLabels();
     res.render("retrospectives/dashboardMetrics", {
       title: "Dashboard",
@@ -91,6 +94,17 @@ const getRetrospectiveIssues = async (req, res, next) => {
   }
 };
 
+const getRetrospectiveUsers = async (req, res, next) => {
+  try {
+    const id_retrospective = req.params.id;
+    const retrospective = await Retrospective.getById(id_retrospective);
+    const users = await retrospective.getUsers();
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   renderRetrospectives,
   renderInitRetrospective,
@@ -98,4 +112,5 @@ module.exports = {
   renderRetrospectiveQuestions,
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
+  getRetrospectiveUsers,
 };
