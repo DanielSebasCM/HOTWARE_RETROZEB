@@ -14,8 +14,10 @@
     <span class="line"></span>
 </section>
 
+<form method="POST" action="retrospectivas/iniciar">
 <div class="chart-container" style="min-height: 5rem" >
-
+    
+    <input type="checkbox" checked="" disabled/> 
     <label class="subtitle">Nombre:</label> 
     <div class="input-container">
         <label class="input__label" for=""></label>
@@ -32,6 +34,8 @@
         <input type="checkbox" checked=""/> 
         <label class="subtitle">  <%= questions[i].description %>  </label> 
         <span class="label label--active"> <%= questions[i].type %>  </span>
+        <input type="checkbox" checked="" style="margin: 8px;"/>   <label class="description">Obligatorio</label>         
+        <input type="checkbox" style="margin: 8px;"/> <label class="description">Anónimo</label> 
     </div>
     <br>
 <% } } else { %>
@@ -39,6 +43,8 @@
       Por el momento no hay preguntas registradas. Empieza a crear las tuyas!
     </p>
 <% }  %>
+</form>
+
 <br>
 
 <div class="buttons-container" style="display: flex; flex-wrap: wrap">

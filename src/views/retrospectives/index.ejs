@@ -16,51 +16,64 @@
     <div class="buttons-container" style="display: flex; flex-wrap: wrap">
       <div class="input search-bar">
         <span class="icon search-bar__icon"></span>
-        <input type="text" placeholder="Buscar por título" />
+        <input name="buscar" id="buscar" type="text" placeholder="Buscar" />
       </div>
 
       <div class="select-container" style="width: 50%;">
-        <select class="select">
+        <select class="select" id="select-date" onchange="sortRetrospectives()">
           <option value="1">Fecha Ascendente</option>
           <option value="2">Fecha Descendente</option>
         </select>
       </div>
+
+      <div class="select-container" style="width: 50%;">
+        <select class="select" id="select-team-name" name="nombreEquipo">
+          <option value="todos">Todos</option>
+          <% if(teams && teams.length> 0) { %>
+            <% for(let i=0; i < teams.length; i++) { %>
+              <option value="<%=  teams[i].name  %>">  <%=  teams[i].name  %>  </option>
+          <% }}%>
+        </select>
+      </div>
     </div>
 
-    <% if(retrospectives && retrospectives.length> 0) { %>
-    <div class="banner--nomargin" style="width: 100%;">
+    <% if (filteredRetrospectives && filteredRetrospectives.length > 0) { %>
+      <div class="banner--nomargin" style="width: 100%;">
       <div class="charts-container" style="width: 100%;">
-        <table class="table-rwd">
+        <table class="table-rwd" id="retrospectivasSearch">
           <thead>
             <tr class="subtitle">
               <td>Titulo</td>
               <td>Estado</td>
               <td>Sprint</td>
+              <td>Equipo</td>
               <td>Fecha</td>
               <td></td>
             </tr>
           </thead>
-          <tbody>
-            <% for(let i=0; i < retrospectives.length; i++) { %>
-            <tr class="description">
-              <td><%= retrospectives[i].name %></td>
+          <tbody class="description">
+            <% for(let i=0; i < filteredRetrospectives.length; i++) { %>
+            <tr id="retrospectives-list" class="retrospective" data-fecha="<%= filteredRetrospectives[i].start_date.toISOString() %>">
+              <td><%= filteredRetrospectives[i].name %></td>
               <td>
-                <% if(retrospectives[i].state == 'PENDING') { %>
+                <% if(filteredRetrospectives[i].state == 'PENDING') { %>
                 <span class="label label--danger">Pendiente</span>
-                <% } else if(retrospectives[i].state == 'IN_PROGRESS'){ %>
+                <% } else if(filteredRetrospectives[i].state == 'IN_PROGRESS'){ %>
                 <span class="label label--active">En progreso</span>
-                <% } else if(retrospectives[i].state == 'CLOSED'){ %>
+                <% } else if(filteredRetrospectives[i].state == 'CLOSED'){ %>
                 <span class="label label--success">Terminado</span>
                 <% } else { %>
                 No se pudo cargar
                 <% } %>
               </td>
-              <td><%=  retrospectives[i].sprint_name  %></td>
-              <td> <%= moment(retrospectives[i].start_date).format('LL') %> </td>
-              <td><a class="label label--active" href="<%= routes.retrospectives %>/<%= retrospectives[i].id %>">Detalles
+              <td><%=  filteredRetrospectives[i].sprint_name  %></td>
+              <td>  <%=  filteredRetrospectives[i].teamm_name  %>  </td>
+              <td> <%= moment(filteredRetrospectives[i].start_date).format('LL') %> </td>
+              <td><a class="label label--active" href="<%= routes.retrospectives %>/<%= filteredRetrospectives[i].id %>">Detalles
                 </a></td>
             </tr>
             <% } %>
+          
           </tbody>
         </table>
       </div>
@@ -70,6 +83,34 @@
       Por el momento no existe ninguna retrospectiva
     </p>
     <% } %>
-
-
 </section>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script type="module" src="/assets/js/retrospective.js"></script>
+<script>document.addEventListener('DOMContentLoaded', () => {
+  const select = document.getElementById('select-date');
+  select.addEventListener('change', sortRetrospectives);
+});
+
+function sortRetrospectives() {
+
+  const select = document.getElementById('select-date');
+  const retrospectivesContainers = document.getElementById('retrospectives-list');
+  const retrospectiveElements = Array.from(retrospectivesContainers.children);
+
+    retrospectiveElements.sort((a, b) => {
+      const dateA = moment(a.getAttribute('data-fecha')).toDate();
+      const dateB = moment(b.getAttribute('data-fecha')).toDate();
+
+      if (select.value === '1') {
+        return dateA.getTime() - dateB.getTime();
+      } else {
+        return dateB.getTime() - dateA.getTime();
+      }
+    });
+    retrospectiveElements.forEach((element) => {
+      retrospectivesContainers.appendChild(element);
+    });
+}
+</script>
