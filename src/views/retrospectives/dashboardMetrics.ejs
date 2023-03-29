@@ -9,16 +9,8 @@
 
     <div class="banner__section">
       <div class="toggle-buttons-container toggle-buttons-container--primary">
-        <a
-          class="toggle-button toggle-button--active"
-          href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas"
-          >Métricas</a
-        >
-        <a
-          class="toggle-button"
-          href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas"
-          >Preguntas</a
-        >
+        <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
+        <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
       </div>
     </div>
 
@@ -30,11 +22,18 @@
   <div class="filters-container">
     <div class="select-container">
       <select class="select" id="label-options">
-        <option value="Todos">Todos los Labels</option>
-        <option value="Sin Label">Sin Label</option>
+        <option value="All">Todos los Labels</option>
         <% for (let i=0; i < labels.length; i++) { %>
         <option value="<%= labels[i] %>"><%= labels[i] %></option>
         <% } %>
+        <option value="None">Sin Label</option>
+      </select>
+    </div>
+    <div class="select-container">
+      <select class="select" id="issues-options">
+        <option value="All">Todos los Issues</option>
+        <option value="Team" selected>Issues <%= retrospective.team_name %></option>
+        <option value="Personal">Issues personales</option>
       </select>
     </div>
   </div>
