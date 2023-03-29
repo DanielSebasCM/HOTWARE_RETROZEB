@@ -13,14 +13,7 @@ const verifyToken = (token, type = "login") => {
   if (type === "login") typeToken = process.env.JWT_LOGIN;
   if (type === "refreshToken") typeToken = process.env.JWT_REFRESH;
 
-  let decodedInfo;
-
-  jwt.verify(token, typeToken, (error, decoded) => {
-    if (error) throw new jwt.TokenExpiredError(error);
-    decodedInfo = decoded;
-  });
-
-  return decodedInfo;
+  return jwt.verify(token, typeToken);
 };
 
 module.exports = {
