@@ -3,6 +3,7 @@ const db = require("../utils/db");
 const Question = require("./question.model");
 const Answer = require("./answer.model");
 const Issue = require("./issue.model");
+const User = require("./user.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
@@ -30,7 +31,9 @@ class Retrospective {
     return new Retrospective(retrospective[0]);
   }
   static async getAll() {
-    let [retrospectives, _] = await db.execute(`SELECT * FROM retrospective ORDER BY start_date DESC`);
+    let [retrospectives, _] = await db.execute(
+      `SELECT * FROM retrospective ORDER BY start_date DESC`
+    );
     return retrospectives.map(
       (retrospective) => new Retrospective(retrospective)
     );
@@ -165,10 +168,18 @@ class Retrospective {
 
   async getLabels() {
     const [labels, _] = await db.execute(
-      `select distinct label from issues_labels as l, issues as i, sprint as s, retrospective as r where r.id = ? and r.id_sprint = s.id and s.id = i.id_sprint and i.id = l.id_issue`,
+      "select distinct label from issues_labels as l, issues as i, sprint as s, retrospective as r where r.id = ? and r.id_sprint = s.id and s.id = i.id_sprint and i.id = l.id_issue",
       [this.id]
     );
     return labels.map((label) => label.label);
+  }
+
+  async getUsers() {
+    const [users, _] = await db.execute(
+      "select u.* from user as u join team_users as tu on tu.uid = u.uid and tu.id_team = ? and tu.active = 1",
+      [this.id_team]
+    );
+    return users.map((user) => new User(user));
   }
 
   async post() {

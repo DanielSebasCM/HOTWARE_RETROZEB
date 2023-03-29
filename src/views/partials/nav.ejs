@@ -24,7 +24,7 @@
       </li>
       <% } %>
       <li class="nav__item">
-        <div class="user">
+        <div class="user" id="current-user" data-uid="<%= currentUser.uid %>">
           <div class="user__avatar">
             <%= currentUser.first_name[0] %>
           </div>

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const authController = require("../controllers/auth.controller");
 const { routes } = require("../utils/constants");
 
 // GET
@@ -13,16 +14,7 @@ router.get("/", async (req, res) => {
 });
 
 // LOGIN
-router.get(`${routes.login}`, (req, res) => {
-  // LOCALS
-  req.app.locals.teams = [];
-  req.app.locals.currentUser = null;
-
-  // SESSION
-  req.session.successMessage = "";
-  req.session.errorMessage = "";
-
-  res.render("index", { title: "Login" });
-});
+router.get(`${routes.login}`, authController.renderLogin);
+router.post(`${routes.login}`, authController.loginAPI);
 
 module.exports = router;

@@ -1,20 +1,43 @@
 const Retrospective = require("../models/retrospective.model");
+const Team = require("../models/team.model");
 const Question = require("../models/question.model");
 const Sprint = require("../models/sprint.model");
+const Team = require("../models/team.model")
 const moment = require("moment");
 moment.locale("es");
 
 const renderRetrospectives = async (req, res, next) => {
   try {
+    const teamName = req.query.team || null; // Obtener el nombre del equipo seleccionado
     const retrospectives = await Retrospective.getAll();
+    let filteredRetrospectives;
+    if (!teamName) { // Si no se ha seleccionado ningún equipo, se muestran todas las retrospectivas
+      filteredRetrospectives = retrospectives;
+    } else if (teamName === 'todos') {
+      filteredRetrospectives = retrospectives;
+    } else {
+      const team = await Team.getByName([teamName]);
+      for (let retrospective of retrospectives) {
+        const teamm = await Team.getById(retrospective.id_team);
+        retrospective.team_name = teamm.name;
+        if (!team) throw new Error(`Equipo no encontrado: ${teamName}`);
+        filteredRetrospectives = retrospectives.filter(retrospective => retrospective.team_name === teamName) ;}
+    }
+    const teams = await Team.getAll();
+    
     for (let retrospective of retrospectives) {
       const sprint = await Sprint.getById(retrospective.id_sprint);
       retrospective.sprint_name = sprint.name;
+      const teamm = await Team.getById(retrospective.id_team);
+      retrospective.teamm_name = teamm.name;
     }
+    
     res.status(200).render("retrospectives/index", {
       title: "Retrospectivas",
       retrospectives,
-      moment,
+      teams,
+      filteredRetrospectives,
+      moment
     });
   } catch (err) {
     next(err);
@@ -31,6 +54,46 @@ const renderInitRetrospective = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+/*
+const post_nuevo = (request, response, next) => {
+  const retro = new NewRetro({
+    const { name, questions } = request.body;
+  });
+  retro.save()
+  .then(([rows, fieldData]) => {
+      response.status(300).redirect("retrospectives/index");
+  })
+  .catch(error => console.log(error));
+};*/
+  
+const post_nuevo = (request, response, next) => {
+  const { name, questions } = request.body;
+  
+  const retrospective = new Retrospective({
+    name,
+    state: 'PENDING',
+    id_team: 1, // o el id del equipo correspondiente
+    id_sprint: 1 // o el id del sprint correspondiente
+  });
+  
+  retrospective.save()
+    .then((retro) => {
+      const questionsPromises = questions.map((question) => {
+        const retrospectiveQuestion = new RetrospectiveQuestion({
+          id_retrospective: retro.id,
+          id_question: question.id,
+          required: question.required || 1,
+          anonymous: question.anonymous || 0,
+        });
+        return retrospectiveQuestion.save();
+      });
+      return Promise.all(questionsPromises);
+    })
+    .then(() => {
+      response.status(300).redirect("retrospectives/index");
+    })
+    .catch(error => console.log(error));
 };
 
 const renderRetrospectiveQuestions = async (req, res, next) => {
@@ -55,6 +118,8 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
   try {
     const id_retrospective = req.params.id;
     const retrospective = await Retrospective.getById(id_retrospective);
+    const team = await Team.getById(retrospective.id_team);
+    retrospective.team_name = team.name;
     const labels = await retrospective.getLabels();
     res.render("retrospectives/dashboardMetrics", {
       title: "Dashboard",
@@ -91,6 +156,17 @@ const getRetrospectiveIssues = async (req, res, next) => {
   }
 };
 
+const getRetrospectiveUsers = async (req, res, next) => {
+  try {
+    const id_retrospective = req.params.id;
+    const retrospective = await Retrospective.getById(id_retrospective);
+    const users = await retrospective.getUsers();
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   renderRetrospectives,
   renderInitRetrospective,
@@ -98,4 +174,6 @@ module.exports = {
   renderRetrospectiveQuestions,
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
+  getRetrospectiveUsers,
+  post_nuevo,
 };
