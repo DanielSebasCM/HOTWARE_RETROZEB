@@ -26,6 +26,7 @@ const messages = {
     },
   },
   validation: {
+    isEmpty: "No existe un registro con el id proporcionado",
     isMandatory: "El campo es obligatorio",
     mustBeString: "El campo debe ser una cadena de caracteres",
     mustBeNumber: "El campo debe ser un número",

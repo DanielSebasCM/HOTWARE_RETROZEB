@@ -69,7 +69,6 @@ class Question {
   }
 
   static verify(question) {
-    console.log(question);
     // Length of description is less than 255
     if (question.description?.length > 255)
       throw new ValidationError(

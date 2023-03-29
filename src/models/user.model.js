@@ -35,6 +35,13 @@ class User {
     return new User(user[0]);
   }
 
+  static async getByEmail(email) {
+    let [user, _] = await db.execute(`SELECT * FROM user WHERE email = ?`, [
+      email,
+    ]);
+    return new User(user[0]);
+  }
+
   async getTeams() {
     const [teams, _] = await db.execute(
       `SELECT t.* FROM team t, team_users tu WHERE tu.uid = ? AND tu.id_team = t.id`,
@@ -67,6 +74,8 @@ class User {
 
   //----------------------------VERIFY--------------------------------
   static verify(user) {
+    if (!user) throw new ValidationError("user", validationMessages.isEmpty);
+
     if (!user.first_name) {
       throw new ValidationError("first_name", validationMessages.isMandatory);
     }

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/retrospective.controller");
 
+
 // RENDERING ROUTES
 router.get("/", controller.renderRetrospectives);
 router.get("/iniciar", controller.renderInitRetrospective);
@@ -16,5 +17,8 @@ router.get("/:id/preguntas", controller.renderRetrospectiveQuestions);
 router.get("/:id/issues", controller.getRetrospectiveIssues);
 router.get("/:id/respuestas", controller.getRetrospectiveAnswers);
 router.get("/:id/usuarios", controller.getRetrospectiveUsers);
+
+// POST
+router.post("/iniciar", controller.post_nuevo)
 
 module.exports = router;
