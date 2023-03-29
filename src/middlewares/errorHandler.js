@@ -21,7 +21,7 @@ const errorHandler = (err, req, res, next) => {
       jwtNotBeforeErrorHandler(err, req, res);
       break;
     case "Error":
-      if (err.sqlMessage) {
+      if (err.code && err.errno) {
         console.log("DB Error");
         dbErrorHandler(err, req, res, next);
       } else {
@@ -34,14 +34,15 @@ const errorHandler = (err, req, res, next) => {
 };
 
 function validationErrorHandler(err, req, res) {
-  req.session.errorMessage = `${err.type}, ${err.atribute}, ${err.message}`;
-  res.redirect(req.originalUrl);
+  const message = `${err.type}, ${err.atribute}, ${err.message}`;
+  res.status(400).render("errors/404", { title: "Error 404", message });
 }
 
 function defaultErrorHandler(err, req, res, next) {
-  req.session.errorMessage = err.message;
   setLocals(req, res, next);
-  res.status(500).render("errors/500", { title: "Error 500" });
+  res
+    .status(500)
+    .render("errors/500", { title: "Error 500", message: err.message });
 }
 
 // jasonwebtoken error messages
@@ -78,12 +79,28 @@ function jwtNotBeforeErrorHandler(err, req, res) {
 //   sqlMessage: "Table 'hotware.not_a_table' doesn't exist",
 // };
 // https://mariadb.com/kb/en/mariadb-error-codes/
-
+// bad column name sqlState 42S22
+// bad table name sqlState 42S02
+// bad forign key (non-existant or wrong type) sqlState 23000
+// bad db name sqlState 42000
+// bad user/ password sqlState 28000
+// connection failure errno -3001
+const sqlStates = {
+  "404Error": ["23000"],
+};
 function dbErrorHandler(err, req, res, next) {
   // TODO: ADD BETTER ERROR MESSAGES
-  req.session.errorMessage = err.sqlMessage;
-  setLocals(req, res, next);
-  res.status(500).render("errors/500", { title: "Error 500" });
+  if (sqlStates["404Error"].includes(err.sqlState)) {
+    res.status(404).render("errors/404", {
+      title: "Error 404",
+      message: err.sqlMessage,
+    });
+  } else {
+    res.status(500).render("errors/500", {
+      title: "Error 500",
+      message: err.sqlMessage,
+    });
+  }
 }
 
 module.exports = errorHandler;
