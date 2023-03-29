@@ -1,37 +1,36 @@
 const selectQuestionType = document.getElementById("select-question-type");
 const cardsContainer = document.querySelector(".cards-container");
+const searchInput = document.querySelector(".search-bar input");
+const cards = document.querySelectorAll(".card--question");
+let selectedQuestionType = "";
 
 selectQuestionType.addEventListener("change", () => {
-  const selectedQuestionType = selectQuestionType.value;
-  const cards = cardsContainer.querySelectorAll(".card--question");
+  selectedQuestionType = selectQuestionType.value.toLowerCase().trim();
+  filterCards();
+});
+
+searchInput.addEventListener("input", () => {
+  filterCards();
+});
+
+function filterCards() {
+  const searchText = searchInput.value.trim().toLowerCase();
   cards.forEach((card) => {
     const cardType = card
       .querySelector(".label--active")
-      .textContent.toLowerCase();
+      .textContent.toLowerCase()
+      .trim();
+    const cardText = card
+      .querySelector(".card__subtitle")
+      .textContent.toLowerCase()
+      .trim();
     if (
-      !selectedQuestionType ||
-      selectedQuestionType.toLowerCase() === cardType
+      (!selectedQuestionType || cardType === selectedQuestionType) &&
+      cardText.includes(searchText)
     ) {
       card.classList.remove("hide");
     } else {
       card.classList.add("hide");
     }
   });
-});
-
-const searchInput = document.querySelector(".search-bar input");
-const cards = document.querySelectorAll(".card--question");
-
-searchInput.addEventListener("input", () => {
-  const searchText = searchInput.value.trim().toLowerCase();
-  cards.forEach((card) => {
-    const cardText = card
-      .querySelector(".card_subtitle")
-      .textContent.toLowerCase();
-    if (cardText.includes(searchText)) {
-      card.classList.remove("hide");
-    } else {
-      card.classList.add("hide");
-    }
-  });
-});
+}
