@@ -10,36 +10,46 @@
     <span class="line"></span>
   </div>
 
-  <label class="subtitle">Nombre</label>
+<form method="POST" action="retrospectivas/iniciar">
+  <h2 class="subtitle mt-3">Nombre de la retrospectiva</h2>
   <div class="input-container">
-    <label class="input__label" for=""></label>
-    <input class="input" type="text" placeholder="Nombre de la Retrospectiva" />
+    <label class="input__label" for="team-name">Nombre</label>
+    <input class="input" type="text" name="team-name" placeholder="Nombre de la Retrospectiva" />
   </div>
-  <br />
-
+  <br/>
+  
   <h2 class="subtitle mt-3">Preguntas</h2>
   <p class="description mb-2">
     Selecciona las preguntas que desees incluir o crea preguntas nuevas.
   </p>
 
-  <% if(questions.length> 0) { for(let i=0; i < questions.length; i++) { %>
-  <div class="card card--question-checkbox">
-    <input type="checkbox" checked="" class="mr-1" />
-    <div>
-      <label class="subtitle"> <%= questions[i].description %> </label>
-      <span class="label label--active"> <%= questions[i].type %> </span>
-    </div>
-  </div>
-  <% } } else { %>
-  <p class="description">
-    Por el momento no hay preguntas registradas. Empieza a crear las tuyas!
-  </p>
-  <% } %>
-  <div class="buttons-container mt-3">
-    <a class="button button--primary" href="#">Guardar</a>
-    <a class="button button--edit" href="#">Crear pregunta</a>
-    <a class="button button--discard" href="<%=routes.retrospectives %>"
-      >Descartar</a
-    >
-  </div>
+<% if(questions.length> 0) { 
+    for(let i=0; i < questions.length; i++) { %>
+      <div class="card card--question-checkbox">
+        <input type="checkbox" checked="" class="mr-1" />
+       <div>
+          <label class="subtitle"> <%= questions[i].description %> </label>
+          <span class="label label--active"> <%= questions[i].type %> </span>
+        </div>
+        <input type="checkbox" checked="" class="mr-1"/> 
+        <label class="description">Obligatorio</label> 
+        
+        <input type="checkbox" class="mr-1" /> 
+        <label class="description">Anónimo</label> 
+      </div>
+      <br>
+<% } } else { %>
+    <p class="description">
+      Por el momento no hay preguntas registradas. Empieza a crear las tuyas!
+    </p>
+<% }  %>
+</form>
+
+<br>
+
+<div class="buttons-container">
+  <a class="button button--primary" href="#">Guardar</a>
+  <a class="button button--edit" href="#">Crear pregunta</a>
+  <a class="button button--discard" href="<%=routes.retrospectives %>">Descartar</a>
+</div>
 </section>

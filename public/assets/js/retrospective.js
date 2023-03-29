@@ -1,3 +1,59 @@
+const selectTeamName = document.getElementById("select-team-name");
+const currentTeamName = new URLSearchParams(window.location.search).get("team");
+if (currentTeamName) {
+  selectTeamName.value = currentTeamName;
+}
+
+selectTeamName.addEventListener("change", (event) => {
+  const teamName = event.target.value;
+  window.location.href = `/retrospectivas?team=${teamName}`;
+});
+
+//Buscar
+document.addEventListener('DOMContentLoaded', function() {
+  var input = document.querySelector('#buscar');
+  var rows = document.querySelectorAll('#retrospectivasSearch tbody tr');
+
+  input.addEventListener('keyup', function() {
+    var filter = input.value.toLowerCase();
+
+    rows.forEach(function(row) {
+      var text = row.textContent.toLowerCase();
+      var display = text.indexOf(filter) > -1 ? '' : 'none';
+      row.style.display = display;
+    });
+  });
+});
+
+
+/*document.addEventListener('DOMContentLoaded', () => {
+  const select = document.getElementById('select-date');
+  select.addEventListener('change', sortRetrospectives);
+});
+
+function sortRetrospectives() {
+
+  const select = document.getElementById('select-date');
+  const retrospectivesContainers = document.getElementById('retrospectives-list');
+  const retrospectiveElements = Array.from(retrospectivesContainers.children);
+
+    retrospectiveElements.sort((a, b) => {
+      const dateA = moment(a.getAttribute('data-fecha')).toDate();
+      const dateB = moment(b.getAttribute('data-fecha')).toDate();
+
+      if (select.value === '1') {
+        return dateA.getTime() - dateB.getTime();
+      } else {
+        return dateB.getTime() - dateA.getTime();
+      }
+    });
+    retrospectiveElements.forEach((element) => {
+      retrospectivesContainers.appendChild(element);
+    });
+}*/
+
+
+
 const states = [
     { label: "To Do", color: "rgba(255, 99, 132, 0.6)" },
     { label: "En curso", color: "rgba(54, 162, 235, 0.6)" },
