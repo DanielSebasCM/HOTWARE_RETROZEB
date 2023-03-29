@@ -4,7 +4,7 @@ const errorHandler = (err, req, res, next) => {
   console.log("Error Handler");
   const errorType = err.constructor.name;
   console.log("Tipo: " + errorType);
-  console.log("Mensaje: " + err.message);
+  console.log(err);
 
   switch (errorType) {
     case "ValidationError":
@@ -20,9 +20,16 @@ const errorHandler = (err, req, res, next) => {
     case "NotBeforeError":
       jwtNotBeforeErrorHandler(err, req, res);
       break;
+    case "Error":
+      if (err.sqlMessage) {
+        console.log("DB Error");
+        dbErrorHandler(err, req, res, next);
+      } else {
+        defaultErrorHandler(err, req, res, next);
+      }
+      break;
     default:
       defaultErrorHandler(err, req, res, next);
-      break;
   }
 };
 
@@ -40,6 +47,7 @@ function defaultErrorHandler(err, req, res, next) {
 // jasonwebtoken error messages
 // https://www.npmjs.com/package/jsonwebtoken
 // Errors section
+// TODO add more error messages
 const jwtErrorMessages = {
   "Invalid token signature": "Acceso denegado",
   "jwt malformed": undefined,
@@ -60,4 +68,22 @@ function jwtNotBeforeErrorHandler(err, req, res) {
   req.session.errorMessage = "Su sesión no está disponible";
   res.redirect("/login");
 }
+
+// Structure of a DB error
+// {
+//   code: "ER_NO_SUCH_TABLE",
+//   errno: 1146,
+//   sql: "SELECT * FROM not_a_table",
+//   sqlState: "42S02",
+//   sqlMessage: "Table 'hotware.not_a_table' doesn't exist",
+// };
+// https://mariadb.com/kb/en/mariadb-error-codes/
+
+function dbErrorHandler(err, req, res, next) {
+  // TODO: ADD BETTER ERROR MESSAGES
+  req.session.errorMessage = err.sqlMessage;
+  setLocals(req, res, next);
+  res.status(500).render("errors/500", { title: "Error 500" });
+}
+
 module.exports = errorHandler;
