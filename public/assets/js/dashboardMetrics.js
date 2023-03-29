@@ -24,13 +24,10 @@ states.forEach((state) => {
   let state_data = issues.filter((d) => d.state === state.label);
   groupedByState[state.label] = state_data;
 });
-console.log(groupedByState);
 
 const usersData = await fetch(usersUrl);
 const users = await usersData.json();
 const usersUids = users.map((d) => d.uid);
-console.log(users);
-console.log(usersUids);
 
 const labelOptions = document.getElementById("label-options");
 let selected_label = labelOptions.value;
