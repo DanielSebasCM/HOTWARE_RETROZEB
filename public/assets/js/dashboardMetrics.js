@@ -186,7 +186,6 @@ function updateFilteredChart(canvasId, labels_data) {
 
 function filterIssues(rawData, filter, filterValues = [undefined]) {
   const data = [];
-  console.log(selected_label);
   // Por cada valor del filtro crear un objeto con los issues correspondinetes
   filterValues.forEach((filterValue) => {
     let filterData = [];
