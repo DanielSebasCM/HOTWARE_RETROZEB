@@ -12,10 +12,6 @@ const ValidationError = require("../errors/ValidationError");
 const jwt = require("jsonwebtoken");
 const db = require("../utils/db");
 
-let firstValidation = true;
-let firstJwt = true;
-let firstDb = true;
-
 const initRoutes = (app) => {
   app.use(setLocals); // MIDDLEWARE
   app.use("/", publicRouter);
@@ -26,34 +22,21 @@ const initRoutes = (app) => {
   });
 
   app.use("/validation_error", (req, res, next) => {
-    if (firstValidation) {
-      firstValidation = false;
-      next(new ValidationError("Atributo de prueba", "Mensaje de prueba"));
-      return;
-    }
-    res.render("utils", { title: "Error de validación" });
+    next(new ValidationError("Atributo de prueba", "Mensaje de prueba"));
   });
 
   app.use("/jwt_error", (req, res, next) => {
-    if (firstJwt) {
-      firstJwt = false;
-      next(new jwt.TokenExpiredError("jwt expired", new Date()));
-      return;
-    }
-    res.render("utils", { title: "Error de validación" });
+    next(new jwt.TokenExpiredError("jwt expired", new Date()));
   });
 
   app.use("/db_error", async (req, res, next) => {
-    if (firstDb) {
-      try {
-        firstDb = false;
-        await db.query("SELECT * FROM not_a_table");
-      } catch (err) {
-        next(err);
-      }
-      return;
+    try {
+      await db.query(
+        "INSERT INTO team_users (id_team, uid) VALUES (1, 'test')"
+      );
+    } catch (err) {
+      next(err);
     }
-    res.render("utils", { title: "Error de validación" });
   });
 
   app.use(`${routes.locals}`, localsRouter);
