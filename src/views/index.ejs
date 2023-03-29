@@ -6,11 +6,27 @@
 <main class="login__body">
   <h1 class="title">Iniciar Sesión</h1>
   <p class="description">Accede a tu cuenta con tu correo empresarial</p>
-  <a class="login__button" href="/">
-    <img class="login__button__icon" src="/assets/img/google-logo.svg" alt="Google logo" />
-    <span> Iniciar Sesión con Google </span>
-  </a>
+
+  <div
+    id="g_id_onload"
+    data-client_id="959093713342-81ej0q5tus0ct8pcv0rve928qkja4btu.apps.googleusercontent.com"
+    data-context="signin"
+    data-ux_mode="popup"
+    data-callback="handleCredentialResponse"
+    data-auto_prompt="false"
+  ></div>
+
+  <div
+    class="g_id_signin mt-2"
+    data-type="standard"
+    data-shape="pill"
+    data-theme="filled_black"
+    data-text="signin_with"
+    data-size="large"
+    data-logo_alignment="left"
+  ></div>
 </main>
+
 <!-- FOOTER -->
 <footer class="login__footer">
   <span class="line"></span>

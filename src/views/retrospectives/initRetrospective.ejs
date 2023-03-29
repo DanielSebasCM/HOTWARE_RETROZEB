@@ -1,45 +1,45 @@
 <section class="dashboard">
-    <div class="banner">
-      <div class="banner__section">
-        <h1 class="title">Iniciar Retrospectiva</h1>
-        <p class="description">
-            Registrar una nueva sesión de retrospectiva. Selecciona las preguntas que desees incluir 
-            o crea preguntas nuevas.
-        </p>
-      </div>
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">Iniciar Retrospectiva</h1>
+      <p class="description">Registrar una nueva sesión de retrospectiva.</p>
     </div>
-    <div class="buttons-container" style="display: flex; flex-wrap: wrap">
-        <a class="button button--primary" href="#">Guardar</a>
+    <div class="banner__section">
+      <a class="button button--primary" href="#">Guardar</a>
     </div>
     <span class="line"></span>
-</section>
+  </div>
 
 <form method="POST" action="retrospectivas/iniciar">
-<div class="chart-container" style="min-height: 5rem" >
-    
-    <input type="checkbox" checked="" disabled/> 
-    <label class="subtitle">Nombre:</label> 
-    <div class="input-container">
-        <label class="input__label" for=""></label>
-        <input class="input" type="text" placeholder="Nombre de la Retrospectiva" />
-    </div>
-    
-</div>
-<br>
+  <h2 class="subtitle mt-3">Nombre de la retrospectiva</h2>
+  <div class="input-container">
+    <label class="input__label" for="team-name">Nombre</label>
+    <input class="input" type="text" name="team-name" placeholder="Nombre de la Retrospectiva" />
+  </div>
+  <br/>
+  
+  <h2 class="subtitle mt-3">Preguntas</h2>
+  <p class="description mb-2">
+    Selecciona las preguntas que desees incluir o crea preguntas nuevas.
+  </p>
 
 <% if(questions.length> 0) { 
     for(let i=0; i < questions.length; i++) { %>
-    
-    <div class="chart-container" style="min-height: 5rem" >
-        <input type="checkbox" checked=""/> 
-        <label class="subtitle">  <%= questions[i].description %>  </label> 
-        <span class="label label--active"> <%= questions[i].type %>  </span>
-        <input type="checkbox" checked="" style="margin: 8px;"/>   <label class="description">Obligatorio</label>         
-        <input type="checkbox" style="margin: 8px;"/> <label class="description">Anónimo</label> 
-    </div>
-    <br>
+      <div class="card card--question-checkbox">
+        <input type="checkbox" checked="" class="mr-1" />
+       <div>
+          <label class="subtitle"> <%= questions[i].description %> </label>
+          <span class="label label--active"> <%= questions[i].type %> </span>
+        </div>
+        <input type="checkbox" checked="" class="mr-1"/> 
+        <label class="description">Obligatorio</label> 
+        
+        <input type="checkbox" class="mr-1" /> 
+        <label class="description">Anónimo</label> 
+      </div>
+      <br>
 <% } } else { %>
-    <p class="description" style="text-align: right">
+    <p class="description">
       Por el momento no hay preguntas registradas. Empieza a crear las tuyas!
     </p>
 <% }  %>
@@ -47,8 +47,9 @@
 
 <br>
 
-<div class="buttons-container" style="display: flex; flex-wrap: wrap">
-    <a class="button button--primary" href="#">Guardar</a>
-    <a class="button button--edit" href="#">Crear pregunta</a>
-    <a class="button button--discard" href="<%=routes.retrospectives %>">Descartar</a>
+<div class="buttons-container">
+  <a class="button button--primary" href="#">Guardar</a>
+  <a class="button button--edit" href="#">Crear pregunta</a>
+  <a class="button button--discard" href="<%=routes.retrospectives %>">Descartar</a>
 </div>
+</section>

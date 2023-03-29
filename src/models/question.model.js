@@ -1,4 +1,7 @@
 const db = require("../utils/db");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
+const questionTypes = require("../utils/constants").enums.questionTypes;
 
 class Question {
   constructor(question) {
@@ -22,7 +25,7 @@ class Question {
 
     if (question[0].type == "SELECTION") {
       let [options, _] = await db.execute(
-        `SELECT description FROM option WHERE id_question = ? ORDER BY id`,
+        "SELECT description FROM `option` WHERE id_question = ? ORDER BY id",
         [id]
       );
       question[0].options = options.map((option) => option.description);
@@ -55,7 +58,7 @@ class Question {
     for (let question of questions) {
       if (question.type == "SELECTION") {
         let [options, _] = await db.execute(
-          `SELECT description FROM option WHERE id_question = ? ORDER BY id`,
+          "SELECT description FROM `option` WHERE id_question = ? ORDER BY id",
           [question.id]
         );
         question.options = options.map((option) => option.description);
@@ -68,47 +71,45 @@ class Question {
   static verify(question) {
     // Length of description is less than 255
     if (question.description?.length > 255)
-      throw new Error(
-        "El tamaño de la pregunta debe ser menor a 255 caracteres"
+      throw new ValidationError(
+        "description",
+        validationMessages.mustBeShorterThan(255)
       );
 
     // Description is not empty
     if (question.description?.length == 0)
-      throw new Error("Ingresa una pregunta");
+      throw new ValidationError("description", validationMessages.isMandatory);
 
     // Type is not null and of type OPEN, BOOLEAN, SCALE or SELECTION
-    const options = ["OPEN", "BOOLEAN", "SCALE", "SELECTION"];
-    if (!options.includes(question.type))
-      throw new Error("El tipo de pregunta no es válido");
-
-    if (question.type !== "SELECTION" && question.options) {
-      throw new Error(
-        "Para ingresar opciones, el tipo de pregunta debe ser SELECTION"
+    if (!questionTypes.includes(question.type))
+      throw new ValidationError(
+        "options",
+        validationMessages.mustBeEnum(questionTypes)
       );
-    }
 
     // Option is SELECTION and Option is not null and length > 1
     if (question.type === "SELECTION") {
-      if (!question.options) throw new Error("Ingresa al menos dos opciones");
+      if (!question.options)
+        throw new ValidationError("options", validationMessages.isMandatory);
 
       if (question.options.length < 2) {
-        throw new Error("Ingresa al menos dos opciones");
+        throw new ValidationError(
+          "options",
+          validationMessages.mustBeLongerThan(2)
+        );
       }
 
       // Option is SELECTION and Option is not null and length < 25 && length > 0
       question.options.forEach((option) => {
         if (!option)
-          throw new Error(
-            "El tamaño de cada opción debe ser mayor a 0 caracteres"
-          );
+          throw new ValidationError("option", validationMessages.isMandatory);
         if (option.length > 25)
-          throw new Error(
-            "El tamaño de cada opción debe ser menor a 25 caracteres"
+          throw new ValidationError(
+            "option",
+            validationMessages.mustBeShorterThan(25)
           );
         if (option.length == 0)
-          throw new Error(
-            "El tamaño de cada opción debe ser mayor a 0 caracteres"
-          );
+          throw new ValidationError("option", validationMessages.isMandatory);
       });
     }
     return true;
@@ -126,8 +127,7 @@ class Question {
       await Promise.all(
         this.options.map(async (option) => {
           await db.execute(
-            `INSERT INTO option(description, id_question)
-          VALUES (?, ?)`,
+            "INSERT INTO `option`(description, id_question) VALUES (?, ?)",
             [option, this.id]
           );
         })

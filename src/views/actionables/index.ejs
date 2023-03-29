@@ -6,89 +6,92 @@
     </div>
     <div class="banner__section">
       <div class="toggle-buttons-container toggle-buttons-container--primary">
-        <button class="toggle-button <%= (state === "accepted") && "toggle-button--active"%>" onclick="window.location.href='/accionables/accepted'">Aprobado</button>
-        <button class="toggle-button <%= (state === "pending") && "toggle-button--active"%>" onclick="window.location.href='/accionables/pending'">Por Aprobar</button>
-        <button class="toggle-button <%= (state === "rejected") && "toggle-button--active"%>" onclick="window.location.href='/accionables/rejected'">Rechazado </button>
+        <a class="toggle-button <%= (state === "accepted") && "toggle-button--active" %>"
+          href="/accionables/accepted">Aprobado</a>
+        <a class="toggle-button <%= (state === "pending") && "toggle-button--active" %>"
+          href="/accionables/pending">Por Aprobar</a>
+        <a class="toggle-button <%= (state === "rejected") && "toggle-button--active" %>"
+          href="/accionables/rejected">Rechazado </a>
       </div>
     </div>
+    <span class="line"></span>
   </div>
-  <span class="line"></span>
-  <% if (state === "accepted") { %>
-  <h2 class="subtitle"> Accionables Aprobados <span class="meta">
-      <% } %>
-      <% if (state === "pending") { %>
-      <h2 class="subtitle"> Accionables Por Aprobar <span class="meta">
-          <% } %>
-          <% if (state === "rejected") { %>
-          <h2 class="subtitle"> Accionables Rechazados <span class="meta">
-              <% } %>
-              <% if (actionables.length == 0) { %>
-              <div class="centcontainer">
-                <div class="vertical-center">
-                  <h2 class="card__title">No hay accionables para mostrar</h3>
-                </div>
-              </div>
-              <% }  %>
-              <div class="cards-container">
-                <% for(let i = 0; i< actionables.length; i++) {%>
-                <div class="card ">
-                  <h3 class="card__title"> <%= actionables[i].title %> </h3>
-                  <span class="line"></span>
-                  <div class="pills-container" style="display: flex; flex-wrap: wrap">
-                    <span class="pill pill--ontime"></span><%= moment( arrretros[i].start_date).fromNow(); %>
-                  </div>
-                  <p class="description">
-                    <%= actionables[i].description %>
-                  </p>
-                  <div class="users__resp">
-                    <p class="card__subtitle">
-                      Responsable
-                    </p>
-                    <div class="user__item">
-                      <span class="user__avatar">
-                        <%= arrUsers[i].first_name[0] %>
-                      </span>
-                      <span class="user__name">
-                        <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
-                      </span>
-                    </div>
-                    <ul class="items_list">
-                      <div class="pills-container" style="display: flex; flex-wrap: wrap">
-                        <li class="items__item">
-                          <div class="pills-container" style="display: flex; flex-wrap: wrap">
-                            <span class="pill pill--small"></span>
-                          </div>
-                          <p> <%= moment(arrretros[i].end_date).format('LL') %> </p>
-                        <li class="items__item">
-                          <div class="pills-container" style="display: flex; align-items: center; justify-content: center;">
-                            <span class="pill pill--small"></span>
-                          </div>
-                          <p> <%=arrretros[i].name %> </p>
-                      </div>
-                      <% if(state === "pending") { %>
-                      <div class="horizontal_list">
-                        <div class="horizontal__item">
-
-                          <form action="<%= actionables[i].id %>/accept" method="POST">
-                            <button class="button button--primary button--small" type="submit">Aprobar</button>
-                          </form>
-                        </div>
-                        <div class="horizontal__item">
-                          <form action="<%= actionables[i].id %>/reject" method="POST">
-                            <button class="button button--discard button--small" type="submit">Rechazar</button>
-                          </form>
-                        </div>
-                      </div>
-                      <% } %>
+  <% if (state==="accepted" ) { %>
+    <h2 class="subtitle"> Accionables Aprobados <span class="meta"></span></h2>
+    <% } %>
+      <% if (state==="pending" ) { %>
+        <h2 class="subtitle"> Accionables Por Aprobar <span class="meta"></span></h2>
+        <% } %>
+          <% if (state==="rejected" ) { %>
+            <h2 class="subtitle"> Accionables Rechazados <span class="meta"></span></h2>
+            <% } %>
+              <% if (actionables.length==0) { %>
+                <div class="centcontainer">
+                  <div class="vertical-center">
+                    <h2 class="card__title">No hay accionables para mostrar</h2>
                   </div>
                 </div>
                 <% } %>
 
-              </div>
-              </div>
+                  <% if (actionables.length>0) { %>
+                    <div class="cards-container">
+                      <% for(let i=0; i< actionables.length; i++) {%>
+                        <div class="card card--actionable">
+                          <div class="card__header">
+                            <h3 class="card__title">
+                              <%= actionables[i].title %>
+                            </h3>
+                            <div class="pills-container" style="display: flex; flex-wrap: wrap">
+                              <%= moment( arrRetros[i].start_date).fromNow(); %>
+                                <span class="pill pill--ontime"></span>
+                            </div>
+                          </div>
 
+                          <p class="card__description">
+                            <%= actionables[i].description %>
+                          </p>
 
+                          <p class="card__subtitle">
+                            Responsable
+                          </p>
 
+                          <div class="user__item">
+                            <span class="user__avatar">
+                              <%= arrUsers[i].first_name[0] %>
+                            </span>
+                            <span class="user__name">
+                              <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
+                            </span>
+                          </div>
 
+                          <ul class="items__list">
+                            <li class="pills-container">
+                              <span class="pill pill--small"></span>
+                              <p>
+                                <%= moment(arrRetros[i].end_date).format('LL') %>
+                              </p>
+                            </li>
+                            <li class="pills-container">
+                              <span class="pill pill--small"></span>
+                              <p>
+                                <%=arrRetros[i].name %>
+                              </p>
+                            </li>
+                          </ul>
 
+                          <% if(state==="pending" ) { %>
+                            <div class="buttons-container card__footer">
+                              <form action="<%= actionables[i].id %>/accept" method="POST">
+                                <button class="button button--primary" type="submit">Aprobar</button>
+                              </form>
+                              <form action="<%= actionables[i].id %>/reject" method="POST">
+                                <button class="button button--discard" type="submit">Rechazar</button>
+                              </form>
+                            </div>
+                            <% } %>
+
+                        </div>
+                        <% } %>
+                    </div>
+                    <% } %>
 </section>

@@ -1,50 +1,79 @@
 const Issue = require("../models/issue.model");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
+const issuePriorities = require("../utils/constants").enums.issuePriorities;
+const issueStates = require("../utils/constants").enums.issueStates;
 
 // ------------------ VERIFIER ------------------
 test("Issue epic name is not empty", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "epic_name",
+    validationMessages.isMandatory
+  );
+  try {
     new Issue({
       epic_name: "",
       id_sprint: 1,
     });
-  }).toThrow("Ingresa un nombre de epic");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Issue epic name length is in range < 40", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "epic_name",
+    validationMessages.mustBeShorterThan(40)
+  );
+  try {
     new Issue({
       epic_name: "a".repeat(41),
       id_sprint: 1,
     });
-  }).toThrow("El tamaño del nombre de epic debe ser menor a 40 caracteres");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Issue priority is of type LOWEST, LOW, MEDIUM, HIGH, HIGHEST", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "priority",
+    validationMessages.mustBeEnum(issuePriorities)
+  );
+  try {
     new Issue({
-      epic_name: "a".repeat(40),
-      priority: "INVALID",
+      epic_name: "a",
       id_sprint: 1,
+      priority: "INVALID",
     });
-  }).toThrow("La prioridad no es válida");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("Issue state is of type To Do, En curso, Pull requessts, QA, Blocked, Done", () => {
-  expect(() => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "state",
+    validationMessages.mustBeEnum(issueStates)
+  );
+  try {
     new Issue({
-      epic_name: "a".repeat(40),
-      state: "INVALID",
+      epic_name: "a",
       id_sprint: 1,
+      priority: "Highest",
+      state: "INVALID",
     });
-  }).toThrow("El estado no es válido");
-});
-
-test("Issue has id_sprint", () => {
-  expect(() => {
-    new Issue({
-      epic_name: "a".repeat(40),
-    });
-  }).toThrow("id_sprint es obligatorio");
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 // ------------------ GETTER ------------------

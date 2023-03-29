@@ -5,7 +5,7 @@ const Team = require("../models/team.model")
 const moment = require("moment");
 moment.locale("es");
 
-const getRetrospective= async (req, res, next) => {
+const renderRetrospectives = async (req, res, next) => {
   try {
     const teamName = req.query.team || null; // Obtener el nombre del equipo seleccionado
     const retrospectives = await Retrospective.getAll();
@@ -43,13 +43,16 @@ const getRetrospective= async (req, res, next) => {
   }
 };
 
-
-const get_nuevo = async (request, response, next) => {
-  const questions = await Question.getAll();
-  response.render("retrospectives/initRetrospective", {
-    title: "Preguntas",
-    questions,
-  });
+const renderInitRetrospective = async (req, res, next) => {
+  try {
+    const questions = await Question.getAll();
+    res.render("retrospectives/initRetrospective", {
+      title: "Preguntas",
+      questions,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 /*
 const post_nuevo = (request, response, next) => {
@@ -92,9 +95,6 @@ const post_nuevo = (request, response, next) => {
     .catch(error => console.log(error));
 };
 
-
-
-
 const renderRetrospectiveQuestions = async (req, res, next) => {
   try {
     const id_retrospective = req.params.id;
@@ -128,14 +128,18 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
   }
 };
 
-const getRetrospectiveAnswers = async (req, res) => {
-  const retroId = req.params.id;
-  const retrospective = await Retrospective.getById(retroId);
-  const questions = await retrospective.getQuestions();
-  for (let question of questions) {
-    question.answers = await retrospective.getAnswers(question);
+const getRetrospectiveAnswers = async (req, res, next) => {
+  try {
+    const retroId = req.params.id;
+    const retrospective = await Retrospective.getById(retroId);
+    const questions = await retrospective.getQuestions();
+    for (let question of questions) {
+      question.answers = await retrospective.getAnswers(question);
+    }
+    res.send(questions);
+  } catch (err) {
+    console.log(err);
   }
-  res.send(questions);
 };
 
 const getRetrospectiveIssues = async (req, res, next) => {
@@ -150,12 +154,11 @@ const getRetrospectiveIssues = async (req, res, next) => {
 };
 
 module.exports = {
+  renderRetrospectives,
+  renderInitRetrospective,
   renderRetrospectiveMetrics,
   renderRetrospectiveQuestions,
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
-  getRetrospective,
-  get_nuevo,
   post_nuevo,
-  
 };

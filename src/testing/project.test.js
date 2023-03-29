@@ -1,35 +1,52 @@
 const Project = require("../models/project.model");
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
 
 //name is in range
 test("name length is in range", () => {
-  expect(() => {
-    new Project({
-      name: "a".repeat(41),
-    });
-  }).toThrow("El nombre debe ser menor a 40 caracteres");
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.mustBeShorterThan(40)
+  );
+  try {
+    new Project({ name: "a".repeat(41) });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 //name is not empty
 test("name is not empty", () => {
-  expect(() => {
-    new Project({
-      name: "",
-      id_jira: "123",
-      active: 1,
-    });
-  }).toThrow("El nombre no puede estar vacío");
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
+    new Project({ name: "" });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 //name is not null
 //no sea nulo, no este vacio, no este undefined
 
 test("name exists", () => {
-  expect(() => {
-    new Project({
-      id_jira: "123",
-      active: 1,
-    });
-  }).toThrow("El nombre no puede ser nulo");
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
+    new Project({});
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
 });
 
 test("project getbyId", async () => {

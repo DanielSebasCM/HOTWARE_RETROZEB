@@ -1,32 +1,31 @@
 <section class="dashboard">
-
   <div class="banner">
     <div class="banner__section">
-      <h1 class="title">Retrospectivas <span class="meta"> (<%=retrospectives.length %>)</span> </h1>
-      <p class="description">
-        Listado de todas las retrospectivas creadas
-      </p>
+      <h1 class="title">
+        Retrospectivas <span class="meta"> (<%=retrospectives.length %>)</span>
+      </h1>
+      <p class="description">Listado de todas las retrospectivas creadas</p>
     </div>
-    <div class="buttons-container" style="display: flex; flex-wrap: wrap">
+    <div class="banner__section buttons-container">
       <button class="button button--edit">Comparar</button>
       <a class="button button--primary" href="retrospectivas/iniciar">Iniciar Retrospectiva</a>
     </div>
     <span class="line"></span>
+  </div>
 
-    <div class="buttons-container" style="display: flex; flex-wrap: wrap">
-      <div class="input search-bar">
-        <span class="icon search-bar__icon"></span>
-        <input name="buscar" id="buscar" type="text" placeholder="Buscar" />
-      </div>
+  <div class="filters-container">
+    <div class="input search-bar">
+      <span class="icon search-bar__icon"></span>
+      <input type="text" placeholder="Buscar por título" />
+    </div>
 
-      <div class="select-container" style="width: 50%;">
-        <select class="select" id="select-date" onchange="sortRetrospectives()">
-          <option value="1">Fecha Ascendente</option>
-          <option value="2">Fecha Descendente</option>
-        </select>
-      </div>
-
-      <div class="select-container" style="width: 50%;">
+    <div class="select-container">
+      <select class="select">
+        <option value="1">Fecha Ascendente</option>
+        <option value="2">Fecha Descendente</option>
+      </select>
+    </div>
+     <div class="select-container" style="width: 50%;">
         <select class="select" id="select-team-name" name="nombreEquipo">
           <option value="todos">Todos</option>
           <% if(teams && teams.length> 0) { %>
@@ -35,45 +34,46 @@
           <% }}%>
         </select>
       </div>
-    </div>
+  </div>
 
-    <% if (filteredRetrospectives && filteredRetrospectives.length > 0) { %>
-      <div class="banner--nomargin" style="width: 100%;">
-      <div class="charts-container" style="width: 100%;">
-        <table class="table-rwd" id="retrospectivasSearch">
+  <% if(filteredRetrospectives && filteredRetrospectives.length > 0) { %>
+    <div class="banner--nomargin">
+      <div class="table-container">
+        <table class="table id="retrospectivasSearch">
           <thead>
             <tr class="subtitle">
               <td>Titulo</td>
-              <td>Estado</td>
               <td>Sprint</td>
               <td>Equipo</td>
               <td>Fecha</td>
-              <td></td>
+              <td>Estado</td>
             </tr>
           </thead>
-          <tbody class="description">
+          <tbody>
             <% for(let i=0; i < filteredRetrospectives.length; i++) { %>
-            <tr id="retrospectives-list" class="retrospective" data-fecha="<%= filteredRetrospectives[i].start_date.toISOString() %>">
-              <td><%= filteredRetrospectives[i].name %></td>
-              <td>
-                <% if(filteredRetrospectives[i].state == 'PENDING') { %>
-                <span class="label label--danger">Pendiente</span>
-                <% } else if(filteredRetrospectives[i].state == 'IN_PROGRESS'){ %>
-                <span class="label label--active">En progreso</span>
-                <% } else if(filteredRetrospectives[i].state == 'CLOSED'){ %>
-                <span class="label label--success">Terminado</span>
-                <% } else { %>
-                No se pudo cargar
-                <% } %>
-              </td>
-              <td><%=  filteredRetrospectives[i].sprint_name  %></td>
-              <td>  <%=  filteredRetrospectives[i].teamm_name  %>  </td>
-              <td> <%= moment(filteredRetrospectives[i].start_date).format('LL') %> </td>
-              <td><a class="label label--active" href="<%= routes.retrospectives %>/<%= filteredRetrospectives[i].id %>">Detalles
-                </a></td>
-            </tr>
-            <% } %>
-          
+              <tr onclick="window.location ='<%= routes.retrospectives %>/<%= retrospectives[i].id %>'" id="retrospectives-list" class="retrospective" data-fecha="<%= filteredRetrospectives[i].start_date.toISOString() %>">
+                <td class="table__title">
+                  <%= filteredRetrospectives[i].name %>
+                </td>
+
+                <td>
+                  <%= filteredRetrospectives[i].sprint_name %>
+                </td>
+                <td> <%= filteredRetrospectives[i].teamm_name  %> </td>
+                <td>
+                  <%= moment(filteredRetrospectives[i].start_date).format('LL') %>
+                </td>
+                <td>
+                  <% if(filteredRetrospectives[i].state=='PENDING' ) { %>
+                    <span class="label label--danger">Pendiente</span>
+                  <% } else if(filteredRetrospectives[i].state=='IN_PROGRESS' ){ %>
+                    <span class="label label--active">En progreso</span>
+                  <% } else if(filteredRetrospectives[i].state=='CLOSED' ){ %>
+                    <span class="label label--success">Terminado</span>
+                  <% } else { %> No se pudo cargar <% } %>
+                </td>
+              </tr>
+              <% } %>
           </tbody>
         </table>
       </div>
@@ -85,16 +85,15 @@
     <% } %>
 </section>
 
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script type="module" src="/assets/js/retrospective.js"></script>
-<script>document.addEventListener('DOMContentLoaded', () => {
+<script>
+document.addEventListener('DOMContentLoaded', () => {
   const select = document.getElementById('select-date');
   select.addEventListener('change', sortRetrospectives);
 });
 
 function sortRetrospectives() {
-
   const select = document.getElementById('select-date');
   const retrospectivesContainers = document.getElementById('retrospectives-list');
   const retrospectiveElements = Array.from(retrospectivesContainers.children);
@@ -114,3 +113,5 @@ function sortRetrospectives() {
     });
 }
 </script>
+
+

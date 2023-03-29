@@ -8,7 +8,6 @@ const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
   require("../utils/constants").enums.retrospectiveStates;
 
-
 class Retrospective {
   constructor(retrospective) {
     Retrospective.verify(retrospective);
@@ -31,7 +30,7 @@ class Retrospective {
     return new Retrospective(retrospective[0]);
   }
   static async getAll() {
-    let [retrospectives, _] = await db.execute(`SELECT * FROM retrospective`);
+    let [retrospectives, _] = await db.execute(`SELECT * FROM retrospective ORDER BY start_date DESC`);
     return retrospectives.map(
       (retrospective) => new Retrospective(retrospective)
     );
@@ -112,7 +111,7 @@ class Retrospective {
   }
   async getIssues() {
     const [issues, _] = await db.execute(
-      "SELECT i.* FROM retrospective AS r JOIN sprint AS s ON r.id = 1 AND s.id = r.id_sprint JOIN issues AS i ON i.id_sprint = s.id;",
+      "SELECT i.* FROM retrospective AS r JOIN sprint AS s ON r.id = ? AND s.id = r.id_sprint JOIN issues AS i ON i.id_sprint = s.id;",
       [this.id]
     );
 
@@ -163,7 +162,7 @@ class Retrospective {
     }
     return answers.map((answer) => new Answer(answer));
   }
-  
+
   async getLabels() {
     const [labels, _] = await db.execute(
       `select distinct label from issues_labels as l, issues as i, sprint as s, retrospective as r where r.id = ? and r.id_sprint = s.id and s.id = i.id_sprint and i.id = l.id_issue`,
@@ -184,6 +183,9 @@ class Retrospective {
         this.id_sprint,
       ]
     );
+
+    this.id = res.insertId;
+
     return res;
   }
 
