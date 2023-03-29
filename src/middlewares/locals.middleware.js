@@ -11,6 +11,8 @@ const setLocals = async (req, res, next) => {
       email: "mariane@boyer.com",
     };
 
+    if(req.session.currentUser) req.app.locals.currentUser = req.session.currentUser;
+
     // MESSAGES
     res.locals.successMessage = req.session.successMessage;
     res.locals.errorMessage = req.session.errorMessage;
