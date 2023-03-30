@@ -20,7 +20,7 @@ addAnswerButton.addEventListener("click", function (event) {
   const newAnswer = document.createElement("div");
   newAnswer.classList.add("option-container");
   newAnswer.innerHTML = `
-  <input class="input" type="text" name="option" placeholder="Nueva opción" />
+  <input class="input" type="text" name="option" placeholder="Nueva opción" maxlength="25" required/>
   <button type = "button" class="button button--delete-question option-container icon">
   </button>
   `;
