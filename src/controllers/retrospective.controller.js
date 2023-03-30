@@ -2,7 +2,6 @@ const Retrospective = require("../models/retrospective.model");
 const Team = require("../models/team.model");
 const Question = require("../models/question.model");
 const Sprint = require("../models/sprint.model");
-const Team = require("../models/team.model")
 const moment = require("moment");
 moment.locale("es");
 
