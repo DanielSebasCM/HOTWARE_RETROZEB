@@ -7,35 +7,25 @@ moment.locale("es");
 
 const renderRetrospectives = async (req, res, next) => {
   try {
-    const teamName = req.query.team || null; // Obtener el nombre del equipo seleccionado
+
     const retrospectives = await Retrospective.getAll();
-    let filteredRetrospectives;
-    if (!teamName) { // Si no se ha seleccionado ningún equipo, se muestran todas las retrospectivas
-      filteredRetrospectives = retrospectives;
-    } else if (teamName === 'todos') {
-      filteredRetrospectives = retrospectives;
-    } else {
-      const team = await Team.getByName([teamName]);
-      for (let retrospective of retrospectives) {
-        const teamm = await Team.getById(retrospective.id_team);
-        retrospective.team_name = teamm.name;
-        if (!team) throw new Error(`Equipo no encontrado: ${teamName}`);
-        filteredRetrospectives = retrospectives.filter(retrospective => retrospective.team_name === teamName) ;}
-    }
     const teams = await Team.getAll();
     
     for (let retrospective of retrospectives) {
       const sprint = await Sprint.getById(retrospective.id_sprint);
       retrospective.sprint_name = sprint.name;
-      const teamm = await Team.getById(retrospective.id_team);
-      retrospective.teamm_name = teamm.name;
+      const team = teams.filter((team)=>{
+        return team.id == retrospective.id_team;
+      });
+      console.log(team);
+      retrospective.team_name = team[0].name;
     }
+    
     
     res.status(200).render("retrospectives/index", {
       title: "Retrospectivas",
       retrospectives,
       teams,
-      filteredRetrospectives,
       moment
     });
   } catch (err) {
