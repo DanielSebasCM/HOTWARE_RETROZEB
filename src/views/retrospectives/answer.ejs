@@ -1,0 +1,72 @@
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title"><%= retrospective.name %></h1>
+      <p class="description">
+        Contesta las preguntas de la retrospectiva
+      </p>
+    </div>
+    <span class="line"></span>
+  </div>
+  <form id="question-form" method="post">
+    <section class="cards-container--full">
+      <% for(let question of questions) {%>
+      <article class="card" data-id="<%= question.id %>" data-type="<%= question.type %>">
+        <div class="card__header">
+          <h3 class="subtitle"><%= question.description %></h3>
+          <span class="label <%= question.required ? "label--danger" : "label--active" %>">
+            <%= question.required ? "OBLIGATORIA" : "OPCIONAL" %>
+          </span>
+        </div>
+        <% if(question.type === "OPEN") { %>
+        <input type="text" class="input" name="answer-<%= question.id %>" required="true">
+        <% } else if(question.type === "SCALE") { %>
+        <div class="radio-container">
+          <div class="radio-item">
+            <input type="radio" name="answer-<%= question.id %>" value="1" required="true">
+            <label for="">1</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="answer-<%= question.id %>" value="2">
+            <label for="">2</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="answer-<%= question.id %>" value="3">
+            <label for="">3</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="answer-<%= question.id %>" value="4">
+            <label for="">4</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="answer-<%= question.id %>" value="5">
+            <label for="">5</label>
+          </div>
+        </div>
+        <% } else if(question.type === "BOOLEAN") {%>
+        <div class="radio-container" style="width: 30%;">
+          <div class="radio-item">
+            <input type="radio" name="answer-<%= question.id %>" value="TRUE" required="true">
+            <label for="">Sí</label>
+          </div>
+          <div class="radio-item">
+            <input type="radio" name="answer-<%= question.id %>" value="FALSE">
+            <label for="">No</label>
+          </div>
+          <% } else { %>
+          <div class="select-container">
+            <select class="select" name="answer-<%= question.id %>" required="true">
+              <option value="default">Escoge una opción</option>
+              <% for(let option of question.options) { %>
+              <option value="<%= option.description %>"><%= option.description %></option>
+              <% } %>
+            </select>
+          </div>
+          <% } %>
+      </article>
+      <% } %>
+    </section>
+    <button class="button button--primary">Enviar Respuestas</button>
+  </form>
+</section>
+<script src="/assets/js/answer.js"></script>

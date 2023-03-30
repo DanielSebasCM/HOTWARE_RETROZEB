@@ -145,7 +145,11 @@ class Retrospective {
       }
     }
 
-    return questions.map((question) => new Question(question));
+    return questions.map((question) => {
+      const builtQuestion = new Question(question);
+      builtQuestion.required = question.required;
+      return builtQuestion;
+    });
   }
 
   async getAnswers(question) {
@@ -160,6 +164,7 @@ class Retrospective {
           "SELECT description FROM `option` WHERE id = ?",
           [answer.value]
         );
+        console.log();
         answer.value = newValue[0].description;
       }
     }
@@ -198,6 +203,15 @@ class Retrospective {
     this.id = res.insertId;
 
     return res;
+  }
+
+  async postAnswers(answers, uid) {
+    for (let answer of answers) {
+      await db.execute(
+        `INSERT INTO answer (id_retrospective, id_question, uid, value) VALUES (?, ?, ?, ?)`,
+        [this.id, answer.id_question, uid, answer.value]
+      );
+    }
   }
 
   async put() {

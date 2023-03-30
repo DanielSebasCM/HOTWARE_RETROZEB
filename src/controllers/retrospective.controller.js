@@ -2,7 +2,6 @@ const Retrospective = require("../models/retrospective.model");
 const Team = require("../models/team.model");
 const Question = require("../models/question.model");
 const Sprint = require("../models/sprint.model");
-const Team = require("../models/team.model")
 const moment = require("moment");
 moment.locale("es");
 
@@ -11,9 +10,10 @@ const renderRetrospectives = async (req, res, next) => {
     const teamName = req.query.team || null; // Obtener el nombre del equipo seleccionado
     const retrospectives = await Retrospective.getAll();
     let filteredRetrospectives;
-    if (!teamName) { // Si no se ha seleccionado ningún equipo, se muestran todas las retrospectivas
+    if (!teamName) {
+      // Si no se ha seleccionado ningún equipo, se muestran todas las retrospectivas
       filteredRetrospectives = retrospectives;
-    } else if (teamName === 'todos') {
+    } else if (teamName === "todos") {
       filteredRetrospectives = retrospectives;
     } else {
       const team = await Team.getByName([teamName]);
@@ -21,23 +21,26 @@ const renderRetrospectives = async (req, res, next) => {
         const teamm = await Team.getById(retrospective.id_team);
         retrospective.team_name = teamm.name;
         if (!team) throw new Error(`Equipo no encontrado: ${teamName}`);
-        filteredRetrospectives = retrospectives.filter(retrospective => retrospective.team_name === teamName) ;}
+        filteredRetrospectives = retrospectives.filter(
+          (retrospective) => retrospective.team_name === teamName
+        );
+      }
     }
     const teams = await Team.getAll();
-    
+
     for (let retrospective of retrospectives) {
       const sprint = await Sprint.getById(retrospective.id_sprint);
       retrospective.sprint_name = sprint.name;
       const teamm = await Team.getById(retrospective.id_team);
       retrospective.teamm_name = teamm.name;
     }
-    
+
     res.status(200).render("retrospectives/index", {
       title: "Retrospectivas",
       retrospectives,
       teams,
       filteredRetrospectives,
-      moment
+      moment,
     });
   } catch (err) {
     next(err);
@@ -66,18 +69,19 @@ const post_nuevo = (request, response, next) => {
   })
   .catch(error => console.log(error));
 };*/
-  
+
 const post_nuevo = (request, response, next) => {
   const { name, questions } = request.body;
-  
+
   const retrospective = new Retrospective({
     name,
-    state: 'PENDING',
+    state: "PENDING",
     id_team: 1, // o el id del equipo correspondiente
-    id_sprint: 1 // o el id del sprint correspondiente
+    id_sprint: 1, // o el id del sprint correspondiente
   });
-  
-  retrospective.save()
+
+  retrospective
+    .save()
     .then((retro) => {
       const questionsPromises = questions.map((question) => {
         const retrospectiveQuestion = new RetrospectiveQuestion({
@@ -93,7 +97,27 @@ const post_nuevo = (request, response, next) => {
     .then(() => {
       response.status(300).redirect("retrospectives/index");
     })
-    .catch(error => console.log(error));
+    .catch((error) => console.log(error));
+};
+
+const postRetrospectiveAnswers = async (req, res, next) => {
+  try {
+    const { idRetrospective, questionIds, uid } = req.body;
+    const answers = [];
+    for (let qId of questionIds) {
+      const question = await Question.getById(qId);
+      if (question.type !== "SELECTION") {
+        answers.push({ id_question: qId, value: req.body[qId] });
+      } else {
+        optionId = await question.getOptionId(req.body[qId]);
+        answers.push({ id_question: qId, value: optionId });
+      }
+    }
+    const retrospective = await Retrospective.getById(idRetrospective);
+    retrospective.postAnswers(answers, uid);
+  } catch (err) {
+    next(err);
+  }
 };
 
 const renderRetrospectiveQuestions = async (req, res, next) => {
@@ -126,6 +150,27 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
       retrospective,
       labels,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const renderRetrospectiveAnswer = async (req, res, next) => {
+  try {
+    const retrospectiveId = req.params.id;
+    const retrospective = await Retrospective.getById(retrospectiveId);
+    const questions = await retrospective.getQuestions();
+    const answer = await retrospective.getAnswers(questions[0]);
+    if (answer.length > 0) {
+      req.session.errorMessage = "Ya respondiste esta retrospectiva";
+      res.redirect(`/retrospectivas/${retrospectiveId}/preguntas`);
+    } else {
+      res.render("retrospectives/answer", {
+        title: "Responder",
+        retrospective,
+        questions,
+      });
+    }
   } catch (err) {
     next(err);
   }
@@ -172,8 +217,10 @@ module.exports = {
   renderInitRetrospective,
   renderRetrospectiveMetrics,
   renderRetrospectiveQuestions,
+  renderRetrospectiveAnswer,
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
   getRetrospectiveUsers,
   post_nuevo,
+  postRetrospectiveAnswers,
 };

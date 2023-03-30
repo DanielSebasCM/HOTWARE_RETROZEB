@@ -68,6 +68,15 @@ class Question {
     return questions.map((question) => new Question(question));
   }
 
+  async getOptionId(option) {
+    const [optionId, _] = await db.execute(
+      "SELECT id FROM `option` WHERE id_question = ? AND description = ?",
+      [this.id, option]
+    );
+
+    return optionId[0].id;
+  }
+
   static verify(question) {
     // Length of description is less than 255
     if (question.description?.length > 255)

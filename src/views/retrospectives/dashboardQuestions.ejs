@@ -20,8 +20,7 @@
     <article class="card card--answers">
       <div class="card__header">
         <h3 class="card__title"><%= question.description %></h3>
-        <span class="label
-          <%= question.required ? "label--late" : "label--success" %>">
+        <span class="label <%= question.required ? "label--danger" : "label--success" %>">
           <%= question.required ? "OBLIGATORIA" : "OPCIONAL" %>
         </span>
       </div>
