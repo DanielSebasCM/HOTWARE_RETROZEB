@@ -33,8 +33,18 @@ const renderRetrospectives = async (req, res, next) => {
 
 const renderInitRetrospective = async (req, res, next) => {
   try {
-    const newTeam = new Team(req.app.locals.selectedTeam);
-
+    let newTeam;
+    try{
+      newTeam = new Team(req.app.locals.selectedTeam);
+    }catch{
+      res.render("retrospectives/initRetrospective", {
+        title: "Preguntas",
+        questions: [],
+        retrospective: null,
+        sprint: null
+      });
+    }
+    console.log(newTeam);
     let retrospective = null;
     let questions = [];
     let sprint;
@@ -43,10 +53,12 @@ const renderInitRetrospective = async (req, res, next) => {
       retrospective = await newTeam.hasActiveRetrospective();
     }catch{
       questions = await Question.getAll();
+
       sprint = await Sprint.getLastWithoutRetroByTeamId(req.app.locals.selectedTeam.id);
       const activeSprint = await Sprint.getLastWithRetroByTeamId(req.app.locals.selectedTeam.id);
 
-      if(activeSprint && activeSprint.end_date > sprint.end_date){
+
+      if(sprint && activeSprint && activeSprint.end_date > sprint.end_date){
         console.log(activeSprint.end_date);
         console.log(sprint.end_date);
         sprint = null;  
@@ -65,7 +77,7 @@ const renderInitRetrospective = async (req, res, next) => {
   }
 };
   
-const post_nuevo = async (request, response, next) => {
+const post = async (request, response, next) => {
   try{
   let { name, checked, required, anonymous, id_sprint } = request.body;
   if(!checked) {
@@ -107,24 +119,6 @@ const post_nuevo = async (request, response, next) => {
   } catch (err) {
     next(err);
   }
-  /* 
-  retrospective.save()
-    .then((retro) => {
-      const questionsPromises = questions.map((question) => {
-        const retrospectiveQuestion = new RetrospectiveQuestion({
-          id_retrospective: retro.id,
-          id_question: question.id,
-          required: question.required || 1,
-          anonymous: question.anonymous || 0,
-        });
-        return retrospectiveQuestion.save();
-      });
-      return Promise.all(questionsPromises);
-    })
-    .then(() => {
-      response.status(300).redirect("retrospectives/index");
-    })
-    .catch(error => console.log(error));*/
     
 };
 
@@ -207,5 +201,5 @@ module.exports = {
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
   getRetrospectiveUsers,
-  post_nuevo,
+  post,
 };

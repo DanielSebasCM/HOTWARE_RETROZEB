@@ -3,6 +3,11 @@
     <div class="banner__section">
       <h1 class="title">Iniciar Retrospectiva</h1>
       <p class="description">Registrar una nueva sesión de retrospectiva</p>
+      
+      <% if(!locals.selectedTeam){%>
+        <p class="description">Únete o selecciona un equipo para poder iniciar una retrospectiva</p>
+        <%} %>
+      <% if(locals.selectedTeam){%>
       <% if(sprint){%>
       <p class="description">Equipo: <span class="meta"> <%= locals.selectedTeam.name %></span> </p>
       <p class="description">Sprint: <span class="meta"><%= sprint.name %> </span></p>
@@ -32,7 +37,7 @@
   <h2 class="subtitle">Nombre de la retrospectiva</h2>
   <div class="input-container">
     <label class="input__label" for="name">Nombre</label>
-    <input class="input" type="text" name="name" placeholder="Nombre de la Retrospectiva" required/>
+    <input class="input" type="text" name="name" placeholder="Nombre de la Retrospectiva" required value="<%= sprint.name %>: <%= locals.selectedTeam.name %>"/>
   </div>
   <br/>
   
@@ -78,7 +83,7 @@
 
 </form>
 <%} %>
-
+<%} %>
 </section>
 
 <script src="/assets/js/initRetrospective.js"></script>

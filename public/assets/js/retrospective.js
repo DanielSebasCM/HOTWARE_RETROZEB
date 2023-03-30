@@ -3,6 +3,7 @@ const data = document.querySelectorAll('#retrospectivasSearch tbody tr');
 const tableData = document.querySelector('#retrospectivasSearch tbody');
 const selectTeamName = document.getElementById("select-team-name");
 const selectSortDate = document.getElementById("selectSortDate");
+const emptyMessage = document.getElementById("emptyMessage");
 
 selectTeamName.addEventListener("change",(event) => {
   const idteam = event.target.value;
@@ -15,15 +16,27 @@ selectSortDate.addEventListener("change", () => {
 })
 
 //Buscar
+document.addEventListener("DOMContentLoaded", () => {
   searchInput.addEventListener('keyup', () => {
     const filter = searchInput.value.toLowerCase().trim();
-
+    let countHidden = 0;
     data.forEach((item) => {
       const text = item.textContent.toLowerCase();
-      const display = text.indexOf(filter) > -1 ? '' : 'none';
-      item.style.display = display;
+      if(text.indexOf(filter) > -1){
+        item.classList.remove("hide");
+        emptyMessage.classList.add("hide");
+      }else{
+        item.classList.add("hide")
+        countHidden++;
+      }
+
     });
+    if (countHidden == data.length){
+      emptyMessage.classList.remove("hide");
+    }
   });
+
+})
 
 
 function filterByTeams(data, idteam) {
