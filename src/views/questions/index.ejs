@@ -2,7 +2,9 @@
 <section class="dashboard">
   <div class="banner">
     <div class="banner__section">
-      <h1 class="title">Preguntas</h1>
+      <h1 class="title">
+        Preguntas <span class="meta">(<%= questions.length %>)</span>
+      </h1>
       <p class="description">Listado de preguntas creadas</p>
     </div>
     <div class="banner__section">
@@ -28,24 +30,20 @@
     </div>
   </div>
   <% if(questions && questions.length> 0) { %>
-    <div class="cards-container">
-      <% for(let question of questions) { %>
-        <div class="card card--question">
-          <p class="card__subtitle">
-            <%= question.description %>
-          </p>
-          <span class="label label--active">
-            <%= question.type %>
-          </span>
-        </div>
-        <% } %>
+  <div class="cards-container">
+    <% for(let question of questions) { %>
+    <div class="card card--question">
+      <p class="card__subtitle"><%= question.description %></p>
+      <span class="label label--active"> <%= question.type %> </span>
     </div>
-    <% } else { %>
-      <div class="cards-container">
-        <div class="card">
-          <p class="card__subtitle">No hay preguntas</p>
-        </div>
-      </div>
-      <% } %>
+    <% } %>
+  </div>
+  <% } else { %>
+  <div class="cards-container">
+    <div class="card">
+      <p class="card__subtitle">No hay preguntas</p>
+    </div>
+  </div>
+  <% } %>
 </section>
 <script defer src="/assets/js/questions.js"></script>
