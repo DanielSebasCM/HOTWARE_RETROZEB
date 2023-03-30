@@ -10,21 +10,19 @@
       </p>
       <%} %> <% if(locals.selectedTeam){%> <% if(sprint){%>
       <p class="description">
-        Equipo: <span class="meta"> <%= locals.selectedTeam.name %></span>
+        Equipo: <span class="meta"> <%= locals.selectedTeam.name %> </span>
       </p>
       <p class="description">
-        Sprint: <span class="meta"><%= sprint.name %> </span>
+        Sprint: <span class="meta"> <%= sprint.name %> </span>
       </p>
       <%} %>
     </div>
 
-    <% if(sprint){%>
     <div class="banner__section">
-      <button class="button button--primary" type="sumit" form="form">
-        Guardar
-      </button>
+      <a class="button button--edit" href="<%=routes.questions %>"
+        >Crear pregunta</a
+      >
     </div>
-    <%} %>
     <span class="line"></span>
   </div>
 
@@ -54,65 +52,77 @@
         value="<%= sprint.name %>: <%= locals.selectedTeam.name %>"
       />
     </div>
-    <br />
 
-    <h2 class="subtitle mt-3">Preguntas</h2>
+    <h2 class="subtitle mt-3" id="questions-quantity">
+      Preguntas <span class="meta">(<%= questions.length %>)</span>
+    </h2>
     <p class="description mb-2">
       Selecciona las preguntas que desees incluir o crea preguntas nuevas.
     </p>
 
-    <div class="filters-container">
+    <div class="filters-container mb-2">
       <div class="input search-bar">
         <span class="icon search-bar__icon"></span>
         <input type="text" placeholder="Buscar por título" id="buscar" />
       </div>
     </div>
 
-    <% if(questions.length> 0) { for(let i=0; i < questions.length; i++) { %>
-    <div class="card card--question-checkbox">
-      <input
-        type="checkbox"
-        checked
-        class="mr-1"
-        name="checked"
-        value="<%= questions[i].id %>"
-      />
-      <div>
-        <p class="subtitle"><%= questions[i].description %></p>
+    <div class="questions__list">
+      <% if(questions.length> 0) { for(let i=0; i < questions.length; i++) { %>
+      <div
+        class="card card--question-checkbox"
+        data-id="<%= questions[i].id %>"
+      >
+        <div class="horizontal-container">
+          <input
+            type="checkbox"
+            class="question-checkbox mr-1"
+            value="<%= questions[i].id %>"
+          />
+          <input
+            type="text"
+            readonly
+            class="subtitle question"
+            value="<%=questions[i].description %>"
+          />
+        </div>
+        <div class="horizontal-container">
+          <div class="horizontal-container question-required-checkbox">
+            <input
+              type="checkbox"
+              class="mr-1"
+              checked
+              value="<%= questions[i].id %>"
+            />
+            <label class="description mr-2">Obligatorio</label>
+          </div>
+
+          <span class="label label--inactive"> <%= questions[i].type %> </span>
+        </div>
       </div>
-      <label class="description">Obligatorio</label>
-      <input
-        type="checkbox"
-        checked
-        class="mr-1"
-        name="required"
-        value="<%= questions[i].id %> "
-      />
-
-      <label class="description">Anónimo</label>
-      <input
-        type="checkbox"
-        class="mr-1"
-        name="anonymous"
-        value="<%= questions[i].id %> "
-      />
-
-      <span class="label label--active"> <%= questions[i].type %> </span>
+      <% } } else { %>
+      <p class="no-results">
+        Por el momento no hay preguntas registradas. Empieza a crear las tuyas!
+      </p>
+      <% } %>
     </div>
-    <br />
-    <% } } else { %>
-    <p class="description">
-      Por el momento no hay preguntas registradas. Empieza a crear las tuyas!
-    </p>
-    <% } %>
+    <p class="no-results search hide"></p>
 
-    <div class="buttons-container mt-2">
-      <button class="button button--primary" type="submit">Guardar</button>
+    <div class="questions__resume mt-5 mb-5" id="selected-questions">
+      <span class="line"></span>
+      <h3 class="subtitle">Resumen de preguntas</h3>
+      <div class="questions__resume-list"></div>
+    </div>
+
+    <div class="banner mt-4">
+      <div class="buttons-container">
+        <button class="button button--primary" type="submit">Guardar</button>
+        <a class="button button--discard" href="<%=routes.retrospectives %>"
+          >Descartar</a
+        >
+      </div>
       <a class="button button--edit" href="<%=routes.questions %>"
         >Crear pregunta</a
-      >
-      <a class="button button--discard" href="<%=routes.retrospectives %>"
-        >Descartar</a
       >
     </div>
   </form>

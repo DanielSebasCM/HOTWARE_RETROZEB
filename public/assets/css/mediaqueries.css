@@ -37,16 +37,6 @@
     flex-direction: row;
     justify-content: space-between;
   }
-
-  .card--question-checkbox {
-    align-items: center;
-  }
-
-  .card--question-checkbox div {
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-  }
 }
 
 /* TABLET BREAKPOINT */
@@ -91,6 +81,10 @@
     grid-template-columns: repeat(1, fr);
     max-width: 98%;
     gap: 2rem;
+  }
+
+  .card--question-checkbox {
+    overflow-x: hidden;
   }
 }
 

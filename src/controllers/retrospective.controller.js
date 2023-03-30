@@ -82,6 +82,7 @@ const renderInitRetrospective = async (req, res, next) => {
 const post = async (request, response, next) => {
   try {
     let { name, checked, required, anonymous, id_sprint } = request.body;
+
     if (!checked) {
       request.session.errorMessage =
         "No puedes crear una retrospectiva sin preguntas";

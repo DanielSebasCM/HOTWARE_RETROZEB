@@ -38,10 +38,10 @@
                       <% for(let i=0; i< actionables.length; i++) {%>
                         <div class="card card--actionable">
                           <div class="card__header">
-                            <h3 class="card__title">
+                            <h3 class="card__title mr-2">
                               <%= actionables[i].title %>
                             </h3>
-                            <div class="pills-container" style="display: flex; flex-wrap: wrap">
+                            <div class="pills-container">
                               <%= moment( arrRetros[i].start_date).fromNow(); %>
                                 <span class="pill pill--ontime"></span>
                             </div>
@@ -80,7 +80,7 @@
                           </ul>
 
                           <% if(state==="pending" ) { %>
-                            <div class="buttons-container card__footer">
+                            <div class="buttons-container card__footer mt-2">
                               <form action="<%= actionables[i].id %>/accept" method="POST">
                                 <button class="button button--primary" type="submit">Aprobar</button>
                               </form>

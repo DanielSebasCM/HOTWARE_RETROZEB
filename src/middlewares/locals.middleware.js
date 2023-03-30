@@ -18,17 +18,8 @@ const setLocals = async (req, res, next) => {
     res.locals.successMessage = req.session.successMessage;
     res.locals.errorMessage = req.session.errorMessage;
 
-    if (res.locals.successMessage) {
-      setTimeout(() => {
-        res.locals.successMessage = null;
-      }, 5000);
-    }
-
-    if (res.locals.errorMessage) {
-      setTimeout(() => {
-        res.locals.errorMessage = null;
-      }, 5000);
-    }
+    req.session.successMessage = null;
+    req.session.errorMessage = null;
 
     // ROUTES
     res.locals.routes = routes;

@@ -42,20 +42,6 @@
   closeBtn.forEach((btn) => {
     btn.addEventListener("click", async () => {
       btn.parentElement.classList.add("hide");
-
-      const type = btn.value;
-
-      try {
-        return await fetch(`http://localhost:3000/locals/mensajes`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ type }),
-        });
-      } catch (error) {
-        console.log(error);
-      }
     });
   });
 })();
