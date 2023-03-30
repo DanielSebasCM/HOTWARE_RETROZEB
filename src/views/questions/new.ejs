@@ -1,0 +1,63 @@
+<!--MAIN-->
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">Crear pregunta</h1>
+      <p class="description">Crea una pregunta para la retrospectiva</p>
+    </div>
+    <div class="banner__section">
+      <a href="/preguntas" class="button button--discard">Descartar</a>
+    </div>
+  </div>
+  <span class="line"></span>
+
+  <!-- CREATE QUESTIONS -->
+  <form id="addQuestion" method="POST" action="/preguntas/nueva">
+    <div class="banner-question">
+      <div>
+        <p class="description-question">Selecciona el tipo de pregunta</p>
+        <div class="select-container">
+          <select class="select" id="select-question-type" name="type">
+            <option value="OPEN" selected>OPEN</option>
+            <option value="BOOLEAN">BOOLEAN</option>
+            <option value="SCALE">SCALE</option>
+            <option value="SELECTION">SELECTION</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <!--ALIGN FLEX START-->
+        <p class="description-question">Valor de la pregunta</p>
+
+        <!-- QUESTION FORM -->
+        <div class="input-container">
+          <input name="description" class="input" type="text" placeholder="¿Cómo fue el sprint pasado?" id="question-input" required />
+        </div>
+
+        <div class="hide" id="selection-form">
+          <p class="description-question">Opciones:</p>
+          <div class="options-container" id="answers">
+            <div class="option-container">
+              <input class="input" type="text" name="option" placeholder="Opción 1" />
+            </div>
+            <div class="option-container">
+              <input class="input" type="text" name="option" placeholder="Opción 1" />
+            </div>
+            <div class="option-container">
+              <input class="input" type="text" name="option" placeholder="Opción 1" />
+            </div>
+          </div>
+          <br>
+          <button class="button button--edit" id="add-answers">
+            Añadir opción
+          </button>
+        </div>
+        <br>
+        <button class="button button--primary" type="submit">
+          Crear Pregunta
+        </button>
+      </div>
+    </div>
+  </form>
+</section>
+<script defer src="/assets/js/postQuestion.js"></script>

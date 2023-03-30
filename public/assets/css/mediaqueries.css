@@ -69,6 +69,20 @@
   .items__list {
     overflow-y: hidden;
   }
+
+  .banner-question {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .banner-question :nth-child(1) {
+    flex: 35%;
+  }
+
+  .banner-question :nth-child(2) {
+    flex: 70%;
+  }
 }
 
 /* DESKTOP BREAKPOIN */
