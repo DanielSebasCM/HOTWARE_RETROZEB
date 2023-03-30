@@ -99,7 +99,7 @@ const post_nuevo = (request, response, next) => {
   });
 
   retrospective
-    .save()
+    .post()
     .then((retro) => {
       const questionsPromises = questions.map((question) => {
         const retrospectiveQuestion = new RetrospectiveQuestion({
@@ -133,6 +133,8 @@ const postRetrospectiveAnswers = async (req, res, next) => {
     }
     const retrospective = await Retrospective.getById(idRetrospective);
     retrospective.postAnswers(answers, uid);
+    req.session.successMessage = "Respuestas enviadas con éxito";
+    res.send("Respuestas enviadas con éxito");
   } catch (err) {
     next(err);
   }

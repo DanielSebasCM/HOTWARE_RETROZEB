@@ -56,7 +56,7 @@
           <% } else { %>
           <div class="select-container">
             <select class="select" name="answer-<%= question.id %>" required="true">
-              <option value="default">Escoge una opción</option>
+              <option value="">Escoge una opción</option>
               <% for(let option of question.options) { %>
               <option value="<%= option.description %>"><%= option.description %></option>
               <% } %>

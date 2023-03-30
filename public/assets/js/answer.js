@@ -54,7 +54,7 @@ form.addEventListener("submit", (e) => {
     headers: {
       "Content-Type": "application/json",
     },
+  }).then((res) => {
+    window.location.href = `/retrospectivas/${idRetrospective}/preguntas`;
   });
-
-  window.location.href = `/retrospectivas/${idRetrospective}/preguntas`;
 });
