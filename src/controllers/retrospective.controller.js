@@ -285,4 +285,6 @@ module.exports = {
   getRetrospectiveAnswers,
   getRetrospectiveUsers,
   post,
+  post_nuevo,
+  postRetrospectiveAnswers,
 };
