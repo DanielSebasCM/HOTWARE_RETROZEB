@@ -30,23 +30,10 @@
 (function selectactiveTeams() {
   const teamOptions = document.getElementById("team-options");
   if (!teamOptions) return;
-  const teamList = teamOptions.querySelectorAll("option");
+  const form = teamOptions.closest("form");
 
-  teamOptions.addEventListener("change", (event) => {
-    teamList.forEach((team) => {
-      if (team.value == event.target.value) {
-        return fetch(`http://localhost:3000/locals`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ activeTeam: team.value }),
-        }).catch((err) => {
-          console.log(err);
-        });
-      }
-    });
-    location.reload();
+  teamOptions.addEventListener("change", () => {
+    return form.submit();
   });
 })();
 

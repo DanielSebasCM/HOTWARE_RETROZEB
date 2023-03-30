@@ -48,8 +48,8 @@ const setLocals = async (req, res, next) => {
     if (!teams || teams.length == 0) {
       req.app.locals.selectedTeam = null;
     }
-
     next();
+    // res.status(200).redirect(req.headers.referer);
   } catch (err) {
     next(err);
   }
