@@ -25,7 +25,7 @@
         <option value="fecha-antigua">Fecha más antigua</option>
       </select>
     </div>
-     <div class="select-container" style="width: 50%;">
+     <div class="select-container">
         <select class="select" id="select-team-name" name="nombreEquipo">
           <option value="todos">Todos</option>
           <% if(teams && teams.length> 0) { %>
@@ -79,13 +79,15 @@
       </div>
     </div>
     <% } else { %>
-    <p class="description" style="text-align: right">
+    <p class="description">
       Por el momento no existe ninguna retrospectiva
     </p>
     <% } %>
+    <p class="description hide" id="emptyMessage">
+      Por el momento no existe ninguna retrospectiva
+    </p>
 </section>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="/assets/js/retrospective.js"></script>
 
 
