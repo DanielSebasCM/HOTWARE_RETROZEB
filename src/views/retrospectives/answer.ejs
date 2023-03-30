@@ -19,7 +19,7 @@
           </span>
         </div>
         <% if(question.type === "OPEN") { %>
-        <input type="text" class="input" name="answer-<%= question.id %>" required="true">
+        <input type="text" class="input" name="answer-<%= question.id %>" required="true" maxlength="400">
         <% } else if(question.type === "SCALE") { %>
         <div class="radio-container">
           <div class="radio-item">
