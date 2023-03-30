@@ -2,19 +2,37 @@
   <div class="banner">
     <div class="banner__section">
       <h1 class="title">Iniciar Retrospectiva</h1>
-      <p class="description">Registrar una nueva sesión de retrospectiva.</p>
+      <p class="description">Registrar una nueva sesión de retrospectiva</p>
+      <% if(sprint){%>
+      <p class="description">Equipo: <span class="meta"> <%= locals.selectedTeam.name %></span> </p>
+      <p class="description">Sprint: <span class="meta"><%= sprint.name %> </span></p>
+      <%} %>
     </div>
+  
+    <% if(sprint){%>
     <div class="banner__section">
-      <a class="button button--primary" href="#">Guardar</a>
+      <button class="button button--primary" type="sumit" form="form">Guardar</button>
     </div>
+    <%} %>
     <span class="line"></span>
   </div>
 
-<form method="POST" action="retrospectivas/iniciar">
-  <h2 class="subtitle mt-3">Nombre de la retrospectiva</h2>
+  <% if(retrospective){%>
+    <p class="description">Ya existe una retrospectiva para el último sprint del equipo <%= locals.selectedTeam.name %>. Por favor contéstala y ciérrala. </p>
+  <%} %>
+
+  <% if(!sprint && !retrospective){%>
+    <p class="description">No hay sprints disponibles para el equipo <%= locals.selectedTeam.name %>. Por favor selecciona otro equipo</p>
+  
+    <%} %>
+
+  <% if(sprint){%>
+<form method="POST" action="/retrospectivas/iniciar" id="form">
+  <input type="number" value="<%= sprint.id %>" hidden name="id_sprint">
+  <h2 class="subtitle">Nombre de la retrospectiva</h2>
   <div class="input-container">
-    <label class="input__label" for="team-name">Nombre</label>
-    <input class="input" type="text" name="team-name" placeholder="Nombre de la Retrospectiva" />
+    <label class="input__label" for="name">Nombre</label>
+    <input class="input" type="text" name="name" placeholder="Nombre de la Retrospectiva" required/>
   </div>
   <br/>
   
@@ -23,19 +41,27 @@
     Selecciona las preguntas que desees incluir o crea preguntas nuevas.
   </p>
 
+  <div class="filters-container">
+    <div class="input search-bar">
+      <span class="icon search-bar__icon"></span>
+      <input type="text" placeholder="Buscar por título" id="buscar"/>
+    </div>
+  </div>
+
 <% if(questions.length> 0) { 
     for(let i=0; i < questions.length; i++) { %>
       <div class="card card--question-checkbox">
-        <input type="checkbox" checked="" class="mr-1" />
+        <input type="checkbox" checked="" class="mr-1" name="checked" value="<%= questions[i].id %> "/>
        <div>
-          <label class="subtitle"> <%= questions[i].description %> </label>
-          <span class="label label--active"> <%= questions[i].type %> </span>
-        </div>
-        <input type="checkbox" checked="" class="mr-1"/> 
+        <p class="subtitle"> <%= questions[i].description %> </p>
+      </div>
         <label class="description">Obligatorio</label> 
+        <input type="checkbox" checked="" class="mr-1" name="required" value="<%= questions[i].id %> "/> 
         
-        <input type="checkbox" class="mr-1" /> 
         <label class="description">Anónimo</label> 
+        <input type="checkbox" class="mr-1" name="anonymous" value="<%= questions[i].id %> "/> 
+        
+        <span class="label label--active"> <%= questions[i].type %> </span>
       </div>
       <br>
 <% } } else { %>
@@ -43,13 +69,16 @@
       Por el momento no hay preguntas registradas. Empieza a crear las tuyas!
     </p>
 <% }  %>
-</form>
 
-<br>
-
-<div class="buttons-container">
-  <a class="button button--primary" href="#">Guardar</a>
-  <a class="button button--edit" href="#">Crear pregunta</a>
+<div class="buttons-container mt-2">
+  <button class="button button--primary" type="submit">Guardar</button>
+  <a class="button button--edit" href="<%=routes.questions %>">Crear pregunta</a>
   <a class="button button--discard" href="<%=routes.retrospectives %>">Descartar</a>
 </div>
+
+</form>
+<%} %>
+
 </section>
+
+<script src="/assets/js/initRetrospective.js"></script>

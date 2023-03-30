@@ -119,6 +119,26 @@ class Team {
     );
     return res;
   }
+
+  async hasActiveRetrospective(){
+    const Retrospective = require("./retrospective.model");
+
+    // TODO - TEST THIS
+    const [retros, _] = await db.execute(
+    `
+    SELECT r.* 
+    FROM retrospective as r, team as t, sprint as s
+    WHERE r.id_team = t.id
+    AND r.id_sprint = s.id
+    AND t.id = ?
+    AND (r.end_date IS NULL or r.state = "PENDING" or r.state = "IN_PROGRESS")
+      `,
+      [this.id]
+    );
+    return new Retrospective(retros[0]);
+  }
 }
+
+
 
 module.exports = Team;

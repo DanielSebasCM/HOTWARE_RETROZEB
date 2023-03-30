@@ -7,7 +7,6 @@ moment.locale("es");
 
 const renderRetrospectives = async (req, res, next) => {
   try {
-
     const retrospectives = await Retrospective.getAll();
     const teams = await Team.getAll();
     
@@ -17,7 +16,6 @@ const renderRetrospectives = async (req, res, next) => {
       const team = teams.filter((team)=>{
         return team.id == retrospective.id_team;
       });
-      console.log(team);
       retrospective.team_name = team[0].name;
     }
     
@@ -35,37 +33,81 @@ const renderRetrospectives = async (req, res, next) => {
 
 const renderInitRetrospective = async (req, res, next) => {
   try {
-    const questions = await Question.getAll();
+    const newTeam = new Team(req.app.locals.selectedTeam);
+
+    let retrospective = null;
+    let questions = [];
+    let sprint;
+
+    try{
+      retrospective = await newTeam.hasActiveRetrospective();
+    }catch{
+      questions = await Question.getAll();
+      sprint = await Sprint.getLastWithoutRetroByTeamId(req.app.locals.selectedTeam.id);
+      const activeSprint = await Sprint.getLastWithRetroByTeamId(req.app.locals.selectedTeam.id);
+
+      if(activeSprint && activeSprint.end_date > sprint.end_date){
+        console.log(activeSprint.end_date);
+        console.log(sprint.end_date);
+        sprint = null;  
+      }
+    }
+    
+
     res.render("retrospectives/initRetrospective", {
       title: "Preguntas",
       questions,
+      retrospective,
+      sprint
     });
   } catch (err) {
     next(err);
   }
 };
-/*
-const post_nuevo = (request, response, next) => {
-  const retro = new NewRetro({
-    const { name, questions } = request.body;
-  });
-  retro.save()
-  .then(([rows, fieldData]) => {
-      response.status(300).redirect("retrospectives/index");
-  })
-  .catch(error => console.log(error));
-};*/
   
-const post_nuevo = (request, response, next) => {
-  const { name, questions } = request.body;
-  
-  const retrospective = new Retrospective({
+const post_nuevo = async (request, response, next) => {
+  try{
+  let { name, checked, required, anonymous, id_sprint } = request.body;
+  if(!checked) {
+    request.session.errorMessage = "No puedes crear una retrospectiva sin preguntas";
+    return response.redirect("/retrospectivas/iniciar");
+  }
+ 
+  const newRetrospective = new Retrospective({
     name,
-    state: 'PENDING',
-    id_team: 1, // o el id del equipo correspondiente
-    id_sprint: 1 // o el id del sprint correspondiente
+    id_team: request.app.locals.selectedTeam.id,
+    id_sprint: id_sprint 
   });
+  const retrospective = await newRetrospective.post();
+  newRetrospective.id = retrospective.insertId;
   
+  let questions = [];  
+  
+  questions.push(checked);
+  
+  questions = questions.flat().map(id => ({ id }))
+  
+  questions.forEach( async (element) => {
+    if(required){
+      element.required = required.includes(element.id) ? 1 : 0;
+    }else{
+      element.required = 0;
+    }
+     if(anonymous){
+      element.anonymous = anonymous.includes(element.id) ? 1 : 0;
+     }else{
+      element.anonymous = 0;
+     }
+     newRetrospective.question = element;
+     await newRetrospective.addQuestion();
+  });
+  console.log(questions);
+  request.session.successMessage = "Retrospectiva creada con éxito";
+  response.status(201).redirect("/retrospectivas")
+  } catch (err) {
+    next(err);
+  }
+  /* 
   retrospective.save()
     .then((retro) => {
       const questionsPromises = questions.map((question) => {
@@ -82,7 +124,8 @@ const post_nuevo = (request, response, next) => {
     .then(() => {
       response.status(300).redirect("retrospectives/index");
     })
-    .catch(error => console.log(error));
+    .catch(error => console.log(error));*/
+    
 };
 
 const renderRetrospectiveQuestions = async (req, res, next) => {
