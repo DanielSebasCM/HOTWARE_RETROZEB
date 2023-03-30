@@ -45,7 +45,8 @@
           console.log(err);
         });
       }
-    });
+    })
+    location.reload();
   });
 })();
 

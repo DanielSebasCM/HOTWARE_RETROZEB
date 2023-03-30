@@ -30,6 +30,9 @@ const setLocals = async (req, res, next) => {
         (team) => team.id == req.body.activeTeam
       );
     if (!req.app.locals.selectedTeam) req.app.locals.selectedTeam = teams[0];
+    if(!teams || teams.length == 0){
+      req.app.locals.selectedTeam = null;
+    }
 
     next();
   } catch (err) {

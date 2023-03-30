@@ -63,6 +63,9 @@ class Retrospective {
     );
   }
   static verify(retrospective) {
+    if (!retrospective)
+      throw new ValidationError("instance", validationMessages.isEmpty);
+
     // Name is not empty
     if (!retrospective.name)
       throw new ValidationError("name", validationMessages.isMandatory);
@@ -74,12 +77,8 @@ class Retrospective {
         validationMessages.mustBeShorterThan(40)
       );
 
-    // Has start date
-    if (!retrospective.start_date)
-      throw new ValidationError("start_date", validationMessages.isMandatory);
-
     // Start date is valid
-    if (!(retrospective.start_date instanceof Date))
+    if (retrospective.start_date && !(retrospective.start_date instanceof Date))
       throw new ValidationError("start_date", validationMessages.mustBeDate);
 
     if (retrospective.end_date) {
@@ -188,15 +187,8 @@ class Retrospective {
 
   async post() {
     const [res, _] = await db.execute(
-      `INSERT INTO retrospective (name, start_date, end_date, state, id_team, id_sprint) VALUES (?, ?, ?, ?, ?, ?)`,
-      [
-        this.name,
-        this.start_date,
-        this.end_date,
-        this.state,
-        this.id_team,
-        this.id_sprint,
-      ]
+      `INSERT INTO retrospective (name, id_team, id_sprint) VALUES (?, ?, ?)`,
+      [this.name, this.id_team, this.id_sprint]
     );
 
     this.id = res.insertId;
@@ -211,6 +203,22 @@ class Retrospective {
         [this.id, answer.id_question, uid, answer.value]
       );
     }
+  }
+
+  async addQuestion() {
+    const [res, _] = await db.execute(
+      `INSERT INTO retrospective_question (id_retrospective, id_question, required, annonimous) VALUES (?, ?, ?, ?)`,
+      [
+        this.id,
+        this.question.id,
+        this.question.required,
+        this.question.anonymous,
+      ]
+    );
+
+    this.id = res.insertId;
+
+    return res;
   }
 
   async put() {

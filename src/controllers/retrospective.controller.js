@@ -7,39 +7,21 @@ moment.locale("es");
 
 const renderRetrospectives = async (req, res, next) => {
   try {
-    const teamName = req.query.team || null; // Obtener el nombre del equipo seleccionado
     const retrospectives = await Retrospective.getAll();
-    let filteredRetrospectives;
-    if (!teamName) {
-      // Si no se ha seleccionado ningún equipo, se muestran todas las retrospectivas
-      filteredRetrospectives = retrospectives;
-    } else if (teamName === "todos") {
-      filteredRetrospectives = retrospectives;
-    } else {
-      const team = await Team.getByName([teamName]);
-      for (let retrospective of retrospectives) {
-        const teamm = await Team.getById(retrospective.id_team);
-        retrospective.team_name = teamm.name;
-        if (!team) throw new Error(`Equipo no encontrado: ${teamName}`);
-        filteredRetrospectives = retrospectives.filter(
-          (retrospective) => retrospective.team_name === teamName
-        );
-      }
-    }
     const teams = await Team.getAll();
 
     for (let retrospective of retrospectives) {
       const sprint = await Sprint.getById(retrospective.id_sprint);
       retrospective.sprint_name = sprint.name;
-      const teamm = await Team.getById(retrospective.id_team);
-      retrospective.teamm_name = teamm.name;
+      const team = teams.filter((team) => {
+        return team.id == retrospective.id_team;
+      });
+      retrospective.team_name = team[0].name;
     }
-
     res.status(200).render("retrospectives/index", {
       title: "Retrospectivas",
       retrospectives,
       teams,
-      filteredRetrospectives,
       moment,
     });
   } catch (err) {
@@ -49,10 +31,46 @@ const renderRetrospectives = async (req, res, next) => {
 
 const renderInitRetrospective = async (req, res, next) => {
   try {
-    const questions = await Question.getAll();
+    let newTeam;
+    try {
+      newTeam = new Team(req.app.locals.selectedTeam);
+    } catch {
+      res.render("retrospectives/initRetrospective", {
+        title: "Preguntas",
+        questions: [],
+        retrospective: null,
+        sprint: null,
+      });
+    }
+    console.log(newTeam);
+    let retrospective = null;
+    let questions = [];
+    let sprint;
+
+    try {
+      retrospective = await newTeam.hasActiveRetrospective();
+    } catch {
+      questions = await Question.getAll();
+
+      sprint = await Sprint.getLastWithoutRetroByTeamId(
+        req.app.locals.selectedTeam.id
+      );
+      const activeSprint = await Sprint.getLastWithRetroByTeamId(
+        req.app.locals.selectedTeam.id
+      );
+
+      if (sprint && activeSprint && activeSprint.end_date > sprint.end_date) {
+        console.log(activeSprint.end_date);
+        console.log(sprint.end_date);
+        sprint = null;
+      }
+    }
+
     res.render("retrospectives/initRetrospective", {
       title: "Preguntas",
       questions,
+      retrospective,
+      sprint,
     });
   } catch (err) {
     next(err);
@@ -115,6 +133,51 @@ const postRetrospectiveAnswers = async (req, res, next) => {
     }
     const retrospective = await Retrospective.getById(idRetrospective);
     retrospective.postAnswers(answers, uid);
+  } catch (err) {
+    next(err);
+  }
+};
+
+const post = async (request, response, next) => {
+  try {
+    let { name, checked, required, anonymous, id_sprint } = request.body;
+    if (!checked) {
+      request.session.errorMessage =
+        "No puedes crear una retrospectiva sin preguntas";
+      return response.redirect("/retrospectivas/iniciar");
+    }
+
+    const newRetrospective = new Retrospective({
+      name,
+      id_team: request.app.locals.selectedTeam.id,
+      id_sprint: id_sprint,
+    });
+    const retrospective = await newRetrospective.post();
+    newRetrospective.id = retrospective.insertId;
+
+    let questions = [];
+
+    questions.push(checked);
+
+    questions = questions.flat().map((id) => ({ id }));
+
+    questions.forEach(async (element) => {
+      if (required) {
+        element.required = required.includes(element.id) ? 1 : 0;
+      } else {
+        element.required = 0;
+      }
+      if (anonymous) {
+        element.anonymous = anonymous.includes(element.id) ? 1 : 0;
+      } else {
+        element.anonymous = 0;
+      }
+      newRetrospective.question = element;
+      await newRetrospective.addQuestion();
+    });
+    console.log(questions);
+    request.session.successMessage = "Retrospectiva creada con éxito";
+    response.status(201).redirect("/retrospectivas");
   } catch (err) {
     next(err);
   }
@@ -221,6 +284,5 @@ module.exports = {
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
   getRetrospectiveUsers,
-  post_nuevo,
-  postRetrospectiveAnswers,
+  post,
 };
