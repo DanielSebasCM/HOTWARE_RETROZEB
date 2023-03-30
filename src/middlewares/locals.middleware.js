@@ -11,11 +11,26 @@ const setLocals = async (req, res, next) => {
       email: "mariane@boyer.com",
     };
 
-    if(req.session.currentUser) req.app.locals.currentUser = req.session.currentUser;
+    if (req.session.currentUser)
+      req.app.locals.currentUser = req.session.currentUser;
 
     // MESSAGES
     res.locals.successMessage = req.session.successMessage;
     res.locals.errorMessage = req.session.errorMessage;
+
+    if (res.locals.successMessage) {
+      setTimeout(() => {
+        res.locals.successMessage = null;
+      }, 5000);
+    }
+
+    if (res.locals.errorMessage) {
+      setTimeout(() => {
+        res.locals.errorMessage = null;
+      }, 5000);
+    }
+
+    // ROUTES
     res.locals.routes = routes;
 
     // ACTIVE TEAMS
@@ -30,7 +45,7 @@ const setLocals = async (req, res, next) => {
         (team) => team.id == req.body.activeTeam
       );
     if (!req.app.locals.selectedTeam) req.app.locals.selectedTeam = teams[0];
-    if(!teams || teams.length == 0){
+    if (!teams || teams.length == 0) {
       req.app.locals.selectedTeam = null;
     }
 

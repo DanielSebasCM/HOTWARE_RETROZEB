@@ -46,9 +46,7 @@ const addUser = async (req, res, next) => {
 
     await team.addUser(uid);
     req.session.successMessage = messages.team.success.teamMemberAdded;
-    return res
-      .status(200)
-      .json({ message: messages.team.success.teamMemberAdded });
+    return res.status(200).redirect("/equipos");
   } catch (err) {
     next(err);
   }
@@ -56,6 +54,7 @@ const addUser = async (req, res, next) => {
 
 const removeUser = async (req, res, next) => {
   try {
+    console.log("req.body: ", req.body);
     const { id_team, uid } = req.body;
 
     // Verify that the team exists
@@ -73,7 +72,7 @@ const removeUser = async (req, res, next) => {
 
     await team.removeUser(uid);
     req.session.successMessage = messages.team.success.teamMemberRemoved;
-    res.status(200).json({ message: messages.team.success.teamMemberRemoved });
+    res.status(200).redirect("/equipos");
   } catch (err) {
     next(err);
   }

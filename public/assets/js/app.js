@@ -45,7 +45,7 @@
           console.log(err);
         });
       }
-    })
+    });
     location.reload();
   });
 })();
@@ -54,21 +54,32 @@
   const closeBtn = document.querySelectorAll(".notification__close");
   closeBtn.forEach((btn) => {
     btn.addEventListener("click", async () => {
-      console.log("close")
       btn.parentElement.classList.add("hide");
 
-      const type = btn.dataset.type;
+      const type = btn.value;
 
       try {
-        return await fetch(`http://localhost:3000/locals/mensajes/${type}`, {
+        return await fetch(`http://localhost:3000/locals/mensajes`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({ type }),
         });
       } catch (error) {
         console.log(error);
       }
     });
+  });
+})();
+
+(function hideNotificationAfterTime() {
+  const notification = document.querySelectorAll(".notification");
+  if (!notification) return;
+
+  notification.forEach((notification) => {
+    setTimeout(() => {
+      notification.classList.add("hide");
+    }, 5000);
   });
 })();
