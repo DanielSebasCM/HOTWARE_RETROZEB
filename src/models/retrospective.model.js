@@ -164,7 +164,6 @@ class Retrospective {
           "SELECT description FROM `option` WHERE id = ?",
           [answer.value]
         );
-        console.log();
         answer.value = newValue[0].description;
       }
     }
