@@ -41,10 +41,12 @@ app.use(
 initRoutes(app);
 
 // 404
-app.use((_, res) => {
+app.use((req, res) => {
+  res.locals.title = "Error 404";
   res
     .status(404)
-    .render("errors/404", { title: "404", message: "Page not found" });
+    .render("errors/404", { message: `Página no encontrada: ${req.url}` });
+
 });
 
 // ERROR HANDLER

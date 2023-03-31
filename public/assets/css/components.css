@@ -531,6 +531,17 @@
   color: var(--color-font-alert);
 }
 
+.button--delete-question {
+  background-color: var(--color-font-alert);
+  background-image: url("/assets/icon/erase.svg");
+  color: var(--color-white);
+}
+
+.button--delete-question:hover {
+  background-color: var(--color-bg-alert);
+  color: var(--color-font-alert);
+}
+
 .button--delete-alt {
   background-color: var(--color-bg-alert);
   color: var(--color-font-alert);
@@ -955,4 +966,41 @@ a.toggle-button {
 
 .pl-5 {
   padding-left: 5rem;
+}
+
+.description-question {
+  margin-top: 1rem;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--color-font-secondary);
+  margin-bottom: var(--component-mb);
+  color: blue;
+}
+
+.banner-question {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  /* align-content: baseline; */
+}
+
+.banner-question button {
+  margin: 0;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.option-container > button {
+  max-width: 4rem;
 }
