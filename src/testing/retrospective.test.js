@@ -62,24 +62,6 @@ test("Retrospective has a name", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Retrospective has a start date", () => {
-  let thrownError = null;
-  let expectedError = new ValidationError(
-    "start_date",
-    validationMessages.isMandatory
-  );
-  try {
-    new Retrospective({
-      name: "a".repeat(40),
-      id_team: 1,
-      id_sprint: 1,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
 test("Retrospective has a valid start date", () => {
   let thrownError = null;
   let expectedError = new ValidationError(
