@@ -96,13 +96,21 @@ for (let question of questions) {
       count[answer.value] = count[answer.value] ? count[answer.value] + 1 : 1;
     }
     const answerCount = [];
+    const options = [];
     for (let attribute in count) {
       answerCount.push(count[attribute]);
+      options.push(attribute);
+    }
+    for (let option of question.options) {
+      if (!options.includes(option.description)) {
+        options.push(option.description);
+        answerCount.push(0);
+      }
     }
     new Chart(chart, {
       type: "bar",
       data: {
-        labels: question.options.map((option) => option.description),
+        labels: options,
         datasets: [
           {
             data: answerCount,
