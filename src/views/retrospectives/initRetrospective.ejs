@@ -4,11 +4,7 @@
       <h1 class="title">Iniciar Retrospectiva</h1>
       <p class="description">Registrar una nueva sesión de retrospectiva</p>
 
-      <% if(!locals.selectedTeam){%>
-      <p class="description">
-        Únete o selecciona un equipo para poder iniciar una retrospectiva
-      </p>
-      <%} %> <% if(locals.selectedTeam){%> <% if(sprint){%>
+      <% if(locals.selectedTeam){%> <% if(sprint){%>
       <p class="description">
         Equipo: <span class="meta"> <%= locals.selectedTeam.name %> </span>
       </p>
@@ -25,26 +21,9 @@
     </div>
     <span class="line"></span>
   </div>
-
-  <% if(retrospective){%>
-  <p class="description">
-    Ya existe una retrospectiva para el último sprint del equipo <%=
-    locals.selectedTeam.name %>. Por favor contéstala y ciérrala.
-  </p>
-  <%} %> <% if(!sprint && !retrospective){%>
-  <p class="description">
-    No hay sprints disponibles para el equipo <%= locals.selectedTeam.name %>.
-    Por favor selecciona otro equipo
-  </p>
-
-  <%} %> <% if(sprint){%>
+  <% if(sprint){%>
   <form method="POST" action="/retrospectivas/iniciar" id="form">
-    <input
-      type="number"
-      value="<%= sprint.id %>"
-      hidden
-      name="id_sprint"
-    />
+    <input type="number" value="<%= sprint.id %>" hidden name="id_sprint" />
     <h2 class="subtitle">Nombre de la retrospectiva</h2>
     <div class="input-container">
       <label class="input__label" for="name">Nombre</label>
@@ -93,7 +72,7 @@
           />
         </div>
         <div class="horizontal-container">
-          <div class="horizontal-container ">
+          <div class="horizontal-container">
             <input
               type="checkbox"
               class="mr-1 question-required-checkbox"
