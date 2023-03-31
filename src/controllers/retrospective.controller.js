@@ -76,47 +76,6 @@ const renderInitRetrospective = async (req, res, next) => {
     next(err);
   }
 };
-/*
-const post_nuevo = (request, response, next) => {
-  const retro = new NewRetro({
-    const { name, questions } = request.body;
-  });
-  retro.save()
-  .then(([rows, fieldData]) => {
-      response.status(300).redirect("retrospectives/index");
-  })
-  .catch(error => console.log(error));
-};*/
-
-const post_nuevo = (request, response, next) => {
-  const { name, questions } = request.body;
-
-  const retrospective = new Retrospective({
-    name,
-    state: "PENDING",
-    id_team: 1, // o el id del equipo correspondiente
-    id_sprint: 1, // o el id del sprint correspondiente
-  });
-
-  retrospective
-    .post()
-    .then((retro) => {
-      const questionsPromises = questions.map((question) => {
-        const retrospectiveQuestion = new RetrospectiveQuestion({
-          id_retrospective: retro.id,
-          id_question: question.id,
-          required: question.required || 1,
-          anonymous: question.anonymous || 0,
-        });
-        return retrospectiveQuestion.save();
-      });
-      return Promise.all(questionsPromises);
-    })
-    .then(() => {
-      response.status(300).redirect("retrospectives/index");
-    })
-    .catch((error) => console.log(error));
-};
 
 const postRetrospectiveAnswers = async (req, res, next) => {
   try {
@@ -287,6 +246,5 @@ module.exports = {
   getRetrospectiveAnswers,
   getRetrospectiveUsers,
   post,
-  post_nuevo,
   postRetrospectiveAnswers,
 };

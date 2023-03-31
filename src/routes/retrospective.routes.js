@@ -19,7 +19,7 @@ router.get("/:id/respuestas", controller.getRetrospectiveAnswers);
 router.get("/:id/usuarios", controller.getRetrospectiveUsers);
 
 // POST
-router.post("/iniciar", controller.post_nuevo);
+router.post("/iniciar", controller.post);
 router.post("/:id/contestar", controller.postRetrospectiveAnswers);
 
 module.exports = router;
