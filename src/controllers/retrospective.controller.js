@@ -37,6 +37,7 @@ const renderInitRetrospective = async (req, res, next) => {
         "Únete o selecciona un equipo para poder iniciar una retrospectiva";
       return res.redirect(".");
     }
+
     const newTeam = new Team(req.app.locals.selectedTeam);
     let questions = [];
     let sprint;
