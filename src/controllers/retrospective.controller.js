@@ -35,9 +35,9 @@ const renderInitRetrospective = async (req, res, next) => {
     if (!req.app.locals.selectedTeam) {
       req.session.errorMessage =
         "Únete o selecciona un equipo para poder iniciar una retrospectiva";
-      res.redirect(".");
+      return res.redirect(".");
     }
-    console.log(req.app.locals.selectedTeam);
+
     const newTeam = new Team(req.app.locals.selectedTeam);
     let questions = [];
     let sprint;
@@ -48,7 +48,7 @@ const renderInitRetrospective = async (req, res, next) => {
       req.session.errorMessage =
         "Ya existe una retrospectiva para el último sprint del equipo " +
         newTeam.name;
-      res.redirect(".");
+      return res.redirect(".");
     }
 
     questions = await Question.getAll();
@@ -61,12 +61,10 @@ const renderInitRetrospective = async (req, res, next) => {
 
     if (!retrospective && !sprint) {
       req.session.errorMessage = `No hay sprints disponibles para el equipo ${newTeam.name}. Por favor selecciona otro equipo`;
-      res.redirect(".");
+      return res.redirect(".");
     }
 
     if (activeSprint && activeSprint.end_date > sprint.end_date) {
-      console.log(activeSprint.end_date);
-      console.log(sprint.end_date);
       sprint = null;
     }
 
@@ -141,7 +139,6 @@ const post = async (request, response, next) => {
       newRetrospective.question = element;
       await newRetrospective.addQuestion();
     });
-    console.log(questions);
     request.session.successMessage = "Retrospectiva creada con éxito";
     response.status(201).redirect("/retrospectivas");
   } catch (err) {

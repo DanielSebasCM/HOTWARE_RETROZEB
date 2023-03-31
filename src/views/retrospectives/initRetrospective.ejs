@@ -1,16 +1,23 @@
 <section class="dashboard">
   <div class="banner">
-    <div class="banner__section">
+    <div class="banner__section mb-2">
       <h1 class="title">Iniciar Retrospectiva</h1>
       <p class="description">Registrar una nueva sesión de retrospectiva</p>
 
       <% if(locals.selectedTeam){%> <% if(sprint){%>
-      <p class="description">
-        Equipo: <span class="meta"> <%= locals.selectedTeam.name %> </span>
-      </p>
-      <p class="description">
-        Sprint: <span class="meta"> <%= sprint.name %> </span>
-      </p>
+      <div class="pills-container">
+        <div class="pills-container">
+          <p class="label label--active">Equipo</p>
+          <span class="card__description">
+            <%= locals.selectedTeam.name %>
+          </span>
+        </div>
+        <div class="pills-container">
+          <p class="label label--active">Sprint</p>
+          <span class="card__description"> <%= sprint.name %> </span>
+        </div>
+      </div>
+
       <%} %>
     </div>
 

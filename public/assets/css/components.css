@@ -82,7 +82,7 @@
   align-items: center;
   background: var(--color-white);
   border-radius: 50%;
-  margin-right: 1rem;
+  margin-right: 2rem;
 }
 
 .notification__icon .icon {
@@ -235,7 +235,7 @@
 }
 
 .card--team {
-  height: auto;
+  height: fit-content;
 }
 
 .card--question {
@@ -429,6 +429,7 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  flex-wrap: wrap;
   gap: 1rem;
   white-space: nowrap;
 }
