@@ -13,7 +13,7 @@
               <%= locals.successMessage %>
             </p>
           </div>
-          <button class="notification__close icon" data-type="exito"></button>
+          <button class="notification__close icon" type="submit" value="exito"></button>
         </div>
         <% } %>
           <% if(locals.errorMessage && locals.errorMessage !="" ) { %>
@@ -26,7 +26,7 @@
                   <%= locals.errorMessage %>
                 </p>
               </div>
-              <button class="notification__close icon" data-type="error"></button>
+              <button class="notification__close icon" type="submit" value="error"></button>
             </div>
             <% } %>
     </div>

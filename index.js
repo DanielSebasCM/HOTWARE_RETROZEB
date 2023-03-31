@@ -7,6 +7,7 @@ const app = express();
 const path = require("path");
 const PORT = process.env.PORT || 3000;
 const session = require("express-session");
+const methodOverride = require("method-override");
 const expressLayouts = require("express-ejs-layouts");
 const initRoutes = require("./src/routes/index.routes");
 const { routes } = require("./src/utils/constants");
@@ -22,6 +23,7 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(expressLayouts);
+app.use(methodOverride("_method"));
 app.use(
   session({
     // CREATE NEW UNIQUE SECRET AND SAVE
@@ -44,6 +46,7 @@ app.use((req, res) => {
   res
     .status(404)
     .render("errors/404", { message: `Página no encontrada: ${req.url}` });
+
 });
 
 // ERROR HANDLER

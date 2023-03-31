@@ -18,6 +18,7 @@ const renderRetrospectives = async (req, res, next) => {
       });
       retrospective.team_name = team[0].name;
     }
+
     res.status(200).render("retrospectives/index", {
       title: "Retrospectivas",
       retrospectives,
@@ -32,6 +33,7 @@ const renderRetrospectives = async (req, res, next) => {
 const renderInitRetrospective = async (req, res, next) => {
   try {
     let newTeam;
+
     try {
       newTeam = new Team(req.app.locals.selectedTeam);
     } catch {
@@ -42,7 +44,7 @@ const renderInitRetrospective = async (req, res, next) => {
         sprint: null,
       });
     }
-    console.log(newTeam);
+
     let retrospective = null;
     let questions = [];
     let sprint;
