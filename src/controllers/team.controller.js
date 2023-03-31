@@ -54,7 +54,6 @@ const addUser = async (req, res, next) => {
 
 const removeUser = async (req, res, next) => {
   try {
-    console.log("req.body: ", req.body);
     const { id_team, uid } = req.body;
 
     // Verify that the team exists
