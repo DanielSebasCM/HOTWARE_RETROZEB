@@ -57,16 +57,6 @@ const types = [...new Set(issues.map((d) => d.type))];
 const data_types = filterIssues(groupedByState, "type", types);
 createFilteredChart("types-chart", "Types", data_types, states, true);
 
-const priorities = ["Lowest", "Low", "Medium", "High", "Highest"];
-const data_priorities = filterIssues(groupedByState, "priority", priorities);
-createFilteredChart(
-  "priorities-chart",
-  "Priorities",
-  data_priorities,
-  states,
-  true
-);
-
 function createFilteredChart(
   canvasId,
   title,
@@ -112,6 +102,9 @@ function createFilteredChart(
         },
         legend: {
           position: "bottom",
+          labels: {
+            usePointStyle: true,
+          },
         },
         tooltip: {
           callbacks: {
@@ -162,10 +155,6 @@ function updateCharts() {
   const types = [...new Set(issues.map((d) => d.type))];
   const data_types = filterIssues(groupedByState, "type", types);
   updateFilteredChart("types-chart", data_types);
-
-  const priorities = ["Lowest", "Low", "Medium", "High", "Highest"];
-  const data_priorities = filterIssues(groupedByState, "priority", priorities);
-  updateFilteredChart("priorities-chart", data_priorities);
 }
 
 function updateFilteredChart(canvasId, labels_data) {
