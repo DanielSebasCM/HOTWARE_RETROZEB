@@ -120,7 +120,7 @@ class Team {
     return res;
   }
 
-  async hasActiveRetrospective(){
+  async getActiveRetrospective(){
     const Retrospective = require("./retrospective.model");
 
     // TODO - TEST THIS
@@ -135,6 +135,7 @@ class Team {
       `,
       [this.id]
     );
+    if(retros.length == 0) return null;
     return new Retrospective(retros[0]);
   }
 }
