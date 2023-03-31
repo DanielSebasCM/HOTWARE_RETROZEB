@@ -54,7 +54,6 @@
   const closeBtn = document.querySelectorAll(".notification__close");
   closeBtn.forEach((btn) => {
     btn.addEventListener("click", async () => {
-      console.log("close")
       btn.parentElement.classList.add("hide");
 
       const type = btn.dataset.type;

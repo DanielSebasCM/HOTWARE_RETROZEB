@@ -7,7 +7,6 @@ Chart.defaults.font.family = "Poppins";
 let response = await fetch(url);
 let data = await response.json();
 let questions = data.filter((question) => question.type !== "OPEN");
-console.log(questions);
 
 for (let question of questions) {
   let chart = document.getElementById(`chart-${question.id}`);

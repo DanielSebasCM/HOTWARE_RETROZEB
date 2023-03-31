@@ -142,6 +142,12 @@
   gap: 2rem;
 }
 
+.cards-container--full {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
 .cards-container {
   margin-bottom: 8rem;
 }
@@ -253,7 +259,7 @@
 }
 
 .card--answers {
-  height: fit-content;
+  height: 45vh;
 }
 
 .card--answers .card__header {
@@ -269,6 +275,8 @@
 }
 
 .card--answers .items__list {
+  width: 100%;
+  overflow-y: scroll;
   margin-bottom: 0;
 }
 
