@@ -82,6 +82,7 @@ const postRetrospectiveAnswers = async (req, res, next) => {
     const { idRetrospective, questionIds, uid } = req.body;
     const answers = [];
     for (let qId of questionIds) {
+      if (!req.body[qId]) continue;
       const question = await Question.getById(qId);
       if (question.type !== "SELECTION") {
         answers.push({ id_question: qId, value: req.body[qId] });
@@ -168,11 +169,16 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
     const retrospective = await Retrospective.getById(id_retrospective);
     const team = await Team.getById(retrospective.id_team);
     retrospective.team_name = team.name;
+    const questions = await retrospective.getQuestions();
+    let answer = await retrospective.getAnswers(questions[0]);
+    answer = answer.filter((a) => a.uid === req.app.locals.currentUser.uid);
+    let answered = answer.length ? true : false;
     const labels = await retrospective.getLabels();
     res.render("retrospectives/dashboardMetrics", {
       title: "Dashboard",
       retrospective,
       labels,
+      answered,
     });
   } catch (err) {
     next(err);
@@ -184,7 +190,8 @@ const renderRetrospectiveAnswer = async (req, res, next) => {
     const retrospectiveId = req.params.id;
     const retrospective = await Retrospective.getById(retrospectiveId);
     const questions = await retrospective.getQuestions();
-    const answer = await retrospective.getAnswers(questions[0]);
+    let answer = await retrospective.getAnswers(questions[0]);
+    answer = answer.filter((a) => a.uid === req.app.locals.currentUser.uid);
     if (answer.length > 0) {
       req.session.errorMessage = "Ya respondiste esta retrospectiva";
       res.redirect(`/retrospectivas/${retrospectiveId}/preguntas`);

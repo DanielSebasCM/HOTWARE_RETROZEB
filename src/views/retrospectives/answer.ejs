@@ -19,11 +19,13 @@
           </span>
         </div>
         <% if(question.type === "OPEN") { %>
-        <input type="text" class="input" name="answer-<%= question.id %>" required="true" maxlength="400">
+        <input type="text" class="input" name="answer-<%= question.id %>" 
+        maxlength="400" <%= question.required ? "required" : "" %> >
         <% } else if(question.type === "SCALE") { %>
         <div class="radio-container">
           <div class="radio-item">
-            <input type="radio" name="answer-<%= question.id %>" value="1" required="true">
+            <input type="radio" name="answer-<%= question.id %>" value="1" 
+            <%= question.required ? "required" : "" %> >
             <label for="">1</label>
           </div>
           <div class="radio-item">
@@ -46,7 +48,8 @@
         <% } else if(question.type === "BOOLEAN") {%>
         <div class="radio-container" style="width: 30%;">
           <div class="radio-item">
-            <input type="radio" name="answer-<%= question.id %>" value="TRUE" required="true">
+            <input type="radio" name="answer-<%= question.id %>" value="TRUE"
+            <%= question.required ? "required" : "" %> >
             <label for="">Sí</label>
           </div>
           <div class="radio-item">
@@ -55,7 +58,8 @@
           </div>
           <% } else { %>
           <div class="select-container">
-            <select class="select" name="answer-<%= question.id %>" required="true">
+            <select class="select" name="answer-<%= question.id %>" 
+              <%= question.required ? "required" : "" %> >
               <option value="">Escoge una opción</option>
               <% for(let option of question.options) { %>
               <option value="<%= option.description %>"><%= option.description %></option>

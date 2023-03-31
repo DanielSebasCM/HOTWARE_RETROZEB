@@ -8,10 +8,15 @@
     </div>
 
     <div class="banner__section">
+      <% if(!answered) { %>
+        <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar"
+          class="button button--primary">Contestar Retrospectiva</a>
+        <% } else {%>
       <div class="toggle-buttons-container toggle-buttons-container--primary">
         <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
         <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
       </div>
+      <% } %>
     </div>
 
     <span class="line"></span>
