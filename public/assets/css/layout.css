@@ -163,7 +163,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
   margin-bottom: var(--card-mb);
   padding-top: 1rem;
   gap: 0.6rem;
@@ -173,4 +172,20 @@
 .items__list .index {
   color: var(--color-font-active);
   font-weight: 600;
+}
+
+.radio-container {
+  align-self: center;
+  display: flex;
+  width: 70%;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+}
+
+.radio-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.4rem;
 }

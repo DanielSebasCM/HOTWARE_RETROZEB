@@ -79,10 +79,32 @@ const renderInitRetrospective = async (req, res, next) => {
   }
 };
 
+const postRetrospectiveAnswers = async (req, res, next) => {
+  try {
+    const { idRetrospective, questionIds, uid } = req.body;
+    const answers = [];
+    for (let qId of questionIds) {
+      if (!req.body[qId]) continue;
+      const question = await Question.getById(qId);
+      if (question.type !== "SELECTION") {
+        answers.push({ id_question: qId, value: req.body[qId] });
+      } else {
+        optionId = await question.getOptionId(req.body[qId]);
+        answers.push({ id_question: qId, value: optionId });
+      }
+    }
+    const retrospective = await Retrospective.getById(idRetrospective);
+    retrospective.postAnswers(answers, uid);
+    req.session.successMessage = "Respuestas enviadas con éxito";
+    res.send("Respuestas enviadas con éxito");
+  } catch (err) {
+    next(err);
+  }
+};
+
 const post = async (request, response, next) => {
   try {
     let { name, checked, required, anonymous, id_sprint } = request.body;
-
     if (!checked) {
       request.session.errorMessage =
         "No puedes crear una retrospectiva sin preguntas";
@@ -149,12 +171,39 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
     const retrospective = await Retrospective.getById(id_retrospective);
     const team = await Team.getById(retrospective.id_team);
     retrospective.team_name = team.name;
+    const questions = await retrospective.getQuestions();
+    let answer = await retrospective.getAnswers(questions[0]);
+    answer = answer.filter((a) => a.uid === req.app.locals.currentUser.uid);
+    let answered = answer.length ? true : false;
     const labels = await retrospective.getLabels();
     res.render("retrospectives/dashboardMetrics", {
       title: "Dashboard",
       retrospective,
       labels,
+      answered,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const renderRetrospectiveAnswer = async (req, res, next) => {
+  try {
+    const retrospectiveId = req.params.id;
+    const retrospective = await Retrospective.getById(retrospectiveId);
+    const questions = await retrospective.getQuestions();
+    let answer = await retrospective.getAnswers(questions[0]);
+    answer = answer.filter((a) => a.uid === req.app.locals.currentUser.uid);
+    if (answer.length > 0) {
+      req.session.errorMessage = "Ya respondiste esta retrospectiva";
+      res.redirect(`/retrospectivas/${retrospectiveId}/preguntas`);
+    } else {
+      res.render("retrospectives/answer", {
+        title: "Responder",
+        retrospective,
+        questions,
+      });
+    }
   } catch (err) {
     next(err);
   }
@@ -201,8 +250,10 @@ module.exports = {
   renderInitRetrospective,
   renderRetrospectiveMetrics,
   renderRetrospectiveQuestions,
+  renderRetrospectiveAnswer,
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
   getRetrospectiveUsers,
   post,
+  postRetrospectiveAnswers,
 };

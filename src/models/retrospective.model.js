@@ -78,8 +78,7 @@ class Retrospective {
       );
 
     // Start date is valid
-    if (retrospective.start_date && 
-      !(retrospective.start_date instanceof Date))
+    if (retrospective.start_date && !(retrospective.start_date instanceof Date))
       throw new ValidationError("start_date", validationMessages.mustBeDate);
 
     if (retrospective.end_date) {
@@ -145,7 +144,11 @@ class Retrospective {
       }
     }
 
-    return questions.map((question) => new Question(question));
+    return questions.map((question) => {
+      const builtQuestion = new Question(question);
+      builtQuestion.required = question.required;
+      return builtQuestion;
+    });
   }
 
   async getAnswers(question) {
@@ -185,16 +188,21 @@ class Retrospective {
   async post() {
     const [res, _] = await db.execute(
       `INSERT INTO retrospective (name, id_team, id_sprint) VALUES (?, ?, ?)`,
-      [
-        this.name,
-        this.id_team,
-        this.id_sprint,
-      ]
+      [this.name, this.id_team, this.id_sprint]
     );
 
     this.id = res.insertId;
 
     return res;
+  }
+
+  async postAnswers(answers, uid) {
+    for (let answer of answers) {
+      await db.execute(
+        `INSERT INTO answer (id_retrospective, id_question, uid, value) VALUES (?, ?, ?, ?)`,
+        [this.id, answer.id_question, uid, answer.value]
+      );
+    }
   }
 
   async addQuestion() {
@@ -204,7 +212,7 @@ class Retrospective {
         this.id,
         this.question.id,
         this.question.required,
-        this.question.anonymous
+        this.question.anonymous,
       ]
     );
 
@@ -212,7 +220,6 @@ class Retrospective {
 
     return res;
   }
-
 
   async put() {
     const [res, _] = await db.execute(
