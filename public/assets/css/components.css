@@ -909,13 +909,9 @@ a.toggle-button {
 
 .banner-question {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 2rem;
-}
-
-.banner-question {
   flex-direction: column;
+  gap: 2rem;
+  /* align-content: baseline; */
 }
 
 .banner-question button {

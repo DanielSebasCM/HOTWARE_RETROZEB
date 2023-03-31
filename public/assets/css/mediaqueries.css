@@ -71,7 +71,6 @@
   }
 
   .banner-question {
-    display: flex;
     flex-direction: row;
     justify-content: space-between;
   }
@@ -81,7 +80,7 @@
   }
 
   .banner-question :nth-child(2) {
-    flex: 70%;
+    flex: 65%;
   }
 }
 
@@ -119,6 +118,14 @@
 
   .chart-container {
     max-width: 100%;
+  }
+
+  .banner-question :nth-child(1) {
+    flex: 35%;
+  }
+
+  .banner-question :nth-child(2) {
+    flex: 65%;
   }
 }
 
