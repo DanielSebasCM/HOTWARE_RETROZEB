@@ -34,7 +34,6 @@
   }
 
   .card--question {
-    flex-direction: row;
     justify-content: space-between;
   }
 
