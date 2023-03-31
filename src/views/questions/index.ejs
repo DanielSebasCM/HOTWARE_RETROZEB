@@ -8,9 +8,7 @@
       <p class="description">Listado de preguntas creadas</p>
     </div>
     <div class="banner__section">
-      <a class="button button--primary" href="preguntas/nueva"
-        >Añadir Pregunta</a
-      >
+      <a class="button button--primary" href="preguntas/nueva">Añadir Pregunta</a>
     </div>
     <span class="line"></span>
   </div>
@@ -35,8 +33,15 @@
   <div class="cards-container">
     <% for(let question of questions) { %>
     <div class="card card--question">
-      <p class="card__subtitle"><%= question.description %></p>
-      <span class="label label--active"> <%= question.type %> </span>
+      <div class="card__header">
+        <p class="card__subtitle"><%= question.description %></p>
+        <span class="label label--active"> <%= question.type %> </span>
+      </div>
+      <% if(question.type === 'SELECTION') { %>
+      <span class="line"></span>
+      <p class="card__description"><%= question.options.join("/
+        ") %> </p>
+      <% } %>
     </div>
     <% } %>
   </div>
