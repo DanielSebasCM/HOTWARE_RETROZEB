@@ -39,7 +39,13 @@
 
   <%} %> <% if(sprint){%>
   <form method="POST" action="/retrospectivas/iniciar" id="form">
-    <input type="number" value="<%= sprint.id %>" hidden name="id_sprint" />
+    <input
+      type="number"
+      maxlength="40"
+      value="<%= sprint.id %>"
+      hidden
+      name="id_sprint"
+    />
     <h2 class="subtitle">Nombre de la retrospectiva</h2>
     <div class="input-container">
       <label class="input__label" for="name">Nombre</label>

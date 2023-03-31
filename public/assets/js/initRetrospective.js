@@ -24,15 +24,12 @@ searchInput.addEventListener("keyup", () => {
       .replace(/[\r\n\u0300-\u036f]/gm, "");
     text.includes(filter)
       ? question.classList.remove("hide")
-      : question.classList.add("hide") && count++;
+      : question.classList.add("hide");
   });
 
   const hiddenQuestions = document.querySelectorAll(
     ".card--question-checkbox.hide"
   );
-
-  console.log("hiddenQuestions.length", hiddenQuestions.length);
-  console.log("questions.length", questions.length);
 
   noResults.classList.add("hide");
   if (hiddenQuestions.length === questions.length) {

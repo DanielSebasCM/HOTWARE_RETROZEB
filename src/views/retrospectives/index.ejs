@@ -23,13 +23,13 @@
 
     <div class="select-container">
       <select class="select" id="selectSortDate">
-        <option value="fecha-reciente">Fecha más reciente</option>
-        <option value="fecha-antigua">Fecha más antigua</option>
+        <option value="asc">Fecha más reciente</option>
+        <option value="desc">Fecha más antigua</option>
       </select>
     </div>
     <div class="select-container">
       <select class="select" id="select-team-name" name="nombreEquipo">
-        <option value="todos">Todos</option>
+        <option value="all">Todos</option>
         <% if(teams && teams.length> 0) { %> <% for(let i=0; i < teams.length;
         i++) { %>
         <option value="<%=  teams[i].id  %>"><%= teams[i].name %></option>
@@ -63,8 +63,15 @@
             <td class="table__title"><%= retrospectives[i].name %></td>
 
             <td><%= retrospectives[i].sprint_name %></td>
-            <td><%= retrospectives[i].team_name %></td>
-            <td><%= moment(retrospectives[i].start_date).format('LL') %></td>
+            <td
+              class="table__team"
+              data-idTeam="<%= retrospectives[i].id_team %>"
+            >
+              <%= retrospectives[i].team_name %>
+            </td>
+            <td class="table__date">
+              <%= moment(retrospectives[i].start_date).format('LL') %>
+            </td>
             <td>
               <% if(retrospectives[i].state=='PENDING' ) { %>
               <span class="label label--danger">Pendiente</span>
@@ -81,11 +88,9 @@
     </div>
   </div>
   <% } else { %>
-  <p class="description">Por el momento no existe ninguna retrospectiva</p>
+  <p class="no-results">Por el momento no existe ninguna retrospectiva</p>
   <% } %>
-  <p class="description hide" id="emptyMessage">
-    Por el momento no existe ninguna retrospectiva
-  </p>
+  <p class="no-results hide"></p>
 </section>
 
 <script src="/assets/js/retrospective.js"></script>
