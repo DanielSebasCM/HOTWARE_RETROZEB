@@ -9,6 +9,24 @@ const renderQuestions = async (req, res, next) => {
   }
 };
 
+const renderNewQuestion = (req, res) => {
+  res.render("questions/new", { title: "Nueva pregunta" });
+};
+
+const postQuestion = async (req, res, next) => {
+  try {
+    const { description, type, option } = req.body;
+    const newQuestion = new Question({ description, type, options: option });
+    await newQuestion.post();
+    req.session.successMessage = "Pregunta creada con éxito"
+    res.redirect("/preguntas");
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   renderQuestions,
+  renderNewQuestion,
+  postQuestion,
 };

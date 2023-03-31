@@ -7,6 +7,8 @@ const states = [
   { label: "Done", color: "rgba(255, 159, 64, 0.6)" },
 ];
 
+Chart.defaults.font.family = "Poppins";
+
 const currentUserUid = document.querySelector("#current-user").dataset.uid;
 
 let baseUrl = window.location.href.split("/");
