@@ -53,7 +53,7 @@ class User {
 
   async getActiveTeams() {
     const [teams, _] = await db.execute(
-      `SELECT t.* FROM team t, team_users tu WHERE tu.uid = ? AND tu.id_team = t.id AND tu.active = 1`,
+      `SELECT t.* FROM team t, team_users tu WHERE tu.uid = ? AND tu.id_team = t.id AND tu.active = 1 AND t.active = 1`,
       [this.uid]
     );
     teams.map((team) => new Team(team));
