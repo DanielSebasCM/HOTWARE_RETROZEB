@@ -41,7 +41,6 @@
   <form method="POST" action="/retrospectivas/iniciar" id="form">
     <input
       type="number"
-      maxlength="40"
       value="<%= sprint.id %>"
       hidden
       name="id_sprint"
@@ -53,6 +52,7 @@
         class="input"
         type="text"
         name="name"
+        maxlength="40"
         placeholder="Nombre de la Retrospectiva"
         required
         value="<%= sprint.name %>: <%= locals.selectedTeam.name %>"
@@ -93,10 +93,10 @@
           />
         </div>
         <div class="horizontal-container">
-          <div class="horizontal-container question-required-checkbox">
+          <div class="horizontal-container ">
             <input
               type="checkbox"
-              class="mr-1"
+              class="mr-1 question-required-checkbox"
               checked
               value="<%= questions[i].id %>"
             />
