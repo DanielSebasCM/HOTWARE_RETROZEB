@@ -6,14 +6,14 @@ Array.prototype.groupBy = function (key) {
   }, {});
 };
 
-const statesColors = {
-  "To Do": "rgba(255, 99, 132, 0.6)",
-  "En curso": "rgba(54, 162, 235, 0.6)",
-  "Pull request": "rgba(255, 206, 86, 0.6)",
-  QA: "rgba(75, 192, 192, 0.6)",
-  Blocked: "rgba(153, 102, 255, 0.6)",
-  Done: "rgba(255, 159, 64, 0.6)",
-};
+const statesColors = [
+  { state: "To Do", color: "rgba(255, 99, 132, 0.6)" },
+  { state: "En curso", color: "rgba(54, 162, 235, 0.6)" },
+  { state: "Pull request", color: "rgba(255, 206, 86, 0.6)" },
+  { state: "QA", color: "rgba(75, 192, 192, 0.6)" },
+  { state: "Blocked", color: "rgba(153, 102, 255, 0.6)" },
+  { state: "Done", color: "rgba(255, 159, 64, 0.6)" },
+];
 
 Chart.defaults.font.family = "Poppins";
 
@@ -68,7 +68,7 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   const canvas = document.getElementById(canvasId);
   canvas.parentElement.style.height = `${statesData.length * 30 + 150}px`;
 
-  const datasets = Object.entries(statesColors).map(([state, color]) => {
+  const datasets = statesColors.map(({ state, color }) => {
     const storyPoints = labels.map((l) => {
       const data = statesData[state];
       if (data) return data[l] || 0;
@@ -83,7 +83,7 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
 
   const totals = {};
   labels.forEach((l) => {
-    totals[l || "N/A"] = Object.keys(statesColors).reduce((acc, state) => {
+    totals[l || "N/A"] = statesColors.reduce((acc, { state }) => {
       const data = statesData[state];
       if (data) return acc + (data[l] || 0);
       return acc;
@@ -220,7 +220,7 @@ function updateChart(canvasId, statesData) {
 
   const totals = {};
   labels.forEach((l) => {
-    totals[l || "N/A"] = Object.keys(statesColors).reduce((acc, state) => {
+    totals[l || "N/A"] = statesColors.reduce((acc, { state }) => {
       const data = statesData[state];
       if (data) return acc + (data[l] || 0);
       return acc;
