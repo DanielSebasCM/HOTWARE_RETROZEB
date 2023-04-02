@@ -30,6 +30,7 @@ const messages = {
     isMandatory: "El campo es obligatorio",
     mustBeString: "El campo debe ser una cadena de caracteres",
     mustBeNumber: "El campo debe ser un número",
+    mustBeInteger: "El campo debe ser un número entero",
     mustBeDate: "El campo debe ser una fecha",
     mustBeBoolean: "El campo debe ser un booleano",
     mustBeEnum: (variations) =>
