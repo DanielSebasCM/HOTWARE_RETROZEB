@@ -77,9 +77,6 @@ class Retrospective {
         validationMessages.mustBeShorterThan(40)
       );
 
-    if (!retrospective.start_date)
-      throw new ValidationError("start_date", validationMessages.isMandatory);
-
     // Start date is valid
     if (retrospective.start_date && !(retrospective.start_date instanceof Date))
       throw new ValidationError("start_date", validationMessages.mustBeDate);
