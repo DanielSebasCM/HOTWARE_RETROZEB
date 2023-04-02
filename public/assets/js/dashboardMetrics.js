@@ -50,7 +50,6 @@ issuesOptions.onchange = function () {
 };
 
 const epics = [...new Set(issues.map((d) => d.epic_name))];
-
 const types = [...new Set(issues.map((d) => d.type))];
 
 const dataGeneral = groupFilterIssues(groupedIssues, null);
@@ -145,11 +144,13 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   });
 }
 
-function groupFilterIssues(rawData, key, filterFn = filterIssues) {
+function groupFilterIssues(rawData, key) {
   const data = {};
   // Por cada valor del filtro crear un objeto con los issues correspondinetes
   for (const state in rawData) {
-    const filteredData = rawData[state].filter(filterFn);
+    const filteredData = rawData[state].filter((i) =>
+      filterIssues(i, selectedLabel, selectedIssues)
+    );
     if (filteredData.length === 0) continue;
 
     const groupedFilteredData = key
@@ -168,10 +169,10 @@ function groupFilterIssues(rawData, key, filterFn = filterIssues) {
   return data;
 }
 
-function filterIssues(issue) {
+function filterIssues(issue, labelFilter, issuesFilter) {
   // Filter by label
   let hasLabel;
-  switch (selectedLabel) {
+  switch (labelFilter) {
     case "All":
       hasLabel = true;
       break;
@@ -183,7 +184,7 @@ function filterIssues(issue) {
   }
   //filter by issue_option
   let hasCorrectUser;
-  switch (selectedIssues) {
+  switch (issuesFilter) {
     case "All":
       hasCorrectUser = true;
       break;
@@ -194,6 +195,7 @@ function filterIssues(issue) {
       hasCorrectUser = usersUids.includes(issue.uid);
       break;
   }
+
   return hasLabel && hasCorrectUser;
 }
 
