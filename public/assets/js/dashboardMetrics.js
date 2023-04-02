@@ -209,7 +209,6 @@ function updateCharts() {
 }
 
 function updateChart(canvasId, statesData) {
-  console.log(statesData);
   const chart = Chart.getChart(canvasId);
 
   const secundaryAxis = chart.options.indexAxis === "y" ? "x" : "y";

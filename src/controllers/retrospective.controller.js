@@ -139,7 +139,6 @@ const post = async (request, response, next) => {
       newRetrospective.question = element;
       await newRetrospective.addQuestion();
     });
-    console.log(questions);
     request.session.successMessage = "Retrospectiva creada con éxito";
     response.status(201).redirect("/retrospectivas");
   } catch (err) {
