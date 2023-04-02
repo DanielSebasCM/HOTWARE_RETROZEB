@@ -1,0 +1,42 @@
+<!-- SEND DATA TO SCRIPT -->
+<section class="dashboard">
+  <!-- HEADER -->
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">Comparación de retrospectivas</h1>
+      <p class="description"><%= retrospectives.map(retrospective => retrospective.name).join(", ") %></p>
+    </div>
+
+    <div class="banner__section">
+      <input type="number" id="n_retrospectives" min="1" max="10" value="<%= n %>" class="input">
+    </div>
+
+    <span class="line"></span>
+  </div>
+
+  <h3 class="subtitle">Filtros</h3>
+  <div class="filters-container">
+    <div class="select-container">
+      <select class="select" id="label-options">
+        <option value="All">Todos los Labels</option>
+        <% for (let i=0; i < labels.length; i++) { %>
+        <option value="<%= labels[i] %>"><%= labels[i] %></option>
+        <% } %>
+        <option value="None">Sin Label</option>
+      </select>
+    </div>
+    <div class="select-container">
+      <select class="select" id="issues-options">
+        <option value="All" selected>Todos los Issues</option>
+        <option value="Team">Issues <%= selectedTeam.name %></option>
+        <option value="Personal">Issues personales</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="chart-container">
+    <canvas id="general-chart"></canvas>
+  </div>
+
+  <script type="module" src="/assets/js/compareMetrics.js"></script>
