@@ -19,7 +19,7 @@
     right: calc((100% - 400px) / 2);
   }
   .notification {
-    min-width: 40rem;
+    min-width: 400px;
   }
   .user__name {
     display: block;
@@ -75,6 +75,14 @@
 
 /* DESKTOP BREAKPOIN */
 @media screen and (min-width: 992px) {
+  .notification-container {
+    right: calc((100% - 550px) / 2);
+  }
+
+  .notification {
+    min-width: 550px;
+  }
+
   .sidebar {
     width: var(--sidebar-width);
     transform: translateX(0%);

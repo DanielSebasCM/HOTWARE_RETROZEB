@@ -32,40 +32,40 @@ const renderRetrospectives = async (req, res, next) => {
 
 const renderInitRetrospective = async (req, res, next) => {
   try {
-    let newTeam;
-
-    try {
-      newTeam = new Team(req.app.locals.selectedTeam);
-    } catch {
-      res.render("retrospectives/initRetrospective", {
-        title: "Preguntas",
-        questions: [],
-        retrospective: null,
-        sprint: null,
-      });
+    if (!req.app.locals.selectedTeam) {
+      req.session.errorMessage =
+        "Únete o selecciona un equipo para poder iniciar una retrospectiva";
+      return res.redirect(".");
     }
 
-    let retrospective = null;
+    const newTeam = new Team(req.app.locals.selectedTeam);
     let questions = [];
     let sprint;
 
-    try {
-      retrospective = await newTeam.hasActiveRetrospective();
-    } catch {
-      questions = await Question.getAll();
+    const retrospective = await newTeam.getActiveRetrospective();
 
-      sprint = await Sprint.getLastWithoutRetroByTeamId(
-        req.app.locals.selectedTeam.id
-      );
-      const activeSprint = await Sprint.getLastWithRetroByTeamId(
-        req.app.locals.selectedTeam.id
-      );
+    if (retrospective) {
+      req.session.errorMessage =
+        "Ya existe una retrospectiva para el último sprint del equipo " +
+        newTeam.name;
+      return res.redirect(".");
+    }
 
-      if (sprint && activeSprint && activeSprint.end_date > sprint.end_date) {
-        console.log(activeSprint.end_date);
-        console.log(sprint.end_date);
-        sprint = null;
-      }
+    questions = await Question.getAll();
+    sprint = await Sprint.getLastWithoutRetroByTeamId(
+      req.app.locals.selectedTeam.id
+    );
+    const activeSprint = await Sprint.getLastWithRetroByTeamId(
+      req.app.locals.selectedTeam.id
+    );
+
+    if (!retrospective && !sprint) {
+      req.session.errorMessage = `No hay sprints disponibles para el equipo ${newTeam.name}. Por favor selecciona otro equipo`;
+      return res.redirect(".");
+    }
+
+    if (activeSprint && activeSprint.end_date > sprint.end_date) {
+      sprint = null;
     }
 
     res.render("retrospectives/initRetrospective", {
