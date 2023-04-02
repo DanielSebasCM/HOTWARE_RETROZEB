@@ -46,7 +46,6 @@ app.use((req, res) => {
   res
     .status(404)
     .render("errors/404", { message: `Página no encontrada: ${req.url}` });
-
 });
 
 // ERROR HANDLER

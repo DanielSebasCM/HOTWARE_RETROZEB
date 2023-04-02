@@ -6,7 +6,7 @@ const controller = require("../controllers/team.controller");
 router.get("/", controller.renderTeams);
 
 // API ROUTES
-
+router.get("/:id/retrospectivas/:n", controller.getNClosedRetrospectives);
 // POST
 router.post("/nuevo/usuario", controller.addUser);
 // DELETE

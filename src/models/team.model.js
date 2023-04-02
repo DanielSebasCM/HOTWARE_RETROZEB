@@ -23,23 +23,6 @@ class Team {
     return teams.map((team) => new Team(team));
   }
 
-  static getByName = async (name) => {
-    try {
-      const result = await db.query(
-        "SELECT * FROM team WHERE name = ?",
-        [name]
-      );
-      if (!result || result.length === 0) {
-        throw new Error(`No se encontró ningún equipo con el nombre ${name}`);
-      }
-      return result[0];
-    } catch (err) {
-      throw new Error(`Error al obtener equipo por nombre: ${err.message}`);
-    }
-  }
-  
-  
-
   static async getAllActive() {
     const [teams, _] = await db.execute(`SELECT * FROM team WHERE active = 1`);
     return teams.map((team) => new Team(team));
@@ -120,12 +103,12 @@ class Team {
     return res;
   }
 
-  async getActiveRetrospective(){
+  async getActiveRetrospective() {
     const Retrospective = require("./retrospective.model");
 
     // TODO - TEST THIS
     const [retros, _] = await db.execute(
-    `
+      `
     SELECT r.* 
     FROM retrospective as r, team as t, sprint as s
     WHERE r.id_team = t.id
@@ -135,11 +118,30 @@ class Team {
       `,
       [this.id]
     );
-    if(retros.length == 0) return null;
+    if (retros.length == 0) return null;
     return new Retrospective(retros[0]);
   }
+
+  async getNClosedRetrospectives(n) {
+    const Retrospective = require("./retrospective.model");
+
+    // TODO - TEST THIS
+    const [retros, _] = await db.execute(
+      `
+    SELECT r.* 
+    FROM retrospective as r, team as t, sprint as s
+    WHERE r.id_team = t.id
+    AND r.id_sprint = s.id
+    AND t.id = ?
+    AND r.end_date IS NOT NULL
+    AND r.state = "CLOSED"
+    ORDER BY r.end_date DESC
+    LIMIT ?
+      `,
+      [this.id, n]
+    );
+    return retros.map((retro) => new Retrospective(retro));
+  }
 }
-
-
 
 module.exports = Team;

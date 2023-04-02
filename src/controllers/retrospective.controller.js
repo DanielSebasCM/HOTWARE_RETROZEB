@@ -208,6 +208,30 @@ const renderRetrospectiveAnswer = async (req, res, next) => {
   }
 };
 
+const renderCompareRetroMetrics = async (req, res, next) => {
+  try {
+    const { n } = req.params;
+    const team = await Team.getById(req.app.locals.selectedTeam.id);
+    const retrospectives = await team.getNClosedRetrospectives(n);
+    console.log(retrospectives);
+    let labels = new Set();
+    for (let retrospective of retrospectives) {
+      const newLabels = await retrospective.getLabels();
+      newLabels.forEach((label) => labels.add(label));
+    }
+    labels = Array.from(labels);
+
+    res.render("retrospectives/compareMetrics", {
+      title: "Comparar",
+      retrospectives,
+      labels,
+      n,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getRetrospectiveAnswers = async (req, res, next) => {
   try {
     const retroId = req.params.id;
@@ -250,6 +274,7 @@ module.exports = {
   renderRetrospectiveMetrics,
   renderRetrospectiveQuestions,
   renderRetrospectiveAnswer,
+  renderCompareRetroMetrics,
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
   getRetrospectiveUsers,

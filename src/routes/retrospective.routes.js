@@ -6,6 +6,7 @@ const controller = require("../controllers/retrospective.controller");
 router.get("/", controller.renderRetrospectives);
 router.get("/iniciar", controller.renderInitRetrospective);
 
+router.get("/comparar/:n", controller.renderCompareRetroMetrics);
 router.get("/:id", (req, res) => res.redirect(req.originalUrl + "/metricas"));
 router.get("/:id/metricas", controller.renderRetrospectiveMetrics);
 router.get("/:id/preguntas", controller.renderRetrospectiveQuestions);
@@ -17,7 +18,6 @@ router.get("/:id/contestar", controller.renderRetrospectiveAnswer);
 router.get("/:id/issues", controller.getRetrospectiveIssues);
 router.get("/:id/respuestas", controller.getRetrospectiveAnswers);
 router.get("/:id/usuarios", controller.getRetrospectiveUsers);
-
 // POST
 router.post("/iniciar", controller.post);
 router.post("/:id/contestar", controller.postRetrospectiveAnswers);
