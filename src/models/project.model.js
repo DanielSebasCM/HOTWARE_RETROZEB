@@ -1,6 +1,7 @@
 const db = require("../utils/db");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
+const projectMaxLength = require("../utils/constants").limits.projectMaxLength;
 
 class Project {
   constructor(project) {

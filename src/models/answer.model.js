@@ -9,7 +9,7 @@ class Answer {
 
     this.id = answer.id || null;
     this.value = answer.value;
-    this.uid = answer.uid;
+    this.uid = answer.uid || null;
     this.id_retrospective = answer.id_retrospective;
     this.id_question = answer.id_question;
   }
