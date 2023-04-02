@@ -62,7 +62,7 @@ test("Answer value is not empty", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test(`Answer value is in range value.length < ${answerMaxLength}`, () => {
+test(`Answer value is no longer than ${answerMaxLength} characters`, () => {
   let thrownError;
   const expectedError = new ValidationError(
     "value",

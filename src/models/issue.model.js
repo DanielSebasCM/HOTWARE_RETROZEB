@@ -3,6 +3,9 @@ const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const issuePriorities = require("../utils/constants").enums.issuePriorities;
 const issueStates = require("../utils/constants").enums.issueStates;
+const issueTypes = require("../utils/constants").enums.issueTypes;
+const epicsNameMaxLength =
+  require("../utils/constants").limits.epicsNameMaxLength;
 
 class Issue {
   constructor(issue) {
@@ -23,8 +26,7 @@ class Issue {
     let [issue, _] = await db.execute(`SELECT * FROM issues WHERE id = ?`, [
       id,
     ]);
-
-    if (issue.length == 0) throw new Error("Issue no encontrado");
+    if (issue.length == 0) return null;
 
     const [labels, __] = await db.execute(
       `SELECT label FROM issues_labels WHERE id_issue = ?`,
@@ -50,38 +52,62 @@ class Issue {
   }
 
   static verify(issue) {
-    // Length of epic_name is not null
+    // id
+    if (issue.id && !Number.isInteger(issue.id))
+      throw new ValidationError("id", validationMessages.mustBeInteger);
+
+    // id_jira
+    if (issue.id_jira && !Number.isInteger(issue.id_jira))
+      throw new ValidationError("id_jira", validationMessages.mustBeInteger);
+
+    // epic_name
     if (issue.epic_name?.length == 0)
       throw new ValidationError("epic_name", validationMessages.isMandatory);
 
-    // Length of epic_name is less than 40
-    if (issue.epic_name?.length > 40)
+    if (issue.epic_name?.length > epicsNameMaxLength)
       throw new ValidationError(
         "epic_name",
-        validationMessages.mustBeShorterThan(40)
+        validationMessages.mustBeShorterThan(epicsNameMaxLength)
       );
 
-    // Type is not null and of type LOWEST, LOW, MEDIUM, HIGH, HIGHEST
-    if (issue.priority) {
-      if (!issuePriorities.includes(issue.priority))
-        throw new ValidationError(
-          "priority",
-          validationMessages.mustBeEnum(issuePriorities)
-        );
-    }
+    // story_points
+    if (issue.story_points && !Number.isInteger(issue.story_points))
+      throw new ValidationError(
+        "story_points",
+        validationMessages.mustBeInteger
+      );
 
-    // Type is not null and of type To Do, En curso, Pull requessts, QA, Blocked, Done
-    if (issue.state) {
-      if (!issueStates.includes(issue.state))
-        throw new ValidationError(
-          "state",
-          validationMessages.mustBeEnum(issueStates)
-        );
-    }
+    // priority
+    if (issue.priority && !issuePriorities.includes(issue.priority))
+      throw new ValidationError(
+        "priority",
+        validationMessages.mustBeEnum(issuePriorities)
+      );
+
+    // state
+    if (issue.state && !issueStates.includes(issue.state))
+      throw new ValidationError(
+        "state",
+        validationMessages.mustBeEnum(issueStates)
+      );
+
+    // type
+    if (issue.type && !issueTypes.includes(issue.type))
+      throw new ValidationError(
+        "type",
+        validationMessages.mustBeEnum(issueTypes)
+      );
+
+    // uid
+    if (issue.uid && !Number.isInteger(issue.uid))
+      throw new ValidationError("uid", validationMessages.mustBeInteger);
 
     // Length of id_sprint is not null
     if (!issue.id_sprint)
       throw new ValidationError("id_sprint", validationMessages.isMandatory);
+
+    if (!Number.isInteger(issue.id_sprint))
+      throw new ValidationError("id_sprint", validationMessages.mustBeInteger);
 
     return true;
   }

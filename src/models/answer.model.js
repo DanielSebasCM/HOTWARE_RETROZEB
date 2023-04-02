@@ -37,9 +37,6 @@ class Answer {
     if (!answer.value)
       throw new ValidationError("value", validationMessages.isMandatory);
 
-    if (typeof answer.value !== "string")
-      throw new ValidationError("value", validationMessages.mustBeString);
-
     // Length of value
     if (answer.value.length > answerMaxLength)
       throw new ValidationError(
