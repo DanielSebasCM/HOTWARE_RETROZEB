@@ -82,6 +82,8 @@ class Answer {
       `INSERT INTO answer (value, uid, id_retrospective, id_question) VALUES (?, ?, ?, ?)`,
       [this.value, this.uid, this.id_retrospective, this.id_question]
     );
+
+    this.id = res.insertId;
     return res;
   }
 }

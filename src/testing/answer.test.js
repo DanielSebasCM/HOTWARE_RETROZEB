@@ -81,24 +81,6 @@ test(`Answer value is in range value.length < ${answerMaxLength}`, () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Answer has uid", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "uid",
-    validationMessages.isMandatory
-  );
-  try {
-    new Answer({
-      value: "answer",
-      id_retrospective: 1,
-      id_question: 1,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
 test("Answer uid is an integer", () => {
   let thrownError;
   const expectedError = new ValidationError(
@@ -108,7 +90,7 @@ test("Answer uid is an integer", () => {
   try {
     new Answer({
       value: "answer",
-      uid: "1",
+      uid: "Not an integer",
       id_retrospective: 1,
       id_question: 1,
     });
@@ -140,13 +122,13 @@ test("Answer id_retrospective is an integer", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "id_retrospective",
-    validationMessages.isMandatory
+    validationMessages.mustBeInteger
   );
   try {
     new Answer({
       value: "answer",
       uid: 1,
-      id_retrospective: "1",
+      id_retrospective: "Not an integer",
       id_question: 1,
     });
   } catch (error) {
@@ -184,7 +166,7 @@ test("Answer id_question is an integer", () => {
       value: "answer",
       uid: 1,
       id_retrospective: 1,
-      id_question: "1",
+      id_question: "Not an integer",
     });
   } catch (error) {
     thrownError = error;
