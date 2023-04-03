@@ -12,11 +12,7 @@ class User {
     this.first_name = user.first_name;
     this.last_name = user.last_name;
     this.email = user.email;
-    if (user?.active === undefined) {
-      this.active = 1;
-    } else {
-      this.active = user.active;
-    }
+    this.active = user.active === 0 ? 0 : 1;
   }
   static async getAll() {
     let [users, _] = await db.execute(`SELECT * FROM user`);
@@ -80,38 +76,23 @@ class User {
 
   //----------------------------VERIFY--------------------------------
   static verify(user) {
-    if (!user) throw new ValidationError("user", validationMessages.isEmpty);
+    if (user.uid && !Number.isInteger(Number(user.uid)))
+      throw new ValidationError("uid", validationMessages.mustBeInteger);
 
-    if (!user.first_name) {
+    if (!user.id_google_auth)
+      throw new ValidationError(
+        "id_google_auth",
+        validationMessages.isMandatory
+      );
+
+    if (!user.first_name)
       throw new ValidationError("first_name", validationMessages.isMandatory);
-    }
-    if (user.first_name.length > 40) {
-      throw new ValidationError(
-        "first_name",
-        validationMessages.mustBeShorterThan(40)
-      );
-    }
 
-    if (!user.last_name) {
+    if (!user.last_name)
       throw new ValidationError("last_name", validationMessages.isMandatory);
-    }
-    if (user.last_name.length > 40) {
-      throw new ValidationError(
-        "last_name",
-        validationMessages.mustBeShorterThan(40)
-      );
-    }
 
-    if (!user.email) {
+    if (!user.email)
       throw new ValidationError("email", validationMessages.isMandatory);
-    }
-
-    if (user.email.length > 40) {
-      throw new ValidationError(
-        "email",
-        validationMessages.mustBeShorterThan(40)
-      );
-    }
   }
 
   //---------------------------POST----------------------------------
