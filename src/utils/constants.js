@@ -14,6 +14,7 @@ const constants = {
     projectMaxLength: 255,
     questionMaxLength: 255,
     optionMaxLength: 25,
+    retrospectiveMaxLength: 255,
   },
   routes: {
     home: "/",

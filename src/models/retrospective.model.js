@@ -8,6 +8,8 @@ const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
   require("../utils/constants").enums.retrospectiveStates;
+const retrospectiveMaxLength =
+  require("../utils/constants").limits.retrospectiveMaxLength;
 
 class Retrospective {
   constructor(retrospective) {
@@ -15,9 +17,9 @@ class Retrospective {
 
     this.id = retrospective.id || null;
     this.name = retrospective.name;
-    this.start_date = retrospective.start_date || new Date();
+    this.start_date = retrospective.start_date;
     this.end_date = retrospective.end_date || null;
-    this.state = retrospective.state || "PENDING";
+    this.state = retrospective.state;
     this.id_team = retrospective.id_team;
     this.id_sprint = retrospective.id_sprint;
   }
@@ -63,53 +65,53 @@ class Retrospective {
     );
   }
   static verify(retrospective) {
-    if (!retrospective)
-      throw new ValidationError("instance", validationMessages.isEmpty);
+    // id
+    if (retrospective.id && !Number.isInteger(retrospective.id))
+      throw new ValidationError("id", validationMessages.mustBeInteger);
 
     // Name is not empty
     if (!retrospective.name)
       throw new ValidationError("name", validationMessages.isMandatory);
 
     // Length of name is less than 40
-    if (retrospective.name.length > 40)
+    if (retrospective.name.length > retrospectiveMaxLength)
       throw new ValidationError(
         "name",
-        validationMessages.mustBeShorterThan(40)
+        validationMessages.mustBeShorterThan(retrospectiveMaxLength)
       );
 
     // Start date is valid
     if (retrospective.start_date && !(retrospective.start_date instanceof Date))
       throw new ValidationError("start_date", validationMessages.mustBeDate);
 
-    if (retrospective.end_date) {
-      // End date is valid
-      if (!(retrospective.end_date instanceof Date))
-        throw new ValidationError("end_date", validationMessages.mustBeDate);
+    // End date is valid
+    if (retrospective.end_date && !(retrospective.end_date instanceof Date))
+      throw new ValidationError("end_date", validationMessages.mustBeDate);
 
-      // Start date is before end date
-      if (retrospective.start_date >= retrospective.end_date)
-        throw new ValidationError(
-          "end_date",
-          validationMessages.mustBeAfter("start_date")
-        );
-    }
     // If state exists, it is either PENDING, IN_PROGRESS or CLOSED
-    if (retrospective.state) {
-      const options = retrospectiveStates;
-      if (!options.includes(retrospective.state))
-        throw new ValidationError(
-          "state",
-          validationMessages.mustBeEnum(options)
-        );
-    }
+
+    if (
+      retrospective.state &&
+      !retrospectiveStates.includes(retrospective.state)
+    )
+      throw new ValidationError(
+        "state",
+        validationMessages.mustBeEnum(retrospectiveStates)
+      );
 
     // Team id exists
     if (!retrospective.id_team)
       throw new ValidationError("id_team", validationMessages.isMandatory);
 
+    if (!Number.isInteger(retrospective.id_team))
+      throw new ValidationError("id_team", validationMessages.mustBeInteger);
+
     // Sprint id exists
     if (!retrospective.id_sprint)
       throw new ValidationError("id_sprint", validationMessages.isMandatory);
+
+    if (!Number.isInteger(retrospective.id_sprint))
+      throw new ValidationError("id_sprint", validationMessages.mustBeInteger);
   }
   async getIssues() {
     const [issues, _] = await db.execute(
@@ -218,22 +220,6 @@ class Retrospective {
 
     this.id = res.insertId;
 
-    return res;
-  }
-
-  async put() {
-    const [res, _] = await db.execute(
-      `UPDATE retrospective SET name = ?, start_date = ?, end_date = ?, state = ?, id_team = ?, id_sprint = ? WHERE id = ?`,
-      [
-        this.name,
-        this.start_date,
-        this.end_date,
-        this.state,
-        this.id_team,
-        this.id_sprint,
-        this.id,
-      ]
-    );
     return res;
   }
 

@@ -4,18 +4,37 @@ const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
   require("../utils/constants").enums.retrospectiveStates;
+const retrospectiveMaxLength =
+  require("../utils/constants").limits.retrospectiveMaxLength;
 
 // ------------------ VERIFIER ------------------
-test("Retrospective name is in range name.length < 40", () => {
+test("Restrospective id is an integer", () => {
   let thrownError = null;
   let expectedError = new ValidationError(
-    "name",
-    validationMessages.mustBeShorterThan(40)
+    "id",
+    validationMessages.mustBeInteger
   );
   try {
     new Retrospective({
-      name: "a".repeat(41),
-      start_date: new Date("2021-01-01 00:00:00"),
+      id: "1",
+      name: "Retrospective",
+      id_team: 1,
+      id_sprint: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Retrospective has a name", () => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
+    new Retrospective({
       id_team: 1,
       id_sprint: 1,
     });
@@ -34,7 +53,6 @@ test("Retrospective name is not empty", () => {
   try {
     new Retrospective({
       name: "",
-      start_date: new Date("2021-01-01 00:00:00"),
       id_team: 1,
       id_sprint: 1,
     });
@@ -44,15 +62,15 @@ test("Retrospective name is not empty", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Retrospective has a name", () => {
+test(`Retrospective name is shorter than ${retrospectiveMaxLength} characters`, () => {
   let thrownError = null;
   let expectedError = new ValidationError(
     "name",
-    validationMessages.isMandatory
+    validationMessages.mustBeShorterThan(retrospectiveMaxLength)
   );
   try {
     new Retrospective({
-      start_date: new Date("2021-01-01 00:00:00"),
+      name: "a".repeat(retrospectiveMaxLength + 1),
       id_team: 1,
       id_sprint: 1,
     });
@@ -101,26 +119,6 @@ test("Retrospective has a valid end date", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Retrospective star_date is before end_date", () => {
-  let thrownError = null;
-  let expectedError = new ValidationError(
-    "end_date",
-    validationMessages.mustBeAfter("start_date")
-  );
-  try {
-    new Retrospective({
-      name: "a".repeat(40),
-      start_date: new Date("2021-01-01 00:00:00"),
-      end_date: new Date("2021-01-01 00:00:00"),
-      id_team: 1,
-      id_sprint: 1,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
 test("Retrospective has a valid state", () => {
   let thrownError = null;
   let expectedError = new ValidationError(
@@ -130,8 +128,6 @@ test("Retrospective has a valid state", () => {
   try {
     new Retrospective({
       name: "a".repeat(40),
-      start_date: new Date("2021-01-01 00:00:00"),
-      end_date: new Date("2021-01-01 00:00:01"),
       id_team: 1,
       id_sprint: 1,
       state: "Esto no sirve",
@@ -151,8 +147,24 @@ test("Retrospective has an id_team", () => {
   try {
     new Retrospective({
       name: "a".repeat(40),
-      start_date: new Date("2021-01-01 00:00:00"),
-      end_date: new Date("2021-01-01 00:00:01"),
+      id_sprint: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Retrospective id_team is an integer", () => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "id_team",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Retrospective({
+      name: "a".repeat(40),
+      id_team: "1",
       id_sprint: 1,
     });
   } catch (error) {
@@ -170,9 +182,25 @@ test("Retrospective has an id_sprint", () => {
   try {
     new Retrospective({
       name: "a".repeat(40),
-      start_date: new Date("2021-01-01 00:00:00"),
-      end_date: new Date("2021-01-01 00:00:01"),
       id_team: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Retrospective id_sprint is an integer", () => {
+  let thrownError = null;
+  let expectedError = new ValidationError(
+    "id_sprint",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Retrospective({
+      name: "a".repeat(40),
+      id_team: 1,
+      id_sprint: "1",
     });
   } catch (error) {
     thrownError = error;
