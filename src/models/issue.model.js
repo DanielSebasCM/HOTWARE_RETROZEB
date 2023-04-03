@@ -116,8 +116,9 @@ class Issue {
   async post() {
     let [res, _] = await db.execute(
       // id_project?
-      `INSERT INTO issues (epic_name, story_points, priority, state, uid, id_sprint) VALUES (?, ?, ?, ?, ?, ?)`,
+      `INSERT INTO issues (id_jira, epic_name, story_points, priority, state, uid, id_sprint) VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
+        this.id_jira,
         this.epic_name,
         this.story_points,
         this.priority,
