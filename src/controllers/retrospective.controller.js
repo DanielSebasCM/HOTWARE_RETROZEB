@@ -125,19 +125,18 @@ const post = async (request, response, next) => {
 
     questions = questions.flat().map((id) => ({ id }));
 
-    questions.forEach(async (element) => {
+    questions.forEach(async (question) => {
       if (required) {
-        element.required = required.includes(element.id) ? 1 : 0;
+        question.required = required.includes(question.id) ? 1 : 0;
       } else {
-        element.required = 0;
+        question.required = 0;
       }
       if (anonymous) {
-        element.anonymous = anonymous.includes(element.id) ? 1 : 0;
+        question.anonymous = anonymous.includes(question.id) ? 1 : 0;
       } else {
-        element.anonymous = 0;
+        question.anonymous = 0;
       }
-      newRetrospective.question = element;
-      await newRetrospective.addQuestion();
+      await newRetrospective.addQuestion(question);
     });
     request.session.successMessage = "Retrospectiva creada con éxito";
     response.status(201).redirect("/retrospectivas");
