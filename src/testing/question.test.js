@@ -2,17 +2,21 @@ const Question = require("../models/question.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const questionTypes = require("../utils/constants").enums.questionTypes;
+const { questionMaxLength, optionMaxLength } =
+  require("../utils/constants").limits;
 
 // ------------------ VERIFIER ------------------
-test("question length is in range", () => {
+// id
+test("Question id is an integer", () => {
   let thrownError;
   const expectedError = new ValidationError(
-    "description",
-    validationMessages.mustBeShorterThan(255)
+    "id",
+    validationMessages.mustBeInteger
   );
   try {
     new Question({
-      description: "a".repeat(256),
+      id: "1",
+      description: "Question",
       type: "OPEN",
     });
   } catch (error) {
@@ -21,7 +25,7 @@ test("question length is in range", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("question is not empty", () => {
+test("Question has description", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "description",
@@ -29,6 +33,24 @@ test("question is not empty", () => {
   );
   try {
     new Question({
+      id: 1,
+      type: "OPEN",
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Question description is not empty", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "description",
+    validationMessages.isMandatory
+  );
+  try {
+    new Question({
+      id: 1,
       description: "",
       type: "OPEN",
     });
@@ -38,7 +60,24 @@ test("question is not empty", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("type is not null and of type OPEN, BOOLEAN, SCALE or SELECTION", () => {
+test(`Question description is shorter than ${questionMaxLength}`, () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "description",
+    validationMessages.mustBeShorterThan(questionMaxLength)
+  );
+  try {
+    new Question({
+      description: "a".repeat(questionMaxLength + 1),
+      type: "OPEN",
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Question type is of type " + questionTypes, () => {
   let thrownError;
   const expectedError = new ValidationError(
     "type",
@@ -55,33 +94,16 @@ test("type is not null and of type OPEN, BOOLEAN, SCALE or SELECTION", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Option is SELECTION and Option is not null and length > 1", () => {
+test("Question of type SELECTION has options", () => {
   let thrownError;
-  let expectedError = new ValidationError(
-    "option",
+  const expectedError = new ValidationError(
+    "options",
     validationMessages.isMandatory
   );
   try {
     new Question({
-      description: "a".repeat(255),
+      description: "Question",
       type: "SELECTION",
-      options: null,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-
-  expectedError = new ValidationError(
-    "options",
-    validationMessages.mustBeLongerThan(2)
-  );
-
-  try {
-    new Question({
-      description: "a".repeat(255),
-      type: "SELECTION",
-      options: [],
     });
   } catch (error) {
     thrownError = error;
@@ -89,50 +111,71 @@ test("Option is SELECTION and Option is not null and length > 1", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Option is SELECTION and Option is not null and length < 25 && length > 0", () => {
+test("Question of type SELECTION options is an array", () => {
   let thrownError;
-  let expectedError = new ValidationError(
-    "option",
-    validationMessages.isMandatory
+  const expectedError = new ValidationError(
+    "options",
+    validationMessages.mustBeArray
   );
-
   try {
     new Question({
-      description: "a".repeat(255),
+      description: "Question",
       type: "SELECTION",
-      options: [null, "a".repeat(24)],
+      options: "INVALID",
     });
   } catch (error) {
     thrownError = error;
   }
   expect(thrownError).toEqual(expectedError);
+});
 
-  expectedError = new ValidationError(
+test("Question of type SELECTION options is not empty", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
     "options",
     validationMessages.isMandatory
   );
   try {
     new Question({
-      description: "a".repeat(255),
+      description: "Question",
       type: "SELECTION",
-      options: ["", "a".repeat(24)],
+      options: ["", ""],
     });
   } catch (error) {
     thrownError = error;
   }
-
   expect(thrownError).toEqual(expectedError);
+});
 
-  expectedError = new ValidationError(
+test("Question of type SELECTION has at least 2 options", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
     "options",
-    validationMessages.mustBeShorterThan(25)
+    validationMessages.mustHaveAtLeast(2)
   );
-
   try {
     new Question({
-      description: "a".repeat(255),
+      description: "Question",
       type: "SELECTION",
-      options: ["a".repeat(26), "a".repeat(24)],
+      options: ["a"],
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test(`Question of type SELECTION options is shorter than ${optionMaxLength}`, () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "options",
+    validationMessages.mustBeShorterThan(optionMaxLength)
+  );
+  try {
+    new Question({
+      description: "Question",
+      type: "SELECTION",
+      options: ["a".repeat(optionMaxLength + 1), "a".repeat(optionMaxLength)],
     });
   } catch (error) {
     thrownError = error;
@@ -157,10 +200,7 @@ test("question inserted, queried and deactivated successfully", async () => {
   // Get question
   const createdQuestion = await Question.getById(res.insertId);
   // Verify question
-  expect(res.insertId).toEqual(createdQuestion.id);
-  expect(mockQuestion.description).toEqual(createdQuestion.description);
-  expect(mockQuestion.type).toEqual(createdQuestion.type);
-  expect(createdQuestion.active).toEqual(1);
+  expect(createdQuestion).toEqual(mockQuestion);
 
   // Soft delete question
   await createdQuestion.delete();
@@ -187,20 +227,7 @@ test("question inserted successfully with options", async () => {
   // Get question
   const createdQuestion = await Question.getById(res.insertId);
   // Verify question
-  expect(res.insertId).toEqual(createdQuestion.id);
-  expect(mockQuestion.description).toEqual(createdQuestion.description);
-  expect(mockQuestion.type).toEqual(createdQuestion.type);
-  expect(createdQuestion.active).toEqual(1);
-  // Verify options
-  expect(createdQuestion.options).not.toBeNull();
-  expect(createdQuestion.options).toBeDefined();
-  expect(createdQuestion.options.length).toEqual(5);
-  // Verify options are the same
-  expect(createdQuestion.options).toContain("Muy bien");
-  expect(createdQuestion.options).toContain("Bien");
-  expect(createdQuestion.options).toContain("Regular");
-  expect(createdQuestion.options).toContain("Mal");
-  expect(createdQuestion.options).toContain("Muy mal");
+  expect(createdQuestion).toEqual(mockQuestion);
 });
 
 test("get all active questions successfully", async () => {

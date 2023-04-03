@@ -2,7 +2,8 @@ const db = require("../utils/db");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const questionTypes = require("../utils/constants").enums.questionTypes;
-
+const { questionMaxLength, optionMaxLength } =
+  require("../utils/constants").limits;
 class Question {
   constructor(question) {
     Question.verify(question);
@@ -78,19 +79,23 @@ class Question {
   }
 
   static verify(question) {
-    // Length of description is less than 255
-    if (question.description?.length > 255)
-      throw new ValidationError(
-        "description",
-        validationMessages.mustBeShorterThan(255)
-      );
+    // Id is an integer
+    if (question.id && !Number.isInteger(question.id))
+      throw new ValidationError("id", validationMessages.mustBeInteger);
 
-    // Description is not empty
-    if (question.description?.length == 0)
+    // description
+    if (!question.description)
       throw new ValidationError("description", validationMessages.isMandatory);
 
+    // Length of description is less than 255
+    if (question.description.length > questionMaxLength)
+      throw new ValidationError(
+        "description",
+        validationMessages.mustBeShorterThan(questionMaxLength)
+      );
+
     // Type is not null and of type OPEN, BOOLEAN, SCALE or SELECTION
-    if (!questionTypes.includes(question.type))
+    if (question.type && !questionTypes.includes(question.type))
       throw new ValidationError(
         "options",
         validationMessages.mustBeEnum(questionTypes)
@@ -101,21 +106,23 @@ class Question {
       if (!question.options)
         throw new ValidationError("options", validationMessages.isMandatory);
 
-      if (question.options.length < 2) {
+      if (!(question.options instanceof Array))
+        throw new ValidationError("options", validationMessages.mustBeArray);
+
+      if (question.options.length < 2)
         throw new ValidationError(
           "options",
-          validationMessages.mustBeLongerThan(2)
+          validationMessages.mustHaveAtLeast(2)
         );
-      }
 
       // Option is SELECTION and Option is not null and length < 25 && length > 0
       question.options.forEach((option) => {
         if (!option)
           throw new ValidationError("option", validationMessages.isMandatory);
-        if (option.length > 25)
+        if (option.length > optionMaxLength)
           throw new ValidationError(
             "option",
-            validationMessages.mustBeShorterThan(25)
+            validationMessages.mustBeShorterThan(optionMaxLength)
           );
         if (option.length == 0)
           throw new ValidationError("option", validationMessages.isMandatory);
@@ -133,14 +140,12 @@ class Question {
     this.id = res.insertId;
 
     if (this.type === "SELECTION") {
-      await Promise.all(
-        this.options.map(async (option) => {
-          await db.execute(
-            "INSERT INTO `option`(description, id_question) VALUES (?, ?)",
-            [option, this.id]
-          );
-        })
-      );
+      for (let option of this.options) {
+        await db.execute(
+          "INSERT INTO `option` (id_question, description) VALUES (?, ?)",
+          [this.id, option]
+        );
+      }
     }
     return res;
   }

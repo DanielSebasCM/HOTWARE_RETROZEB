@@ -33,9 +33,11 @@ const messages = {
     mustBeInteger: "El campo debe ser un número entero",
     mustBeDate: "El campo debe ser una fecha",
     mustBeBoolean: "El campo debe ser un booleano",
+    mustBeArray: "El campo debe ser un array",
     mustBeEnum: (variations) =>
       `El campo debe ser uno de los siguientes valores: ${variations}`,
     mustBeLongerThan: (n) => `El campo debe tener más de ${n} caracteres`,
+    mustHaveAtLeast: (n) => `El campo debe tener al menos ${n} elementos`,
     mustBeShorterThan: (n) => `El campo debe tener menos de ${n} caracteres`,
     mustBeAfter: (date) => `El campo debe ser posterior a ${date}`,
   },
