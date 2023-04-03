@@ -15,6 +15,10 @@ const constants = {
     questionMaxLength: 255,
     optionMaxLength: 25,
     retrospectiveMaxLength: 255,
+    roleMaxLength: 40,
+    sprintMaxLength: 255,
+    toDoTitleMaxLength: 40,
+    toDoDescriptionMaxLength: 255,
   },
   routes: {
     home: "/",
