@@ -167,6 +167,11 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
   try {
     const id_retrospective = req.params.id;
     const retrospective = await Retrospective.getById(id_retrospective);
+    if (!retrospective) {
+      req.session.errorMessage = "No existe la retrospectiva";
+      return res.redirect("..");
+    }
+
     const team = await Team.getById(retrospective.id_team);
     retrospective.team_name = team.name;
     const questions = await retrospective.getQuestions();
@@ -189,6 +194,10 @@ const renderRetrospectiveAnswer = async (req, res, next) => {
   try {
     const retrospectiveId = req.params.id;
     const retrospective = await Retrospective.getById(retrospectiveId);
+    if (!retrospective) {
+      req.session.errorMessage = "No existe la retrospectiva";
+      return res.redirect("..");
+    }
     const questions = await retrospective.getQuestions();
     let answer = await retrospective.getAnswers(questions[0]);
     answer = answer.filter((a) => a.uid === req.app.locals.currentUser.uid);
@@ -211,6 +220,10 @@ const getRetrospectiveAnswers = async (req, res, next) => {
   try {
     const retroId = req.params.id;
     const retrospective = await Retrospective.getById(retroId);
+    if (!retrospective) {
+      req.session.errorMessage = "No existe la retrospectiva";
+      return res.redirect("..");
+    }
     const questions = await retrospective.getQuestions();
     for (let question of questions) {
       question.answers = await retrospective.getAnswers(question);

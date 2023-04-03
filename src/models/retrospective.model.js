@@ -181,7 +181,15 @@ class Retrospective {
     );
 
     this.id = res.insertId;
-
+    const Team = require("./team.model");
+    const team = await Team.getById(this.id_team);
+    const users = await team.getMembers();
+    for (let user of users) {
+      await db.execute(
+        `INSERT INTO team_users_retrospectives (id_team, uid, id_retrospective) VALUES (?, ?, ?)`,
+        [this.id_team, user.uid, this.id]
+      );
+    }
     return res;
   }
 
