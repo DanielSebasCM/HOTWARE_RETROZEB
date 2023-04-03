@@ -21,6 +21,7 @@ class SuggestedTodo {
       [id]
     );
 
+    if (suggested_todo.length === 0) return null;
     return new SuggestedTodo(suggested_todo[0]);
   }
 
@@ -31,7 +32,7 @@ class SuggestedTodo {
     );
   }
 
-  static async getAllState(state) {
+  static async getAllByState(state) {
     let [suggested_todo_, _] = await db.execute(
       `SELECT * FROM suggested_todo WHERE state = ?`,
       [state]

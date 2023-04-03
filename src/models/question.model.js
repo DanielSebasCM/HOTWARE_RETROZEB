@@ -24,6 +24,8 @@ class Question {
       [id]
     );
 
+    if (question.length === 0) return null;
+
     if (question[0].type == "SELECTION") {
       let [options, _] = await db.execute(
         "SELECT description FROM `option` WHERE id_question = ? ORDER BY id",
@@ -75,6 +77,7 @@ class Question {
       [this.id, option]
     );
 
+    if (optionId.length == 0) return null;
     return optionId[0].id;
   }
 

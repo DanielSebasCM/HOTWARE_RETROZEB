@@ -1,35 +1,20 @@
 const Sprint = require("../models/sprint.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
-
+const sprintMaxLength = require("../utils/constants").limits.sprintMaxLength;
 // ------------------ VERIFIER ------------------
-test("Sprint name is in range name.length < 40", () => {
+test("Sprint id is an integer", () => {
   let thrownError;
   const expectedError = new ValidationError(
-    "name",
-    validationMessages.mustBeShorterThan(40)
+    "id",
+    validationMessages.mustBeInteger
   );
   try {
     new Sprint({
-      name: "a".repeat(41),
-      start_date: "2021-01-01 00:00:00",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("Sprint name is not empty", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "name",
-    validationMessages.isMandatory
-  );
-  try {
-    new Sprint({
-      name: "",
-      start_date: "2021-01-01 00:00:00",
+      id: "a",
+      name: "a".repeat(40),
+      start_date: new Date("2021-01-01 00:00:00"),
+      id_project: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -41,11 +26,13 @@ test("Sprint has a name", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "name",
-    validationMessages.isMandatory
+    validationMessages.mustBeString
   );
   try {
     new Sprint({
-      start_date: "2021-01-01 00:00:00",
+      id: 1,
+      start_date: new Date("2021-01-01 00:00:00"),
+      id_project: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -53,15 +40,35 @@ test("Sprint has a name", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Sprint has a start date", () => {
+test(`Sprint name must be less than ${sprintMaxLength} characters`, () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.mustBeShorterThan(sprintMaxLength)
+  );
+  try {
+    new Sprint({
+      name: "a".repeat(sprintMaxLength + 1),
+      start_date: new Date("2021-01-01 00:00:00"),
+      id_project: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Sprint start_date is a date", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "start_date",
-    validationMessages.isMandatory
+    validationMessages.mustBeDate
   );
   try {
     new Sprint({
       name: "a".repeat(40),
+      start_date: "a",
+      id_project: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -69,18 +76,37 @@ test("Sprint has a start date", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Sprint start_date is before en_date", () => {
+test("Sprint end_date is a date", () => {
   let thrownError;
-  let mock_end_date = new Date("2021-01-01 00:00:00");
   const expectedError = new ValidationError(
     "end_date",
-    validationMessages.mustBeAfter(mock_end_date)
+    validationMessages.mustBeDate
   );
   try {
     new Sprint({
       name: "a".repeat(40),
       start_date: new Date("2021-01-01 00:00:00"),
-      end_date: new Date(mock_end_date),
+      end_date: "a",
+      id_project: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Sprint id_project is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_project",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Sprint({
+      name: "a".repeat(40),
+      start_date: new Date("2021-01-01 00:00:00"),
+      end_date: new Date("2021-01-01 00:00:00"),
+      id_project: "a",
     });
   } catch (error) {
     thrownError = error;

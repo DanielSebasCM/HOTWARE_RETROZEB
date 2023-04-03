@@ -25,6 +25,8 @@ class User {
 
   static async getById(uid) {
     let [user, _] = await db.execute(`SELECT * FROM user WHERE uid = ?`, [uid]);
+
+    if (user.length === 0) return null;
     return new User(user[0]);
   }
 
@@ -32,6 +34,8 @@ class User {
     let [user, _] = await db.execute(`SELECT * FROM user WHERE id_jira = ?`, [
       id_jira,
     ]);
+
+    if (user.length === 0) return null;
     return new User(user[0]);
   }
 
@@ -39,6 +43,8 @@ class User {
     let [user, _] = await db.execute(`SELECT * FROM user WHERE email = ?`, [
       email,
     ]);
+
+    if (answer.length === 0) return null;
     return new User(user[0]);
   }
 

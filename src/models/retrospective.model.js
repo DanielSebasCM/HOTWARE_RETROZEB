@@ -29,7 +29,7 @@ class Retrospective {
       [id]
     );
 
-    if (retrospective.length === 0) throw new Error("Retrospective not found");
+    if (retrospective.length === 0) return null;
     return new Retrospective(retrospective[0]);
   }
   static async getAll() {
@@ -40,30 +40,17 @@ class Retrospective {
       (retrospective) => new Retrospective(retrospective)
     );
   }
-  static async getAllPending() {
+  static async getAllByState(state) {
     let [retrospectives, _] = await db.execute(
-      `SELECT * FROM retrospective WHERE state = "PENDING"`
+      `SELECT * FROM retrospective WHERE state = ? ORDER BY start_date DESC`,
+      [state]
     );
+
     return retrospectives.map(
       (retrospective) => new Retrospective(retrospective)
     );
   }
-  static async getAllInProgress() {
-    let [retrospectives, _] = await db.execute(
-      `SELECT * FROM retrospective WHERE state = "IN_PROGRESS"`
-    );
-    return retrospectives.map(
-      (retrospective) => new Retrospective(retrospective)
-    );
-  }
-  static async getAllClosed() {
-    let [retrospectives, _] = await db.execute(
-      `SELECT * FROM retrospective WHERE state = "CLOSED"`
-    );
-    return retrospectives.map(
-      (retrospective) => new Retrospective(retrospective)
-    );
-  }
+
   static verify(retrospective) {
     // id
     if (retrospective.id && !Number.isInteger(Number(retrospective.id)))

@@ -15,6 +15,8 @@ class Role {
   }
   static async getById(id) {
     let [role, _] = await db.execute(`SELECT * FROM role WHERE id = ?`, [id]);
+
+    if (role.length === 0) return null;
     return new Role(role[0]);
   }
   static async getAll() {

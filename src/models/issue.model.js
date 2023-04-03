@@ -12,6 +12,7 @@ class Issue {
     Issue.verify(issue);
 
     this.id = issue.id || null;
+    this.id_jira = issue.id_jira || null;
     this.epic_name = issue.epic_name || null;
     this.story_points = issue.story_points || null;
     this.priority = issue.priority || "Medium";
@@ -26,8 +27,8 @@ class Issue {
     let [issue, _] = await db.execute(`SELECT * FROM issues WHERE id = ?`, [
       id,
     ]);
-    if (issue.length == 0) return null;
 
+    if (issue.length == 0) return null;
     const [labels, __] = await db.execute(
       `SELECT label FROM issues_labels WHERE id_issue = ?`,
       [id]

@@ -22,6 +22,7 @@ class Project {
       id,
     ]);
 
+    if (project.length === 0) return null;
     return new Project(project[0]);
   }
 

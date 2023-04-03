@@ -14,6 +14,7 @@ class Team {
   static async getById(id) {
     // ALREADY TESTED
     const [team, _] = await db.execute(`SELECT * FROM team WHERE id = ?`, [id]);
+
     if (team.length == 0) throw new Error(messages.team.error.teamDoesNotExist);
     return new Team(team[0]);
   }
@@ -22,23 +23,6 @@ class Team {
     const [teams, _] = await db.execute(`SELECT * FROM team`);
     return teams.map((team) => new Team(team));
   }
-
-  static getByName = async (name) => {
-    try {
-      const result = await db.query(
-        "SELECT * FROM team WHERE name = ?",
-        [name]
-      );
-      if (!result || result.length === 0) {
-        throw new Error(`No se encontró ningún equipo con el nombre ${name}`);
-      }
-      return result[0];
-    } catch (err) {
-      throw new Error(`Error al obtener equipo por nombre: ${err.message}`);
-    }
-  }
-  
-  
 
   static async getAllActive() {
     const [teams, _] = await db.execute(`SELECT * FROM team WHERE active = 1`);
@@ -120,12 +104,12 @@ class Team {
     return res;
   }
 
-  async getActiveRetrospective(){
+  async getActiveRetrospective() {
     const Retrospective = require("./retrospective.model");
 
     // TODO - TEST THIS
     const [retros, _] = await db.execute(
-    `
+      `
     SELECT r.* 
     FROM retrospective as r, team as t, sprint as s
     WHERE r.id_team = t.id
@@ -135,11 +119,9 @@ class Team {
       `,
       [this.id]
     );
-    if(retros.length == 0) return null;
+    if (retros.length == 0) return null;
     return new Retrospective(retros[0]);
   }
 }
-
-
 
 module.exports = Team;
