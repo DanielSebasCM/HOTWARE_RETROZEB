@@ -25,7 +25,7 @@ const setLocals = async (req, res, next) => {
     res.locals.routes = routes;
 
     // ACTIVE TEAMS
-    const user = new User(req.app.locals.currentUser);
+    const user = await User.getById(req.app.locals.currentUser.uid);
     const teams = await user.getActiveTeams();
 
     req.app.locals.activeTeams = teams;

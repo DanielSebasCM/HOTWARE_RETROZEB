@@ -1,17 +1,23 @@
 const Answer = require("../models/answer.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
+const answerMaxLength = require("../utils/constants").limits.answerMaxLength;
 
 // ------------------ VERIFIER ------------------
-test("value is in range value.length < 400", () => {
+
+test("Answer id is an integer", () => {
   let thrownError;
   const expectedError = new ValidationError(
-    "value",
-    validationMessages.mustBeShorterThan(400)
+    "id",
+    validationMessages.mustBeInteger
   );
   try {
     new Answer({
-      value: "a".repeat(401),
+      id: "a",
+      value: "answer",
+      uid: 1,
+      id_retrospective: 1,
+      id_question: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -19,7 +25,25 @@ test("value is in range value.length < 400", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("value is not empty", () => {
+test("Answer has value", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "value",
+    validationMessages.isMandatory
+  );
+  try {
+    new Answer({
+      uid: 1,
+      id_retrospective: 1,
+      id_question: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Answer value is not empty", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "value",
@@ -28,58 +52,9 @@ test("value is not empty", () => {
   try {
     new Answer({
       value: "",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("uid is not null", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "uid",
-    validationMessages.isMandatory
-  );
-  try {
-    new Answer({
-      value: "a",
-      uid: null,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("uid is not empty", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "uid",
-    validationMessages.isMandatory
-  );
-  try {
-    new Answer({
-      value: "a",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("id_question is not null", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "id_question",
-    validationMessages.isMandatory
-  );
-  try {
-    new Answer({
-      value: "a",
       uid: 1,
       id_retrospective: 1,
-      id_question: null,
+      id_question: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -87,7 +62,82 @@ test("id_question is not null", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("id_question is not empty", () => {
+test(`Answer value is no longer than ${answerMaxLength} characters`, () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "value",
+    validationMessages.mustBeShorterThan(answerMaxLength)
+  );
+  try {
+    new Answer({
+      value: "a".repeat(answerMaxLength + 1),
+      uid: 1,
+      id_retrospective: 1,
+      id_question: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Answer uid is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "uid",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Answer({
+      value: "answer",
+      uid: "Not an integer",
+      id_retrospective: 1,
+      id_question: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Answer has id_retrospective", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_retrospective",
+    validationMessages.isMandatory
+  );
+  try {
+    new Answer({
+      value: "answer",
+      uid: 1,
+      id_question: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Answer id_retrospective is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_retrospective",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Answer({
+      value: "answer",
+      uid: 1,
+      id_retrospective: "Not an integer",
+      id_question: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Answer has id_question", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "id_question",
@@ -95,9 +145,9 @@ test("id_question is not empty", () => {
   );
   try {
     new Answer({
-      value: "a",
+      value: "answer",
       uid: 1,
-      id_retrospective: null,
+      id_retrospective: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -105,36 +155,18 @@ test("id_question is not empty", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("id_retrospective is not null", () => {
+test("Answer id_question is an integer", () => {
   let thrownError;
   const expectedError = new ValidationError(
-    "id_retrospective",
-    validationMessages.isMandatory
+    "id_question",
+    validationMessages.mustBeInteger
   );
   try {
     new Answer({
-      value: "a",
+      value: "answer",
       uid: 1,
-      id_question: 1,
-      id_retrospective: null,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("id_retrospective is not empty", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "id_retrospective",
-    validationMessages.isMandatory
-  );
-  try {
-    new Answer({
-      value: "a",
-      uid: 1,
-      id_question: 1,
+      id_retrospective: 1,
+      id_question: "Not an integer",
     });
   } catch (error) {
     thrownError = error;
@@ -145,7 +177,7 @@ test("id_retrospective is not empty", () => {
 // ------------------ METHODS ------------------
 // post, getById
 test("insert and getById a new answer successfully ", async () => {
-  const answer = new Answer({
+  const mockAnswer = new Answer({
     value: "Default answer",
     uid: 1,
     id_retrospective: 1,
@@ -153,7 +185,7 @@ test("insert and getById a new answer successfully ", async () => {
   });
 
   // Insert answer
-  const res = await answer.post();
+  const res = await mockAnswer.post();
   // Verify answer
   expect(res.insertId).not.toBeNull();
   expect(res.insertId).toBeDefined();
@@ -161,12 +193,5 @@ test("insert and getById a new answer successfully ", async () => {
   // Get answer by id
   const answerById = await Answer.getById(res.insertId);
   // Verify answer
-  expect(answerById).not.toBeNull();
-  expect(answerById).toBeDefined();
-  expect(answerById).toBeInstanceOf(Answer);
-  expect(answerById.id).toBe(res.insertId);
-  expect(answerById.value).toBe(answer.value);
-  expect(answerById.uid).toBe(answer.uid);
-  expect(answerById.id_retrospective).toBe(answer.id_retrospective);
-  expect(answerById.id_question).toBe(answer.id_question);
+  expect(answerById).toEqual(mockAnswer);
 });

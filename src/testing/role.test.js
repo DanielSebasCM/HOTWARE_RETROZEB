@@ -1,9 +1,41 @@
 const Role = require("../models/role.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
+const roleMaxLength = require("../utils/constants").limits.roleMaxLength;
 
 // ------------------ VERIFIER ------------------
-test("role name is not empty", () => {
+test("Role id is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Role({
+      id: "a",
+      name: "test",
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Role has a name", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "name",
+    validationMessages.isMandatory
+  );
+  try {
+    new Role({});
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Role name is not empty", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "name",
@@ -19,30 +51,16 @@ test("role name is not empty", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("role name is smaller than 40 characters", () => {
+test(`Role name is not longer than ${roleMaxLength} characters`, () => {
   let thrownError;
   const expectedError = new ValidationError(
     "name",
-    validationMessages.mustBeShorterThan(40)
+    validationMessages.mustBeShorterThan(roleMaxLength)
   );
   try {
     new Role({
-      name: "a".repeat(41),
+      name: "a".repeat(roleMaxLength + 1),
     });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("role name exists", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "name",
-    validationMessages.isMandatory
-  );
-  try {
-    new Role({});
   } catch (error) {
     thrownError = error;
   }

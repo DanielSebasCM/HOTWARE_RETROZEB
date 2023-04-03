@@ -2,7 +2,7 @@ const Project = require("../models/project.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 
-//name is in range
+// name
 test("name length is in range", () => {
   let thrownError;
   const expectedError = new ValidationError(

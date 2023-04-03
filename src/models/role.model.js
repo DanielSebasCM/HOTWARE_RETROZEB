@@ -1,7 +1,7 @@
 const db = require("../utils/db");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
-
+const roleMaxLength = require("../utils/constants").limits.roleMaxLength;
 class Role {
   constructor(role) {
     Role.verify(role);
@@ -15,6 +15,8 @@ class Role {
   }
   static async getById(id) {
     let [role, _] = await db.execute(`SELECT * FROM role WHERE id = ?`, [id]);
+
+    if (role.length === 0) return null;
     return new Role(role[0]);
   }
   static async getAll() {
@@ -29,13 +31,19 @@ class Role {
   //----------------VERIFIER----------------
 
   static verify(role) {
+    //id
+    if (role.id && !Number.isInteger(Number(role.id))) {
+      throw new ValidationError("id", validationMessages.mustBeInteger);
+    }
+
+    //name
     if (!role.name) {
       throw new ValidationError("name", validationMessages.isMandatory);
     }
-    if (role.name?.length > 40) {
+    if (role.name.length > roleMaxLength) {
       throw new ValidationError(
         "name",
-        validationMessages.mustBeShorterThan(40)
+        validationMessages.mustBeShorterThan(roleMaxLength)
       );
     }
   }
