@@ -18,6 +18,7 @@ const statesColors = [
 Chart.defaults.font.family = "Poppins";
 
 const currentUserUid = document.querySelector("#current-user").dataset.uid;
+const pruneEmpty = false;
 
 let baseUrl = window.location.href.split("/");
 baseUrl.pop();
@@ -56,7 +57,10 @@ const dataGeneral = groupFilterIssues(groupedIssues, null);
 createChart("general-chart", "General", dataGeneral, ["Total"], "y");
 
 const dataEpics = groupFilterIssues(groupedIssues, "epic_name");
-createChart("epics-chart", "Epics", dataEpics, epics, "y");
+const epicChart = createChart("epics-chart", "Epics", dataEpics, epics, "y");
+//get chart labels
+const epicLabels = epicChart.data.labels;
+console.log(epicLabels);
 
 const dataTypes = groupFilterIssues(groupedIssues, "type");
 createChart("types-chart", "Types", dataTypes, types, "y");
@@ -65,12 +69,17 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
 
   const canvas = document.getElementById(canvasId);
-  canvas.parentElement.style.height = `${statesData.length * 30 + 150}px`;
+  canvas.parentElement.style.height = `${labels.length * 25 + 150}px`;
+
+  const labelHasData = {};
 
   const datasets = statesColors.map(({ state, color }) => {
     const storyPoints = labels.map((l) => {
-      const data = statesData[state];
-      if (data) return data[l] || 0;
+      if (statesData[state]) {
+        const data = statesData[state][l] || 0;
+        labelHasData[l] = labelHasData[l] || data > 0;
+        return data;
+      }
       return 0;
     });
     return {
@@ -82,14 +91,22 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
 
   const totals = {};
   labels.forEach((l) => {
-    totals[l || "N/A"] = statesColors.reduce((acc, { state }) => {
+    totals[l] = statesColors.reduce((acc, { state }) => {
       const data = statesData[state];
       if (data) return acc + (data[l] || 0);
       return acc;
     }, 0);
   });
 
-  labels = labels.map((l) => (l ? l : "N/A"));
+  if (pruneEmpty) {
+    labels = labels.filter((l) => {
+      const res = labelHasData[l];
+      if (!res) datasets.forEach((d) => d.data.splice(labels.indexOf(l), 1));
+      return res;
+    });
+  }
+
+  labels = labels.map((l) => l || "N/A");
 
   return new Chart(canvas, {
     type: "bar",
@@ -114,13 +131,8 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
         },
         tooltip: {
           callbacks: {
-            label: function (context) {
-              return context.dataset.label;
-            },
             afterLabel: function (context) {
-              return `${context.parsed[secundaryAxis].toFixed(
-                2
-              )} story points\n${(
+              return `${(
                 (context.parsed[secundaryAxis] / totals[context.label]) *
                 100
               ).toFixed(2)}%`;
@@ -131,12 +143,18 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
       scales: {
         [mainAxis]: {
           stacked: true,
+          ticks: {
+            autoSkip: false,
+          },
         },
         [secundaryAxis]: {
           stacked: true,
           title: {
             display: true,
             text: "Story points",
+          },
+          ticks: {
+            autoSkip: false,
           },
         },
       },
@@ -201,41 +219,60 @@ function filterIssues(issue, labelFilter, issuesFilter) {
 
 function updateCharts() {
   const dataGeneral = groupFilterIssues(groupedIssues, null);
-  updateChart("general-chart", dataGeneral);
+  updateChart("general-chart", dataGeneral, ["Total"]);
 
   const dataEpics = groupFilterIssues(groupedIssues, "epic_name");
-  updateChart("epics-chart", dataEpics);
+  updateChart("epics-chart", dataEpics, epics);
 
   const dataTypes = groupFilterIssues(groupedIssues, "type");
-  updateChart("types-chart", dataTypes);
+  updateChart("types-chart", dataTypes, types);
 }
 
-function updateChart(canvasId, statesData) {
+function updateChart(canvasId, statesData, labels) {
   const chart = Chart.getChart(canvasId);
 
   const secundaryAxis = chart.options.indexAxis === "y" ? "x" : "y";
 
-  let labels = chart.data.labels;
   //Set the label "N/A" to null
-  labels = labels.map((l) => (l === "N/A" ? null : l));
+  const labelHasData = {};
+
+  const datasets = statesColors.map(({ state, color }) => {
+    const storyPoints = labels.map((l) => {
+      if (statesData[state]) {
+        const data = statesData[state][l] || 0;
+        labelHasData[l] = labelHasData[l] || data > 0;
+        return data;
+      }
+      return 0;
+    });
+    return {
+      label: `${state}`,
+      data: storyPoints,
+      backgroundColor: color,
+    };
+  });
 
   const totals = {};
   labels.forEach((l) => {
-    totals[l || "N/A"] = statesColors.reduce((acc, { state }) => {
+    totals[l] = statesColors.reduce((acc, { state }) => {
       const data = statesData[state];
       if (data) return acc + (data[l] || 0);
       return acc;
     }, 0);
   });
 
-  chart.data.datasets.forEach((dataset) => {
-    const state = dataset.label;
-    dataset.data = labels.map((l) => {
-      const data = statesData[state];
-      if (data) return data[l] || 0;
-      return 0;
+  if (pruneEmpty) {
+    labels = labels.filter((l) => {
+      const res = labelHasData[l];
+      if (!res) datasets.forEach((d) => d.data.splice(labels.indexOf(l), 1));
+      return res;
     });
-  });
+  }
+
+  labels = labels.map((l) => l || "N/A");
+
+  chart.data.labels = labels;
+  chart.data.datasets = datasets;
 
   chart.options.plugins.tooltip.callbacks.afterLabel = function (context) {
     return `${context.parsed[secundaryAxis].toFixed(2)} story points\n${(
