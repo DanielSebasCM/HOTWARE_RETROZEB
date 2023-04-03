@@ -38,16 +38,16 @@ const renderInitRetrospective = async (req, res, next) => {
       return res.redirect(".");
     }
 
-    const newTeam = new Team(req.app.locals.selectedTeam);
+    const team = await Team.getById(req.app.locals.selectedTeam.id);
     let questions = [];
     let sprint;
 
-    const retrospective = await newTeam.getActiveRetrospective();
+    const retrospective = await team.getActiveRetrospective();
 
     if (retrospective) {
       req.session.errorMessage =
         "Ya existe una retrospectiva para el último sprint del equipo " +
-        newTeam.name;
+        team.name;
       return res.redirect(".");
     }
 
@@ -60,7 +60,7 @@ const renderInitRetrospective = async (req, res, next) => {
     );
 
     if (!retrospective && !sprint) {
-      req.session.errorMessage = `No hay sprints disponibles para el equipo ${newTeam.name}. Por favor selecciona otro equipo`;
+      req.session.errorMessage = `No hay sprints disponibles para el equipo ${team.name}. Por favor selecciona otro equipo`;
       return res.redirect(".");
     }
 
@@ -217,7 +217,7 @@ const getRetrospectiveAnswers = async (req, res, next) => {
     }
     res.send(questions);
   } catch (err) {
-    console.log(err);
+    next(err);
   }
 };
 

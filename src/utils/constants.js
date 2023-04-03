@@ -19,6 +19,7 @@ const constants = {
     sprintMaxLength: 255,
     toDoTitleMaxLength: 40,
     toDoDescriptionMaxLength: 255,
+    teamNameMaxLength: 40,
   },
   routes: {
     home: "/",

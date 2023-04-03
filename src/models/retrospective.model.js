@@ -168,8 +168,8 @@ class Retrospective {
 
   async getUsers() {
     const [users, _] = await db.execute(
-      "select u.* from user as u join team_users as tu on tu.uid = u.uid and tu.id_team = ? and tu.active = 1",
-      [this.id_team]
+      "SELECT u.* FROM user u, team_users_retrospectives tur WHERE tur.id_team = ? AND tur.uid = u.uid AND tur.id_retrospective = ?",
+      [this.id_team, this.id]
     );
     return users.map((user) => new User(user));
   }

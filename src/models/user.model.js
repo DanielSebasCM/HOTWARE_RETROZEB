@@ -55,7 +55,7 @@ class User {
 
   async getActiveTeams() {
     const [teams, _] = await db.execute(
-      `SELECT t.* FROM team t, team_users tu WHERE tu.uid = ? AND tu.id_team = t.id AND tu.active = 1 AND t.active = 1`,
+      `SELECT t.* FROM team t, team_users tu WHERE tu.uid = ? AND tu.id_team = t.id AND t.active = 1`,
       [this.uid]
     );
     teams.map((team) => new Team(team));
@@ -67,8 +67,11 @@ class User {
       `SELECT * FROM user WHERE id_google_auth = ?`,
       [id_google_auth]
     );
+
+    if (user.length === 0) return null;
     return new User(user[0]);
   }
+
   static async getAllActive() {
     let [users, _] = await db.execute(`SELECT * FROM user WHERE active = 1`);
     return users.map((user) => new User(user));
