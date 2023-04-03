@@ -17,7 +17,7 @@ test("Issue id is an integer", () => {
   );
   try {
     new Issue({
-      id: "1",
+      id: "a",
       id_sprint: 1,
     });
   } catch (error) {
@@ -35,7 +35,7 @@ test("Issue id_jira is an integer", () => {
   );
   try {
     new Issue({
-      id_jira: "1",
+      id_jira: "a",
       id_sprint: 1,
     });
   } catch (error) {
@@ -88,7 +88,7 @@ test("Issue story_points is an integer", () => {
   );
   try {
     new Issue({
-      story_points: "1",
+      story_points: "a",
       id_sprint: 1,
     });
   } catch (error) {
@@ -171,7 +171,7 @@ test("Issue uid is an integer", () => {
       priority: "Highest",
       state: "To Do",
       type: "Story",
-      uid: "1",
+      uid: "a",
     });
   } catch (error) {
     thrownError = error;
@@ -210,7 +210,7 @@ test("Issue id_sprint is an integer", () => {
   try {
     new Issue({
       epic_name: "a",
-      id_sprint: "1",
+      id_sprint: "a",
       priority: "Highest",
       state: "To Do",
       type: "Story",

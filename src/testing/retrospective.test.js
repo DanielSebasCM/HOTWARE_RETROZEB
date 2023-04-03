@@ -16,7 +16,7 @@ test("Restrospective id is an integer", () => {
   );
   try {
     new Retrospective({
-      id: "1",
+      id: "a",
       name: "Retrospective",
       id_team: 1,
       id_sprint: 1,
@@ -164,7 +164,7 @@ test("Retrospective id_team is an integer", () => {
   try {
     new Retrospective({
       name: "a".repeat(40),
-      id_team: "1",
+      id_team: "a",
       id_sprint: 1,
     });
   } catch (error) {
@@ -200,7 +200,7 @@ test("Retrospective id_sprint is an integer", () => {
     new Retrospective({
       name: "a".repeat(40),
       id_team: 1,
-      id_sprint: "1",
+      id_sprint: "a",
     });
   } catch (error) {
     thrownError = error;

@@ -15,7 +15,7 @@ test("Question id is an integer", () => {
   );
   try {
     new Question({
-      id: "1",
+      id: "a",
       description: "Question",
       type: "OPEN",
     });

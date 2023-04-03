@@ -80,7 +80,7 @@ class Question {
 
   static verify(question) {
     // Id is an integer
-    if (question.id && !Number.isInteger(question.id))
+    if (question.id && !Number.isInteger(Number(question.id)))
       throw new ValidationError("id", validationMessages.mustBeInteger);
 
     // description

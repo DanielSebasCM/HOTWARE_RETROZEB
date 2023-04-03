@@ -66,7 +66,7 @@ class Retrospective {
   }
   static verify(retrospective) {
     // id
-    if (retrospective.id && !Number.isInteger(retrospective.id))
+    if (retrospective.id && !Number.isInteger(Number(retrospective.id)))
       throw new ValidationError("id", validationMessages.mustBeInteger);
 
     // Name is not empty
@@ -103,14 +103,14 @@ class Retrospective {
     if (!retrospective.id_team)
       throw new ValidationError("id_team", validationMessages.isMandatory);
 
-    if (!Number.isInteger(retrospective.id_team))
+    if (!Number.isInteger(Number(retrospective.id_team)))
       throw new ValidationError("id_team", validationMessages.mustBeInteger);
 
     // Sprint id exists
     if (!retrospective.id_sprint)
       throw new ValidationError("id_sprint", validationMessages.isMandatory);
 
-    if (!Number.isInteger(retrospective.id_sprint))
+    if (!Number.isInteger(Number(retrospective.id_sprint)))
       throw new ValidationError("id_sprint", validationMessages.mustBeInteger);
   }
   async getIssues() {
@@ -207,14 +207,14 @@ class Retrospective {
     }
   }
 
-  async addQuestion() {
+  async addQuestion(question) {
     const [res, _] = await db.execute(
       `INSERT INTO retrospective_question (id_retrospective, id_question, required, annonimous) VALUES (?, ?, ?, ?)`,
       [
         this.id,
-        this.question.id,
-        this.question.required,
-        this.question.anonymous,
+        question.id,
+        question.required ? 1 : 0,
+        question.annonimous ? 1 : 0,
       ]
     );
 

@@ -53,11 +53,11 @@ class Issue {
 
   static verify(issue) {
     // id
-    if (issue.id && !Number.isInteger(issue.id))
+    if (issue.id && !Number.isInteger(Number(issue.id)))
       throw new ValidationError("id", validationMessages.mustBeInteger);
 
     // id_jira
-    if (issue.id_jira && !Number.isInteger(issue.id_jira))
+    if (issue.id_jira && !Number.isInteger(Number(issue.id_jira)))
       throw new ValidationError("id_jira", validationMessages.mustBeInteger);
 
     // epic_name
@@ -71,7 +71,7 @@ class Issue {
       );
 
     // story_points
-    if (issue.story_points && !Number.isInteger(issue.story_points))
+    if (issue.story_points && !Number.isInteger(Number(issue.story_points)))
       throw new ValidationError(
         "story_points",
         validationMessages.mustBeInteger
@@ -99,14 +99,14 @@ class Issue {
       );
 
     // uid
-    if (issue.uid && !Number.isInteger(issue.uid))
+    if (issue.uid && !Number.isInteger(Number(issue.uid)))
       throw new ValidationError("uid", validationMessages.mustBeInteger);
 
     // Length of id_sprint is not null
     if (!issue.id_sprint)
       throw new ValidationError("id_sprint", validationMessages.isMandatory);
 
-    if (!Number.isInteger(issue.id_sprint))
+    if (!Number.isInteger(Number(issue.id_sprint)))
       throw new ValidationError("id_sprint", validationMessages.mustBeInteger);
 
     return true;

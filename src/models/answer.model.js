@@ -30,7 +30,7 @@ class Answer {
 
   static verify(answer) {
     // Id
-    if (answer.id && !Number.isInteger(answer.id))
+    if (answer.id && !Number.isInteger(Number(answer.id)))
       throw new ValidationError("id", validationMessages.mustBeInteger);
 
     // Value
@@ -45,7 +45,7 @@ class Answer {
       );
 
     // Uid
-    if (answer.uid && !Number.isInteger(answer.uid))
+    if (answer.uid && !Number.isInteger(Number(answer.uid)))
       throw new ValidationError("uid", validationMessages.mustBeInteger);
 
     // Id_retrospective
@@ -55,7 +55,7 @@ class Answer {
         validationMessages.isMandatory
       );
 
-    if (!Number.isInteger(answer.id_retrospective))
+    if (!Number.isInteger(Number(answer.id_retrospective)))
       throw new ValidationError(
         "id_retrospective",
         validationMessages.mustBeInteger
@@ -65,7 +65,7 @@ class Answer {
     if (!answer.id_question)
       throw new ValidationError("id_question", validationMessages.isMandatory);
 
-    if (!Number.isInteger(answer.id_question))
+    if (!Number.isInteger(Number(answer.id_question)))
       throw new ValidationError(
         "id_question",
         validationMessages.mustBeInteger

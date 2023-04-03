@@ -12,7 +12,7 @@ test("Privilege id is an integer", () => {
   );
   try {
     new Privilege({
-      id: "1",
+      id: "a",
       name: "test",
     });
   } catch (error) {

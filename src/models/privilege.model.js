@@ -41,7 +41,7 @@ class Privilege {
   }
 
   static verify(privilege) {
-    if (privilege.id && !Number.isInteger(privilege.id))
+    if (privilege.id && !Number.isInteger(Number(privilege.id)))
       throw new ValidationError("id", validationMessages.mustBeInteger);
 
     if (!privilege.name)

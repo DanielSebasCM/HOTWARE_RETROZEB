@@ -13,7 +13,7 @@ test("Answer id is an integer", () => {
   );
   try {
     new Answer({
-      id: "1",
+      id: "a",
       value: "answer",
       uid: 1,
       id_retrospective: 1,
