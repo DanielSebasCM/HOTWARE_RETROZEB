@@ -1,5 +1,8 @@
 const db = require("../utils/db");
-
+const ValidationError = require("../errors/ValidationError");
+const validationMessages = require("../utils/messages").validation;
+const privilegeMaxLength =
+  require("../utils/constants").limits.privilegeMaxLength;
 class Privilege {
   constructor(privilege) {
     Privilege.verify(privilege);
@@ -17,6 +20,7 @@ class Privilege {
       `SELECT * FROM privilege WHERE id = ?`,
       [id]
     );
+    if (privilege.length === 0) return null;
     return new Privilege(privilege[0]);
   }
 
@@ -37,14 +41,20 @@ class Privilege {
   }
 
   static verify(privilege) {
-    if (privilege.name?.length > 40) {
-      throw new Error(
-        "El nombre del privilegio no puede tener más de 40 caracteres"
+    if (privilege.id && !Number.isInteger(Number(privilege.id)))
+      throw new ValidationError("id", validationMessages.mustBeInteger);
+
+    if (!privilege.name)
+      throw new ValidationError("name", validationMessages.isMandatory);
+
+    if (privilege.name.length === 0)
+      throw new ValidationError("name", validationMessages.isMandatory);
+
+    if (privilege.name.length > privilegeMaxLength)
+      throw new ValidationError(
+        "name",
+        validationMessages.mustBeShorterThan(privilegeMaxLength)
       );
-    }
-    if (privilege.name?.length == 0) {
-      throw new Error("El nombre del privilegio no puede estar vacío");
-    }
   }
 }
 

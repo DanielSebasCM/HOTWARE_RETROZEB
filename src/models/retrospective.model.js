@@ -8,6 +8,8 @@ const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
   require("../utils/constants").enums.retrospectiveStates;
+const retrospectiveMaxLength =
+  require("../utils/constants").limits.retrospectiveMaxLength;
 
 class Retrospective {
   constructor(retrospective) {
@@ -15,9 +17,9 @@ class Retrospective {
 
     this.id = retrospective.id || null;
     this.name = retrospective.name;
-    this.start_date = retrospective.start_date || new Date();
+    this.start_date = retrospective.start_date;
     this.end_date = retrospective.end_date || null;
-    this.state = retrospective.state || "PENDING";
+    this.state = retrospective.state;
     this.id_team = retrospective.id_team;
     this.id_sprint = retrospective.id_sprint;
   }
@@ -27,7 +29,7 @@ class Retrospective {
       [id]
     );
 
-    if (retrospective.length === 0) throw new Error("Retrospective not found");
+    if (retrospective.length === 0) return null;
     return new Retrospective(retrospective[0]);
   }
   static async getAll() {
@@ -38,78 +40,65 @@ class Retrospective {
       (retrospective) => new Retrospective(retrospective)
     );
   }
-  static async getAllPending() {
+  static async getAllByState(state) {
     let [retrospectives, _] = await db.execute(
-      `SELECT * FROM retrospective WHERE state = "PENDING"`
+      `SELECT * FROM retrospective WHERE state = ? ORDER BY start_date DESC`,
+      [state]
     );
+
     return retrospectives.map(
       (retrospective) => new Retrospective(retrospective)
     );
   }
-  static async getAllInProgress() {
-    let [retrospectives, _] = await db.execute(
-      `SELECT * FROM retrospective WHERE state = "IN_PROGRESS"`
-    );
-    return retrospectives.map(
-      (retrospective) => new Retrospective(retrospective)
-    );
-  }
-  static async getAllClosed() {
-    let [retrospectives, _] = await db.execute(
-      `SELECT * FROM retrospective WHERE state = "CLOSED"`
-    );
-    return retrospectives.map(
-      (retrospective) => new Retrospective(retrospective)
-    );
-  }
+
   static verify(retrospective) {
-    if (!retrospective)
-      throw new ValidationError("instance", validationMessages.isEmpty);
+    // id
+    if (retrospective.id && !Number.isInteger(Number(retrospective.id)))
+      throw new ValidationError("id", validationMessages.mustBeInteger);
 
     // Name is not empty
     if (!retrospective.name)
       throw new ValidationError("name", validationMessages.isMandatory);
 
     // Length of name is less than 40
-    if (retrospective.name.length > 40)
+    if (retrospective.name.length > retrospectiveMaxLength)
       throw new ValidationError(
         "name",
-        validationMessages.mustBeShorterThan(40)
+        validationMessages.mustBeShorterThan(retrospectiveMaxLength)
       );
 
     // Start date is valid
     if (retrospective.start_date && !(retrospective.start_date instanceof Date))
       throw new ValidationError("start_date", validationMessages.mustBeDate);
 
-    if (retrospective.end_date) {
-      // End date is valid
-      if (!(retrospective.end_date instanceof Date))
-        throw new ValidationError("end_date", validationMessages.mustBeDate);
+    // End date is valid
+    if (retrospective.end_date && !(retrospective.end_date instanceof Date))
+      throw new ValidationError("end_date", validationMessages.mustBeDate);
 
-      // Start date is before end date
-      if (retrospective.start_date >= retrospective.end_date)
-        throw new ValidationError(
-          "end_date",
-          validationMessages.mustBeAfter("start_date")
-        );
-    }
     // If state exists, it is either PENDING, IN_PROGRESS or CLOSED
-    if (retrospective.state) {
-      const options = retrospectiveStates;
-      if (!options.includes(retrospective.state))
-        throw new ValidationError(
-          "state",
-          validationMessages.mustBeEnum(options)
-        );
-    }
+
+    if (
+      retrospective.state &&
+      !retrospectiveStates.includes(retrospective.state)
+    )
+      throw new ValidationError(
+        "state",
+        validationMessages.mustBeEnum(retrospectiveStates)
+      );
 
     // Team id exists
     if (!retrospective.id_team)
       throw new ValidationError("id_team", validationMessages.isMandatory);
 
+    if (!Number.isInteger(Number(retrospective.id_team)))
+      throw new ValidationError("id_team", validationMessages.mustBeInteger);
+
     // Sprint id exists
     if (!retrospective.id_sprint)
       throw new ValidationError("id_sprint", validationMessages.isMandatory);
+
+    if (!Number.isInteger(Number(retrospective.id_sprint)))
+      throw new ValidationError("id_sprint", validationMessages.mustBeInteger);
   }
   async getIssues() {
     const [issues, _] = await db.execute(
@@ -179,8 +168,8 @@ class Retrospective {
 
   async getUsers() {
     const [users, _] = await db.execute(
-      "select u.* from user as u join team_users as tu on tu.uid = u.uid and tu.id_team = ? and tu.active = 1",
-      [this.id_team]
+      "SELECT u.* FROM user u, team_users_retrospectives tur WHERE tur.id_team = ? AND tur.uid = u.uid AND tur.id_retrospective = ?",
+      [this.id_team, this.id]
     );
     return users.map((user) => new User(user));
   }
@@ -192,7 +181,15 @@ class Retrospective {
     );
 
     this.id = res.insertId;
-
+    const Team = require("./team.model");
+    const team = await Team.getById(this.id_team);
+    const users = await team.getMembers();
+    for (let user of users) {
+      await db.execute(
+        `INSERT INTO team_users_retrospectives (id_team, uid, id_retrospective) VALUES (?, ?, ?)`,
+        [this.id_team, user.uid, this.id]
+      );
+    }
     return res;
   }
 
@@ -205,35 +202,19 @@ class Retrospective {
     }
   }
 
-  async addQuestion() {
+  async addQuestion(question) {
     const [res, _] = await db.execute(
       `INSERT INTO retrospective_question (id_retrospective, id_question, required, annonimous) VALUES (?, ?, ?, ?)`,
       [
         this.id,
-        this.question.id,
-        this.question.required,
-        this.question.anonymous,
+        question.id,
+        question.required ? 1 : 0,
+        question.annonimous ? 1 : 0,
       ]
     );
 
     this.id = res.insertId;
 
-    return res;
-  }
-
-  async put() {
-    const [res, _] = await db.execute(
-      `UPDATE retrospective SET name = ?, start_date = ?, end_date = ?, state = ?, id_team = ?, id_sprint = ? WHERE id = ?`,
-      [
-        this.name,
-        this.start_date,
-        this.end_date,
-        this.state,
-        this.id_team,
-        this.id_sprint,
-        this.id,
-      ]
-    );
     return res;
   }
 

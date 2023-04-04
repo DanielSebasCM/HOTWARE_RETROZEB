@@ -3,9 +3,49 @@ const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const issuePriorities = require("../utils/constants").enums.issuePriorities;
 const issueStates = require("../utils/constants").enums.issueStates;
+const issueTypes = require("../utils/constants").enums.issueTypes;
+const epicsNameMaxLength =
+  require("../utils/constants").limits.epicsNameMaxLength;
 
 // ------------------ VERIFIER ------------------
-test("Issue epic name is not empty", () => {
+// Id
+test("Issue id is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Issue({
+      id: "a",
+      id_sprint: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+// Id_jira
+test("Issue id_jira is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_jira",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Issue({
+      id_jira: "a",
+      id_sprint: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+// Epic_name
+test("Issue epic_name is not empty", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "epic_name",
@@ -22,15 +62,15 @@ test("Issue epic name is not empty", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Issue epic name length is in range < 40", () => {
+test(`Issue epic_name is not longer than ${epicsNameMaxLength} characters`, () => {
   let thrownError;
   const expectedError = new ValidationError(
     "epic_name",
-    validationMessages.mustBeShorterThan(40)
+    validationMessages.mustBeShorterThan(epicsNameMaxLength)
   );
   try {
     new Issue({
-      epic_name: "a".repeat(41),
+      epic_name: "a".repeat(epicsNameMaxLength + 1),
       id_sprint: 1,
     });
   } catch (error) {
@@ -39,7 +79,26 @@ test("Issue epic name length is in range < 40", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Issue priority is of type LOWEST, LOW, MEDIUM, HIGH, HIGHEST", () => {
+// story_points
+test("Issue story_points is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "story_points",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Issue({
+      story_points: "a",
+      id_sprint: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+// priority
+test("Issue priority is of type " + issuePriorities, () => {
   let thrownError;
   const expectedError = new ValidationError(
     "priority",
@@ -57,7 +116,8 @@ test("Issue priority is of type LOWEST, LOW, MEDIUM, HIGH, HIGHEST", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Issue state is of type To Do, En curso, Pull requessts, QA, Blocked, Done", () => {
+// state
+test("Issue state is of type " + issueStates, () => {
   let thrownError;
   const expectedError = new ValidationError(
     "state",
@@ -74,6 +134,92 @@ test("Issue state is of type To Do, En curso, Pull requessts, QA, Blocked, Done"
     thrownError = error;
   }
   expect(thrownError).toEqual(expectedError);
+});
+
+// type
+test("Issue type is of type " + issueTypes, () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "type",
+    validationMessages.mustBeEnum(issueTypes)
+  );
+  try {
+    new Issue({
+      epic_name: "a",
+      id_sprint: 1,
+      priority: "Highest",
+      state: "To Do",
+      type: "INVALID",
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+// uid
+test("Issue uid is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "uid",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Issue({
+      epic_name: "a",
+      id_sprint: 1,
+      priority: "Highest",
+      state: "To Do",
+      type: "Story",
+      uid: "a",
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+// id_sprint
+
+test("Issue has id_sprint", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_sprint",
+    validationMessages.isMandatory
+  );
+  try {
+    new Issue({
+      epic_name: "a",
+      priority: "Highest",
+      state: "To Do",
+      type: "Story",
+      uid: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Issue id_sprint is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_sprint",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Issue({
+      epic_name: "a",
+      id_sprint: "a",
+      priority: "Highest",
+      state: "To Do",
+      type: "Story",
+      uid: 1,
+    });
+  } catch (error) {
+    thrownError = error;
+    expect(thrownError).toEqual(expectedError);
+  }
 });
 
 // ------------------ GETTER ------------------

@@ -1,7 +1,7 @@
 const db = require("../utils/db");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
-
+const sprintMaxLength = require("../utils/constants").limits.sprintMaxLength;
 class Sprint {
   constructor(sprint) {
     Sprint.verify(sprint);
@@ -9,7 +9,7 @@ class Sprint {
     this.id = sprint.id || null;
     this.name = sprint.name;
     this.id_jira = sprint.id_jira || null;
-    this.start_date = sprint.start_date;
+    this.start_date = sprint.start_date || null;
     this.end_date = sprint.end_date || null;
     this.id_project = sprint.id_project || null;
   }
@@ -18,11 +18,14 @@ class Sprint {
     let [sprint, _] = await db.execute(`SELECT * FROM sprint WHERE id = ?`, [
       id,
     ]);
+
+    if (sprint.length === 0) return null;
     return new Sprint(sprint[0]);
   }
 
-  static async getLastWithoutRetroByTeamId(id_team){
-    let [sprint, _] = await db.execute(`
+  static async getLastWithoutRetroByTeamId(id_team) {
+    let [sprint, _] = await db.execute(
+      `
     SELECT *
     FROM sprint
     WHERE id NOT IN (
@@ -33,16 +36,29 @@ class Sprint {
     AND end_date IS NOT NULL
     ORDER BY end_date DESC
     LIMIT 1
-    `, [
-      id_team,
-    ]);
-    if(sprint.length == 0)return null; 
-    
+    `,
+      [id_team]
+    );
+
+    if (sprint.length == 0) return null;
     return new Sprint(sprint[0]);
   }
 
-  static async getLastWithRetroByTeamId(id_team){
+  static async getLast() {
     let [sprint, _] = await db.execute(`
+    SELECT *
+    FROM sprint
+    ORDER BY start_date DESC
+    LIMIT 1
+    `);
+
+    if (sprint.length == 0) return null;
+    return new Sprint(sprint[0]);
+  }
+
+  static async getLastWithRetroByTeamId(id_team) {
+    let [sprint, _] = await db.execute(
+      `
     SELECT *
     FROM sprint
     WHERE id IN (
@@ -53,11 +69,11 @@ class Sprint {
     AND end_date IS NOT NULL
     ORDER BY end_date DESC
     LIMIT 1
-    `, [
-      id_team,
-    ]);
-    if(sprint.length == 0)return null; 
-    
+    `,
+      [id_team]
+    );
+
+    if (sprint.length == 0) return null;
     return new Sprint(sprint[0]);
   }
 
@@ -67,36 +83,35 @@ class Sprint {
   }
 
   static verify(sprint) {
-    // Length of name is less than 40
-    if (sprint.name?.length > 40)
+    // id
+    if (sprint.id && !Number.isInteger(Number(sprint.id)))
+      throw new ValidationError("id", validationMessages.mustBeInteger);
+
+    // name
+    if (!sprint.name)
+      throw new ValidationError("name", validationMessages.mustBeString);
+
+    if (sprint.name.length > sprintMaxLength)
       throw new ValidationError(
         "name",
-        validationMessages.mustBeShorterThan(40)
+        validationMessages.mustBeShorterThan(sprintMaxLength)
       );
 
-    // Name is not empty
-    if (sprint.name?.length == 0)
-      throw new ValidationError("name", validationMessages.isMandatory);
+    // id_jira
+    if (sprint.id_jira && !Number.isInteger(Number(sprint.id_jira)))
+      throw new ValidationError("id_jira", validationMessages.mustBeInteger);
 
-    if (!sprint.name)
-      throw new ValidationError("name", validationMessages.isMandatory);
+    // start_date
+    if (sprint.start_date && !(sprint.start_date instanceof Date))
+      throw new ValidationError("start_date", validationMessages.mustBeDate);
 
-    if (sprint.start_date == 0 || sprint.start_date == null) {
-      throw new ValidationError("start_date", validationMessages.isMandatory);
-    }
+    // end_date
+    if (sprint.end_date && !(sprint.end_date instanceof Date))
+      throw new ValidationError("end_date", validationMessages.mustBeDate);
 
-    if (sprint.end_date) {
-      if (!(sprint.end_date instanceof Date)) {
-        throw new ValidationError("end_date", validationMessages.isMandatory);
-      }
-
-      if (sprint.end_date <= sprint.start_date) {
-        throw new ValidationError(
-          "end_date",
-          validationMessages.mustBeAfter(sprint.start_date)
-        );
-      }
-    }
+    // id_project
+    if (sprint.id_project && !Number.isInteger(Number(sprint.id_project)))
+      throw new ValidationError("id_project", validationMessages.mustBeInteger);
 
     return true;
   }

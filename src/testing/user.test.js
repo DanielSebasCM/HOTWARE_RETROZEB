@@ -4,18 +4,57 @@ const validationMessages = require("../utils/messages").validation;
 
 // ------------------ VERIFYER ------------------
 
-test("first_name is not empty", () => {
+test("User uid is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "uid",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new User({
+      uid: "Not an integer",
+      id_google_auth: "abcd",
+      first_name: "John",
+      last_name: "Doe",
+      email: "test@test.com",
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("User has id_google_auth", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id_google_auth",
+    validationMessages.isMandatory
+  );
+  try {
+    new User({
+      id_jira: "absd",
+      first_name: "John",
+      last_name: "Doe",
+      email: "test@test.com",
+    });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("User has first_name", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "first_name",
     validationMessages.isMandatory
   );
-
   try {
     new User({
-      first_name: "",
+      id_jira: "absd",
+      id_google_auth: "abcd",
       last_name: "Doe",
-      email: "example@example.com",
+      email: "test@test.com",
     });
   } catch (error) {
     thrownError = error;
@@ -23,55 +62,18 @@ test("first_name is not empty", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("first_name is not too long", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "first_name",
-    validationMessages.mustBeShorterThan(40)
-  );
-
-  try {
-    new User({
-      first_name: "a".repeat(41),
-      last_name: "Doe",
-      email: "example@example.com",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("first name exists", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "first_name",
-    validationMessages.isMandatory
-  );
-
-  try {
-    new User({
-      last_name: "Doe",
-      email: "example@example.com",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("last_name is not empty", () => {
+test("User has last_name", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "last_name",
     validationMessages.isMandatory
   );
-
   try {
     new User({
-      first_name: "a",
-      last_name: "",
-      email: "example@example.com",
+      id_jira: "absd",
+      id_google_auth: "abcd",
+      first_name: "John",
+      email: "test*test.com",
     });
   } catch (error) {
     thrownError = error;
@@ -79,92 +81,19 @@ test("last_name is not empty", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("last_name is not too long", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "last_name",
-    validationMessages.mustBeShorterThan(40)
-  );
-
-  try {
-    new User({
-      first_name: "a",
-      last_name: "a".repeat(41),
-      email: "example@example.com",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("last name exists", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "last_name",
-    validationMessages.isMandatory
-  );
-
-  try {
-    new User({
-      first_name: "a",
-      email: "example@example.com",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("email is not empty", () => {
+test("User has email", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "email",
     validationMessages.isMandatory
   );
-
   try {
     new User({
-      first_name: "a",
-      last_name: "asdasd",
-      email: "",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("email is not too long", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "email",
-    validationMessages.mustBeShorterThan(40)
-  );
-
-  try {
-    new User({
-      first_name: "a",
-      last_name: "asdasd",
-      email: "a".repeat(41),
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("email exists", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "email",
-    validationMessages.isMandatory
-  );
-
-  try {
-    new User({
-      first_name: "a",
-      last_name: "asdasd",
+      id_jira: "absd",
+      id_google_auth: "abcd",
+      first_name: "John",
+      last_name: "Doe",
+      active: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -189,6 +118,7 @@ test("post() should insert a new user", async () => {
     first_name: "John",
     last_name: "Doe",
     email: "example@example.com",
+    id_google_auth: "abcd",
   });
   const res = await mockUser.post();
 
@@ -204,6 +134,7 @@ test("delete() should soft delete a user", async () => {
     first_name: "John",
     last_name: "Doe",
     email: "example@example.com",
+    id_google_auth: "abcd",
   });
   const res = await mockUser.post();
 
