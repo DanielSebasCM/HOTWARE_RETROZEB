@@ -221,7 +221,8 @@ const renderCompareRetroMetrics = async (req, res, next) => {
     const { n } = req.params;
     const team = await Team.getById(req.app.locals.selectedTeam.id);
     const retrospectives = await team.getNClosedRetrospectives(n);
-    console.log(retrospectives);
+
+    retrospectives.sort((a, b) => a.end_date - b.end_date);
     let labels = new Set();
     for (let retrospective of retrospectives) {
       const newLabels = await retrospective.getLabels();
