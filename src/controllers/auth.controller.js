@@ -4,7 +4,8 @@ const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const renderLogin = (req, res) => {
-  if (req.session.currentUser) return res.redirect("/");
+  if (req.session.currentUser && req.cookies.rzauthToken)
+    return res.redirect("/");
 
   // LOCALS
   res.locals.activeTeams = [];
@@ -130,7 +131,7 @@ const refreshTokenAPI = async (req, res, next) => {
     const authToken = authUtil.createTokenLogin(userData);
     const newRefreshToken = authUtil.createRefreshToken(userData);
 
-    res.status(200).json({ authToken, newRefreshToken });
+    res.status(200).json({ authToken, refreshToken: newRefreshToken });
   } catch (error) {
     console.log("error: ", error);
     res.redirect("/login");

@@ -1,4 +1,4 @@
-const express = require("express");
+  const express = require("express");
 const router = express.Router();
 const authController = require("../controllers/auth.controller");
 const { routes } = require("../utils/constants");
@@ -13,9 +13,9 @@ router.get(`${routes.login}`, authController.renderLogin);
 router.post(`${routes.login}`, authController.loginAPI);
 
 // LOGOUT
-router.get("/logout", authController.logoutAPI);
+router.get(`${routes.logout}`, authController.logoutAPI);
 
 // REFRESH TOKEN
-router.post(`/token/refresh`, authController.refreshTokenAPI);
+router.post(`${routes.refreshToken}`, authController.refreshTokenAPI);
 
 module.exports = router;

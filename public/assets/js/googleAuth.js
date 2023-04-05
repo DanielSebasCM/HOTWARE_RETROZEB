@@ -19,10 +19,8 @@ async function handleLogin(response) {
 
     // Redirect to dashboard
     if (loginResponse.ok) {
-      console.log(res.authToken);
       location.href = "/";
     }
-    
   } catch (error) {
     console.log(error);
     location.reload();
