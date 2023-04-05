@@ -9,4 +9,7 @@ router.get("/", controller.renderQuestions);
 router.get("/nueva", controller.renderNewQuestion);
 router.post("/nueva", controller.postQuestion);
 
+// DELETING QUESTIONS
+router.delete("/", controller.deleteQuestion);
+
 module.exports = router;
