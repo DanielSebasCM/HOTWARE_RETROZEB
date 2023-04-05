@@ -115,7 +115,6 @@ class Issue {
 
   async post() {
     let [res, _] = await db.execute(
-      // id_project?
       `INSERT INTO issues (id_jira, epic_name, story_points, priority, state, type, uid, id_sprint) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         this.id_jira,
