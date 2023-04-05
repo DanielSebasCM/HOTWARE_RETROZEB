@@ -3,6 +3,7 @@ const teamRouter = require("./team.routes");
 const actionableRouter = require("./actionable.routes");
 const retrospectiveRouter = require("./retrospective.routes");
 const questionRouter = require("./questions.routes");
+const rolesRouter = require("./roles.routes");
 const localsRouter = require("./locals.routes");
 const { setLocals } = require("../middlewares/locals.middleware");
 const { routes } = require("../utils/constants");
@@ -44,6 +45,7 @@ const initRoutes = (app) => {
   app.use(`${routes.actionables}`, actionableRouter);
   app.use(`${routes.questions}`, questionRouter);
   app.use(`${routes.retrospectives}`, retrospectiveRouter);
+  app.use(`${routes.roles}`, rolesRouter);
 };
 
 module.exports = initRoutes;
