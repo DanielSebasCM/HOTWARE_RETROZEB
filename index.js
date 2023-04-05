@@ -8,6 +8,7 @@ const path = require("path");
 const PORT = process.env.PORT || 3000;
 const session = require("express-session");
 const methodOverride = require("method-override");
+const cookieParser = require("cookie-parser");
 const expressLayouts = require("express-ejs-layouts");
 const initRoutes = require("./src/routes/index.routes");
 const { routes } = require("./src/utils/constants");
@@ -24,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(expressLayouts);
 app.use(methodOverride("_method"));
+app.use(cookieParser());
 app.use(
   session({
     // CREATE NEW UNIQUE SECRET AND SAVE
@@ -46,17 +48,13 @@ app.use((req, res) => {
   res
     .status(404)
     .render("errors/404", { message: `Página no encontrada: ${req.url}` });
-
 });
 
 // ERROR HANDLER
 app.use(errorHandler);
 
 // LOCALS
-app.locals.activeTeams = [];
-app.locals.selectedTeam;
 app.locals.routes = routes;
-app.locals.currentUser;
 
 // SERVER
 app.listen(PORT, () => {

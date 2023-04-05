@@ -56,3 +56,20 @@
     }, 5000);
   });
 })();
+
+(function logout() {
+  if (location.pathname == "/login") return deleteSessionCookies();
+
+  const logoutForm = document.getElementById("logout-form");
+  logoutForm.addEventListener("submit", (e) => {
+    deleteSessionCookies();
+  });
+})();
+
+function deleteSessionCookies() {
+  // Delete cookies
+  document.cookie =
+    "rzauthToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  document.cookie =
+    "rzrefreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}

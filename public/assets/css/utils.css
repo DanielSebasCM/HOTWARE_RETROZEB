@@ -1,6 +1,7 @@
 /* -------------------------------------------- VARIABLES -------------------------------------------- */
 :root {
   /* FONTS */
+  --font: "Poppins", sans-serif;
   --color-font-primary: #525b75;
   --color-font-secondary: #6b7280;
 
@@ -79,7 +80,7 @@ html {
 
 /* BODY */
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: var(--font);
 }
 
 /* Width */

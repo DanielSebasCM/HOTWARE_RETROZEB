@@ -4,17 +4,27 @@ const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const renderLogin = (req, res) => {
+  if (req.session.currentUser) return res.redirect("/");
+
   // LOCALS
-  req.app.locals.teams = [];
-  req.app.locals.currentUser = null;
+  res.locals.activeTeams = [];
+  res.locals.currentUser = null;
+  res.locals.currentTeam = null;
 
   // SESSION
+  req.session.activeTeams = [];
+  req.session.currentUser = null;
+  req.session.currentTeam = null;
   req.session.successMessage = "";
   req.session.errorMessage = "";
 
   res.render("index", { title: "Login" });
 };
 
+// @zeb.mx
+// @luuna.mx
+// @nooz.mx
+// @mappa.mx
 const loginAPI = async (req, res, next) => {
   try {
     const { token } = req.body;
@@ -22,33 +32,34 @@ const loginAPI = async (req, res, next) => {
     // VALIDATE TOKEN
     const data = await verifyGoogleToken(token);
 
+    let uid = null;
+    let id_jira = null;
+
     // VERIFY IF USER EXISTS ALREADY IN DB
-    // IF EXISTS, GET USER
+    const user = await User.getByEmail(data.email);
 
-    let user;
-    try {
-      user = await User.getByEmail(data.email);
-    } catch (err) {
-      if (!user) {
-        // GET ID JIRA
+    if (!user) {
+      // GET ID JIRA
+      id_jira = Math.random().toString(36);
 
-        // IF NOT, CREATE USER
-        const newUser = new User({
-          id_google_auth: data.sub,
-          email: data.email,
-          first_name: data.given_name,
-          last_name: data.family_name,
-        });
+      // CREATE USER
+      const newUser = new User({
+        id_google_auth: data.sub,
+        id_jira: id_jira,
+        email: data.email,
+        first_name: data.given_name,
+        last_name: data.family_name,
+        picture: data.picture,
+      });
 
-        const result = await newUser.post();
-        user = await User.getById(result.insertId);
-      }
+      const result = await newUser.post();
+      uid = result.insertId;
     }
 
     const userData = {
-      uid: user.uid,
+      uid: uid || user.uid,
       id_google_auth: data.sub,
-      id_jira: user.id_jira,
+      id_jira: id_jira || user.id_jira,
       email: data.email,
       first_name: data.given_name,
       last_name: data.family_name,
@@ -64,14 +75,67 @@ const loginAPI = async (req, res, next) => {
 
     res.status(200).json({ authToken, refreshToken });
   } catch (error) {
+    const errorMessage = error.message.split(" ");
+    errorMessage.pop();
+
+    if (errorMessage.join(" ") === "Invalid token signature:") {
+      req.session.errorMessage = "Acceso denegado";
+      return res.status(401).json({ message: "Acceso denegado" });
+    }
+
     next(error);
   }
 };
 
-// @zeb.mx
-// @luuna.mx
-// @nooz.mx
-// @mappa.mx
+const logoutAPI = (req, res) => {
+  // LOCALS
+  res.locals.activeTeams = [];
+  res.locals.currentUser = null;
+  res.locals.currentTeam = null;
+
+  // SESSION
+  req.session.destroy();
+
+  res.status(200).redirect("/login");
+};
+
+const refreshTokenAPI = async (req, res, next) => {
+  try {
+    const { refreshToken } = req.body;
+
+    // VERIFY REFRESH TOKEN
+    const verified = authUtil.verifyToken(refreshToken, "refresh");
+
+    const userData = {
+      uid: verified.uid,
+      id_google_auth: verified.id_google_auth,
+      id_jira: verified.id_jira,
+      email: verified.email,
+      first_name: verified.first_name,
+      last_name: verified.last_name,
+      picture: verified.picture,
+    };
+
+    // BLACKLIST REFRESH TOKEN
+    const isBlacklisted = await authUtil.isBlacklisted(refreshToken);
+
+    if (isBlacklisted) {
+      req.session.errorMessage = "Token invalido. Por favor inicia sesión";
+      return res.status(401).redirect("/login");
+    }
+
+    await authUtil.blacklistToken(refreshToken);
+
+    // CREATE TOKENS
+    const authToken = authUtil.createTokenLogin(userData);
+    const newRefreshToken = authUtil.createRefreshToken(userData);
+
+    res.status(200).json({ authToken, newRefreshToken });
+  } catch (error) {
+    console.log("error: ", error);
+    res.redirect("/login");
+  }
+};
 
 // UTILS
 async function verifyGoogleToken(token) {
@@ -86,4 +150,6 @@ async function verifyGoogleToken(token) {
 module.exports = {
   renderLogin,
   loginAPI,
+  logoutAPI,
+  refreshTokenAPI,
 };
