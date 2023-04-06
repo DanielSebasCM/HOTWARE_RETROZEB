@@ -12,4 +12,10 @@ router.get("/", async (req, res) => {
 router.get(`${routes.login}`, authController.renderLogin);
 router.post(`${routes.login}`, authController.loginAPI);
 
+// LOGOUT
+router.get(`${routes.logout}`, authController.logoutAPI);
+
+// REFRESH TOKEN
+router.post(`${routes.refreshToken}`, authController.refreshTokenAPI);
+
 module.exports = router;

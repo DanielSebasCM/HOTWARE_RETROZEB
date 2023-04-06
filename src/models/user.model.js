@@ -12,6 +12,7 @@ class User {
     this.first_name = user.first_name;
     this.last_name = user.last_name;
     this.email = user.email;
+    this.picture = user.picture || null;
     this.active = user.active === 0 ? 0 : 1;
   }
   static async getAll() {
@@ -40,7 +41,7 @@ class User {
       email,
     ]);
 
-    if (answer.length === 0) return null;
+    if (user.length === 0) return null;
     return new User(user[0]);
   }
 
@@ -101,13 +102,14 @@ class User {
   //---------------------------POST----------------------------------
   async post() {
     let [res, _] = await db.execute(
-      `INSERT INTO user (id_jira, id_google_auth, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)`,
+      `INSERT INTO user (id_jira, id_google_auth, first_name, last_name, email, picture) VALUES (?, ?, ?, ?, ?, ?)`,
       [
         this.id_jira,
         this.id_google_auth,
         this.first_name,
         this.last_name,
         this.email,
+        this.picture,
       ]
     );
     this.uid = res.insertId;

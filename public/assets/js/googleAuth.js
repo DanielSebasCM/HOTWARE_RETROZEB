@@ -11,21 +11,19 @@ async function handleLogin(response) {
       body: JSON.stringify({ token }),
     });
 
-    // Save tokens in local storage
+    const res = await loginResponse.json();
+
+    // Save tokens in httpOnly cookies
+    document.cookie = `rzauthToken=${res.authToken}; path=/;`;
+    document.cookie = `rzrefreshToken=${res.refreshToken}; path=/;`;
 
     // Redirect to dashboard
     if (loginResponse.ok) {
-      const res = await loginResponse.json();
-
-      const r = await fetch("http://localhost:3000/", {
-        method: "GET",
-        // TOKEN IN HERE
-      });
-
-      window.location.href = "http://localhost:3000/";
+      location.href = "/";
     }
   } catch (error) {
     console.log(error);
+    location.reload();
   }
 }
 

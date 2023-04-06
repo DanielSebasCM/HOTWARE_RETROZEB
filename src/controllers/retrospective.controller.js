@@ -32,13 +32,13 @@ const renderRetrospectives = async (req, res, next) => {
 
 const renderInitRetrospective = async (req, res, next) => {
   try {
-    if (!req.app.locals.selectedTeam) {
+    if (!req.session.selectedTeam) {
       req.session.errorMessage =
         "Únete o selecciona un equipo para poder iniciar una retrospectiva";
       return res.redirect(".");
     }
 
-    const team = await Team.getById(req.app.locals.selectedTeam.id);
+    const team = await Team.getById(req.session.selectedTeam.id);
     let questions = [];
     let sprint;
 
@@ -53,10 +53,10 @@ const renderInitRetrospective = async (req, res, next) => {
 
     questions = await Question.getAll();
     sprint = await Sprint.getLastWithoutRetroByTeamId(
-      req.app.locals.selectedTeam.id
+      req.session.selectedTeam.id
     );
     const activeSprint = await Sprint.getLastWithRetroByTeamId(
-      req.app.locals.selectedTeam.id
+      req.session.selectedTeam.id
     );
 
     if (!retrospective && !sprint) {
@@ -113,7 +113,7 @@ const post = async (request, response, next) => {
 
     const newRetrospective = new Retrospective({
       name,
-      id_team: request.app.locals.selectedTeam.id,
+      id_team: request.session.selectedTeam.id,
       id_sprint: id_sprint,
     });
     const retrospective = await newRetrospective.post();
@@ -176,7 +176,7 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
     retrospective.team_name = team.name;
     const questions = await retrospective.getQuestions();
     let answer = await retrospective.getAnswers(questions[0]);
-    answer = answer.filter((a) => a.uid === req.app.locals.currentUser.uid);
+    answer = answer.filter((a) => a.uid === req.session.currentUser.uid);
     let answered = answer.length ? true : false;
     const labels = await retrospective.getLabels();
     res.render("retrospectives/dashboardMetrics", {
@@ -200,7 +200,7 @@ const renderRetrospectiveAnswer = async (req, res, next) => {
     }
     const questions = await retrospective.getQuestions();
     let answer = await retrospective.getAnswers(questions[0]);
-    answer = answer.filter((a) => a.uid === req.app.locals.currentUser.uid);
+    answer = answer.filter((a) => a.uid === req.session.currentUser.uid);
     if (answer.length > 0) {
       req.session.errorMessage = "Ya respondiste esta retrospectiva";
       res.redirect(`/retrospectivas/${retrospectiveId}/preguntas`);

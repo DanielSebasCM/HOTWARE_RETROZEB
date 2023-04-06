@@ -115,6 +115,7 @@
   color: var(--color-font-primary);
   font-size: 1.3rem;
   font-weight: 500;
+  font-family: var(--font);
 }
 
 .sidebar__nav-header {

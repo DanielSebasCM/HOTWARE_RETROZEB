@@ -91,11 +91,15 @@ const sqlStates = {
 function dbErrorHandler(err, req, res, next) {
   // TODO: ADD BETTER ERROR MESSAGES
   if (sqlStates["404Error"].includes(err.sqlState)) {
+    req.session.errorMessage =
+      "Ocurrió un error inesperado, por favor intente de nuevo";
     res.status(404).render("errors/404", {
       title: "Error 404",
       message: err.sqlMessage,
     });
   } else {
+    req.session.errorMessage =
+      "Ocurrió un error inesperado, por favor intente de nuevo";
     res.status(500).render("errors/500", {
       title: "Error 500",
       message: err.sqlMessage,
