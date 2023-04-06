@@ -15,12 +15,15 @@ const {
   JIRA_URL_EXTERNAL,
 } = process.env;
 
-(async () => {
-  const sprints = await fetchProjectJiraSprints(
-    process.env.ZECOMMERCE_PROJECT_ID
-  );
-  console.log(sprints);
-})();
+// Ejemplo de uso
+// (async () => {
+//   const sprint = await fetchProjectJiraLatestSprint(
+//     process.env.ZECOMMERCE_PROJECT_ID,
+//     "active"
+//   );
+//   const issues = await fetchSprintIssues(sprint.id_jira);
+//   console.log(issues);
+// })();
 
 /**
  * @brief Fetches all the issues of a sprint
@@ -28,17 +31,28 @@ const {
  * @returns Issues of the sprint on their actual state
  */
 async function fetchSprintIssues(jiraIdSprint) {
-  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/sprint/${jiraIdSprint}/issue?maxResults=${paginationLimit}`;
+  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/sprint/${jiraIdSprint}/issue`;
 
   const issues = await getAll(
     url,
     JIRA_USER_EXTERNAL,
     JIRA_API_KEY_EXTERNAL,
+    {
+      fields: [
+        "parent",
+        "customfield_10042",
+        "priority",
+        "status",
+        "issuetype",
+        "assignee",
+        "labels",
+      ],
+    },
     "issues"
   );
 
   const sprint = await Sprint.getByJiraId(jiraIdSprint);
-  const id_sprint = sprint.id;
+  const id_sprint = sprint?.id;
 
   const builtIssues = issues.map(async (issue) => {
     const user = issue.fields.assignee
@@ -52,7 +66,7 @@ async function fetchSprintIssues(jiraIdSprint) {
       priority: issue.fields.priority.name,
       state: issue.fields.status.name,
       type: issue.fields.issuetype.name,
-      uid: user?.id,
+      uid: user?.uid,
       id_sprint,
       labels: issue.fields.labels,
     });
@@ -121,11 +135,12 @@ async function fetchProjectJiraLatestSprint(jiraIdProject, state) {
  *   Else, it will create a new sprint with id = null and return it without saving it to the database
  */
 async function fetchBoardSprints(boardId, idProject, states) {
-  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/board/${boardId}/sprint?state=${states}&maxResults=${paginationLimit}`;
+  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/board/${boardId}/sprint`;
   const jiraSprints = await getAll(
     url,
     JIRA_USER_EXTERNAL,
-    JIRA_API_KEY_EXTERNAL
+    JIRA_API_KEY_EXTERNAL,
+    { state: states }
   );
 
   const localSprints = jiraSprints.map(async (sprint) => {
@@ -156,8 +171,11 @@ async function fetchProjectBoards(jiraIdProject) {
   // Temporary while we figure out wich boards they want
   return [{ id: 570 }];
 
-  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/board?projectKeyOrId=${jiraIdProject}&type=scrum&maxResults=${paginationLimit}`;
-  const boards = await getAll(url, JIRA_USER_EXTERNAL, JIRA_API_KEY_EXTERNAL);
+  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/board`;
+  const boards = await getAll(url, JIRA_USER_EXTERNAL, JIRA_API_KEY_EXTERNAL, {
+    projectKeyOrId: jiraIdProject,
+    type: "scrum",
+  });
   return boards;
 }
 
@@ -169,12 +187,15 @@ async function fetchProjectBoards(jiraIdProject) {
  * @param {string} key attribute where the return value array is located
  * @returns {Promise<Array<any>>}  array of all values
  */
-async function getAll(url, user, api_key, key = "values") {
+async function getAll(url, user, api_key, params, key = "values") {
   const Authorization = `Basic ${Buffer.from(`${user}:${api_key}`).toString(
     "base64"
   )}`;
-
-  const res = await fetch(url, {
+  const urlWithParams = new URL(url);
+  for (const key in params) {
+    urlWithParams.searchParams.append(key, params[key]);
+  }
+  let res = await fetch(urlWithParams, {
     method: "GET",
     headers: {
       Authorization,
@@ -182,13 +203,16 @@ async function getAll(url, user, api_key, key = "values") {
   }).then((res) => res.json());
 
   const data = res[key];
-  let page = 1;
-  let done = isDone(res);
-  const paginationLimit = res.maxResults;
 
-  while (!done) {
-    const nextUrl = `${url}&startAt=${page * paginationLimit}`;
-    const res = await fetch(nextUrl, {
+  while (true) {
+    if (isDone(res)) break;
+
+    const prevStartAt = res.startAt;
+    const prevMaxResults = res.maxResults;
+    const nextUrl = new URL(urlWithParams);
+    nextUrl.searchParams.set("startAt", prevStartAt + prevMaxResults);
+
+    res = await fetch(nextUrl, {
       method: "GET",
       headers: {
         Authorization,
@@ -196,17 +220,12 @@ async function getAll(url, user, api_key, key = "values") {
     }).then((res) => res.json());
 
     data.push(...res[key]);
-    page++;
-    done = isDone(res);
   }
   return data;
 }
 
 function isDone(res) {
   if (res.isLast !== undefined) return res.isLast ? true : false;
-
-  const nextStartAt = res.startAt + paginationLimit;
-  if (res.total !== undefined) return nextStartAt >= res.total;
-
+  if (res.total !== undefined) return res.startAt + res.maxResults >= res.total;
   return true;
 }
