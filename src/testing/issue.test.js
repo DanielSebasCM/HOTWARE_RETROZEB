@@ -180,27 +180,6 @@ test("Issue uid is an integer", () => {
 });
 
 // id_sprint
-
-test("Issue has id_sprint", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "id_sprint",
-    validationMessages.isMandatory
-  );
-  try {
-    new Issue({
-      epic_name: "a",
-      priority: "Highest",
-      state: "To Do",
-      type: "Story",
-      uid: 1,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
 test("Issue id_sprint is an integer", () => {
   let thrownError;
   const expectedError = new ValidationError(

@@ -11,7 +11,7 @@ const renderTeams = async (req, res, next) => {
     const userTeams = teams.filter((team) =>
       team.members.find(
         (member) =>
-          member.uid == req.app.locals.currentUser.uid && member.active == 1
+          member.uid == req.session.currentUser.uid && member.active == 1
       )
     );
 
@@ -19,7 +19,7 @@ const renderTeams = async (req, res, next) => {
       (team) =>
         !team.members.find(
           (member) =>
-            member.uid == req.app.locals.currentUser.uid && member.active == 1
+            member.uid == req.session.currentUser.uid && member.active == 1
         )
     );
 
