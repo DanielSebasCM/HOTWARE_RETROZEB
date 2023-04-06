@@ -3,10 +3,7 @@ const Project = require("../models/project.model");
 const Sprint = require("../models/sprint.model");
 const Issue = require("../models/issue.model");
 const User = require("../models/user.model");
-const { arch } = require("os");
-const issueStates = require("./constants").enums.issueStates;
 
-// No cambiar amenos que
 const {
   JIRA_USER_HOTWARE,
   JIRA_API_KEY_HOTWARE,
