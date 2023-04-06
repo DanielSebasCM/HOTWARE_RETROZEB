@@ -28,6 +28,7 @@ const constants = {
     actionables: "/accionables",
     retrospectives: "/retrospectivas",
     questions: "/preguntas",
+    roles: "/roles",
     locals: "/locals",
   },
 };
