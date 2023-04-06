@@ -26,6 +26,16 @@ class Project {
     return new Project(project[0]);
   }
 
+  static async getByJiraId(id_jira) {
+    let [project, _] = await db.execute(
+      `SELECT * FROM project WHERE id_jira = ?`,
+      [id_jira]
+    );
+
+    if (project.length === 0) return null;
+    return new Project(project[0]);
+  }
+
   static async getAll() {
     let [projects, _] = await db.execute(`SELECT * FROM project`);
 

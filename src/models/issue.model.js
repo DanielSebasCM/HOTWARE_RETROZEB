@@ -103,11 +103,7 @@ class Issue {
     if (issue.uid && !Number.isInteger(Number(issue.uid)))
       throw new ValidationError("uid", validationMessages.mustBeInteger);
 
-    // Length of id_sprint is not null
-    if (!issue.id_sprint)
-      throw new ValidationError("id_sprint", validationMessages.isMandatory);
-
-    if (!Number.isInteger(Number(issue.id_sprint)))
+    if (issue.id_sprint && !Number.isInteger(Number(issue.id_sprint)))
       throw new ValidationError("id_sprint", validationMessages.mustBeInteger);
 
     return true;
@@ -115,7 +111,6 @@ class Issue {
 
   async post() {
     let [res, _] = await db.execute(
-      // id_project?
       `INSERT INTO issues (id_jira, epic_name, story_points, priority, state, type, uid, id_sprint) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         this.id_jira,
