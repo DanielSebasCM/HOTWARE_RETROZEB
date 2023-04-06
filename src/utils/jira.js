@@ -5,7 +5,6 @@ const Issue = require("../models/issue.model");
 const User = require("../models/user.model");
 
 // No cambiar amenos que
-const paginationLimit = 50;
 const {
   JIRA_USER_HOTWARE,
   JIRA_API_KEY_HOTWARE,
@@ -18,7 +17,7 @@ const {
 // Ejemplo de uso
 // (async () => {
 //   const sprint = await fetchProjectJiraLatestSprint(
-//     process.env.ZECOMMERCE_PROJECT_ID,
+//     jira_project_id,
 //     "active"
 //   );
 //   const issues = await fetchSprintIssues(sprint.id_jira);
@@ -126,7 +125,7 @@ async function fetchProjectJiraLatestSprint(jiraIdProject, state) {
 
 /**
  * @brief Fetches all the sprints of a board
- * @param {int} boardId Board jira id
+ * @param {int} jiraIdBoard Board jira id
  * @param {int} idProject Project local id (default: null)
  * @param {string[]} states States of the sprints to fetch (example: ["closed", "active"])
  * @returns Sprints of the board
@@ -134,8 +133,8 @@ async function fetchProjectJiraLatestSprint(jiraIdProject, state) {
  *   If the sprint is already in the database, it will return the database sprint
  *   Else, it will create a new sprint with id = null and return it without saving it to the database
  */
-async function fetchBoardSprints(boardId, idProject, states) {
-  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/board/${boardId}/sprint`;
+async function fetchBoardSprints(jiraIdBoard, idProject, states) {
+  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/board/${jiraIdBoard}/sprint`;
   const jiraSprints = await getAll(
     url,
     JIRA_USER_EXTERNAL,
@@ -185,7 +184,7 @@ async function fetchProjectBoards(jiraIdProject) {
  * @param {string} user user email
  * @param {string} api_key users api key
  * @param {string} key attribute where the return value array is located
- * @returns {Promise<Array<any>>}  array of all values
+ * @returns {Promise<any[]>}  array of all values
  */
 async function getAll(url, user, api_key, params, key = "values") {
   const Authorization = `Basic ${Buffer.from(`${user}:${api_key}`).toString(
