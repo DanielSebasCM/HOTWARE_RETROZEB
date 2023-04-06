@@ -5,7 +5,13 @@ const constants = {
     issueStates: ["To Do", "En curso", "Pull request", "QA", "Blocked", "Done"],
     issueTypes: ["Story", "Task", "Sub-task", "Bug"],
     questionTypes: ["OPEN", "BOOLEAN", "SCALE", "SELECTION"],
-    actionableStates: ["PENDING", "ACCEPTED", "REJECTED"],
+    actionableStates: [
+      "PENDING",
+      "ACCEPTED",
+      "REJECTED",
+      "COMPLETED",
+      "PROCESS",
+    ],
   },
   limits: {
     answerMaxLength: 400,

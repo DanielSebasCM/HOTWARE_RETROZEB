@@ -1,0 +1,33 @@
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">
+        Accionables <span class="meta"></span>
+        <p class="description">Crea tus accionables</p>
+    </div>
+    <div class="banner__section">
+      <a class="button button--edit" href="/accionables/pending"> Descartar</a>
+    </div>
+    <span class="line"></span>
+  </div>
+  <form id="addact" action="/accionables/nuevo" method="POST">
+    <p class="description-question">Ingresa la información del accionable</p>
+    <div class="input-container">
+      <input name="title" class="input input--md" type="text" placeholder="Titulo del accionable" id="question-input" required maxlength="40" />
+      <input name="description" class="input input--md" type="text" placeholder="Descripción del accionable" id="question-input" required maxlength="255" />
+      <input name="priority" class="input input--md" type="text" placeholder="Prioridad del accionable" id="question-input" required maxlength="40" />
+    </div>
+    <p class="description-question">Seleciona un responsable de accionable</p>
+
+    <div class="select-container">
+      <select class="select" name="id_user_author">
+        <% for(unit of Users) {%>
+        <option value="<%= unit.uid %>"><%= unit.first_name %> <%= unit.last_name %></option>
+        <% } %>
+      </select>
+    </div>
+    <div class="centcontainer">
+      <button class="button button--primary" type="submit">Crear</button>
+    </div>
+  </form>
+</section>
