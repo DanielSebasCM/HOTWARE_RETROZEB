@@ -33,6 +33,35 @@ const constants = {
     roles: "/roles",
     locals: "/locals",
   },
+  privileges: {
+    actionables: {
+      getActionables: "getActionables",
+      canAcceptActionables: "canAcceptActionables",
+      canRejectActionables: "canRejectActionables",
+    },
+    teams: {
+      getTeams: "getTeams",
+      canJoinTeams: "canJoinTeams",
+      canCreateTeams: "canCreateTeams",
+    },
+    questions: {
+      getQuestions: "getQuestions",
+      canPostQuestions: "canPostQuestions",
+      canDeleteQuestions: "canDeleteQuestions",
+    },
+    roles: {
+      getRoles: "getRoles",
+      canCreateRoles: "canCreateRoles",
+      canDeleteRoles: "canDeleteRoles",
+    },
+    retrospectives: {
+      getRetrospectives: "getRetrospectives",
+      canCreateRetrospectives: "canCreateRetrospectives",
+      canAnswerRetrospectives: "canAnswerRetrospectives",
+      getMetrics: "getMetrics",
+      canCompareRetrospectives: "canCompareRetrospectives",
+    },
+  },
 };
 
 module.exports = constants;

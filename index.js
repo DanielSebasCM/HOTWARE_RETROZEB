@@ -12,6 +12,7 @@ const cookieParser = require("cookie-parser");
 const expressLayouts = require("express-ejs-layouts");
 const initRoutes = require("./src/routes/index.routes");
 const { routes } = require("./src/utils/constants");
+const { privileges } = require("./src/utils/constants");
 const errorHandler = require("./src/middlewares/errorHandler");
 
 // SET VIEW ENGINE
@@ -55,6 +56,7 @@ app.use(errorHandler);
 
 // LOCALS
 app.locals.routes = routes;
+app.locals.privileges = privileges;
 
 // SERVER
 app.listen(PORT, () => {
