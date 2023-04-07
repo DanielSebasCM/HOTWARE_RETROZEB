@@ -4,7 +4,6 @@ const Sprint = require("../models/sprint.model");
 const Issue = require("../models/issue.model");
 const User = require("../models/user.model");
 
-// No cambiar amenos que
 const {
   JIRA_USER_HOTWARE,
   JIRA_API_KEY_HOTWARE,
@@ -13,6 +12,125 @@ const {
   JIRA_API_KEY_EXTERNAL,
   JIRA_URL_EXTERNAL,
 } = process.env;
+
+// ACTIONABLES
+
+// Ejemplo de uso
+// (async () => {
+//   console.log(
+//     await postJiraActionable({
+//       title: "Test",
+//       description: "Test description \n another line",
+//       priority: "High",
+//       uid_assignee: 1,
+//     }).then((res) => res.json())
+//   );
+// })();
+
+/**
+ *
+ * @returns Array of actionables
+ */
+async function getJiraActionables() {
+  const url = `${JIRA_URL_HOTWARE}/rest/api/3/search`;
+  let actionables = await getAll(
+    url,
+    JIRA_USER_HOTWARE,
+    JIRA_API_KEY_HOTWARE,
+    {
+      jql: "project=APIT AND issuetype=Act",
+      fields: ["summary", "description", "priority", "status", "assignee"],
+    },
+    "issues"
+  );
+  actionables = actionables.map(async (actionable) => {
+    const user = actionable.fields.assignee
+      ? await User.getByJiraId(actionable.fields.assignee.accountId)
+      : null;
+
+    let description = "";
+    if (actionable.fields.description) {
+      actionable.fields.description.content.forEach((content) => {
+        if (
+          content.type === "paragraph" &&
+          content.content[0] &&
+          content.content[0].text
+        ) {
+          description += content.content[0].text + "\n";
+        }
+      });
+    }
+    return {
+      id_jira: actionable.id,
+      title: actionable.fields.summary,
+      description,
+      priority: actionable.fields.priority.name,
+      state: actionable.fields.status.name,
+      uid_assignee: user?.id,
+    };
+  });
+
+  return await Promise.all(actionables);
+}
+
+async function postJiraActionable(actionable) {
+  const url = `${JIRA_URL_HOTWARE}/rest/api/3/issue`;
+  const Authorization = `Basic ${Buffer.from(
+    `${JIRA_USER_HOTWARE}:${JIRA_API_KEY_HOTWARE}`
+  ).toString("base64")}`;
+
+  const user = await User.getById(actionable.uid_assignee);
+  let description = null;
+  if (actionable.description) {
+    description = {
+      type: "doc",
+      version: 1,
+      content: actionable.description.split("\n").map((line) => {
+        return {
+          type: "paragraph",
+          content: [
+            {
+              type: "text",
+              text: line,
+            },
+          ],
+        };
+      }),
+    };
+  }
+
+  const body = JSON.stringify({
+    fields: {
+      project: {
+        key: "APIT",
+      },
+      summary: actionable.title,
+      description,
+      issuetype: {
+        name: "Act",
+      },
+      priority: {
+        name: actionable.priority ? actionable.priority : "Medium",
+      },
+      assignee: {
+        accountId: user ? user.jira_id : null,
+      },
+    },
+  });
+
+  const response = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization,
+      "Content-Type": "application/json",
+    },
+    body,
+  });
+
+  return response;
+}
+
+// SPRINTS
 
 // Ejemplo de uso
 // (async () => {
@@ -200,17 +318,14 @@ async function getAll(url, user, api_key, params, key = "values") {
       Authorization,
     },
   }).then((res) => res.json());
-
   const data = res[key];
 
   while (true) {
     if (isDone(res)) break;
-
     const prevStartAt = res.startAt;
     const prevMaxResults = res.maxResults;
     const nextUrl = new URL(urlWithParams);
     nextUrl.searchParams.set("startAt", prevStartAt + prevMaxResults);
-
     res = await fetch(nextUrl, {
       method: "GET",
       headers: {
