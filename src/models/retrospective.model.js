@@ -102,7 +102,7 @@ class Retrospective {
   }
   async getIssues() {
     const [issues, _] = await db.execute(
-      "SELECT i.* FROM retrospective AS r JOIN sprint AS s ON r.id = ? AND s.id = r.id_sprint JOIN issues AS i ON i.id_sprint = s.id;",
+      "SELECT i.*, s.name as sprint_name FROM retrospective AS r JOIN sprint AS s ON r.id = ? AND s.id = r.id_sprint JOIN issues AS i ON i.id_sprint = s.id;",
       [this.id]
     );
 
@@ -114,7 +114,11 @@ class Retrospective {
       issue.labels = labels.map((label) => label.label);
     }
 
-    return issues.map((issue) => new Issue(issue));
+    return issues.map((issue) => {
+      const builtIssue = new Issue(issue);
+      builtIssue.sprint_name = issue.sprint_name;
+      return builtIssue;
+    });
   }
 
   async getQuestions() {

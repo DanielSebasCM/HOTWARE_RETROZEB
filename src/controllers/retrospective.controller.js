@@ -216,6 +216,37 @@ const renderRetrospectiveAnswer = async (req, res, next) => {
   }
 };
 
+const renderCompareRetroMetrics = async (req, res, next) => {
+  try {
+    if (!req.session.selectedTeam) {
+      req.session.errorMessage =
+        "Únete o selecciona un equipo para poder iniciar una retrospectiva";
+      return res.redirect("..");
+    }
+
+    const { n } = req.params;
+    const team = await Team.getById(req.session.selectedTeam.id);
+    const retrospectives = await team.getNClosedRetrospectives(n);
+
+    retrospectives.sort((a, b) => a.end_date - b.end_date);
+    let labels = new Set();
+    for (let retrospective of retrospectives) {
+      const newLabels = await retrospective.getLabels();
+      newLabels.forEach((label) => labels.add(label));
+    }
+    labels = Array.from(labels);
+
+    res.render("retrospectives/compareMetrics", {
+      title: "Comparativa",
+      retrospectives,
+      labels,
+      n,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getRetrospectiveAnswers = async (req, res, next) => {
   try {
     const retroId = req.params.id;
@@ -262,6 +293,7 @@ module.exports = {
   renderRetrospectiveMetrics,
   renderRetrospectiveQuestions,
   renderRetrospectiveAnswer,
+  renderCompareRetroMetrics,
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
   getRetrospectiveUsers,

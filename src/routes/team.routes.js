@@ -8,7 +8,7 @@ const privileges = require("../utils/constants").privileges.teams;
 router.get("/", authorize([privileges.getTeams]), controller.renderTeams);
 
 // API ROUTES
-
+router.get("/:id/retrospectivas/:n", controller.getNClosedRetrospectives);
 // POST
 router.post(
   "/nuevo/usuario",

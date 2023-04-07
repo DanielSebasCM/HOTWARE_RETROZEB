@@ -1,30 +1,34 @@
 const Team = require("../models/team.model");
 const messages = require("../utils/messages");
 
-const renderTeams = async (req, res) => {
-  const teams = await Team.getAllActive();
-  for (let team of teams) {
-    team.members = await team.getMembers();
-  }
+const renderTeams = async (req, res, next) => {
+  try {
+    const teams = await Team.getAllActive();
+    for (let team of teams) {
+      team.members = await team.getMembers();
+    }
 
-  const userTeams = teams.filter((team) =>
-    team.members.find(
-      (member) =>
-        member.uid == req.session.currentUser.uid && member.active == 1
-    )
-  );
-
-  const availableTeams = teams.filter(
-    (team) =>
-      !team.members.find(
+    const userTeams = teams.filter((team) =>
+      team.members.find(
         (member) =>
           member.uid == req.session.currentUser.uid && member.active == 1
       )
-  );
+    );
 
-  res
-    .status(200)
-    .render("teams/index", { title: "Equipos", userTeams, availableTeams });
+    const availableTeams = teams.filter(
+      (team) =>
+        !team.members.find(
+          (member) =>
+            member.uid == req.session.currentUser.uid && member.active == 1
+        )
+    );
+
+    res
+      .status(200)
+      .render("teams/index", { title: "Equipos", userTeams, availableTeams });
+  } catch (err) {
+    next(err);
+  }
 };
 
 const addUser = async (req, res, next) => {
@@ -77,8 +81,19 @@ const removeUser = async (req, res, next) => {
   }
 };
 
+const getNClosedRetrospectives = async (req, res, next) => {
+  try {
+    const { id, n } = req.params;
+    const team = await Team.getById(id);
+    const retrospectives = await team.getNClosedRetrospectives(n);
+    res.status(200).json(retrospectives);
+  } catch (err) {
+    next(err);
+  }
+};
 module.exports = {
   renderTeams,
   addUser,
   removeUser,
+  getNClosedRetrospectives,
 };
