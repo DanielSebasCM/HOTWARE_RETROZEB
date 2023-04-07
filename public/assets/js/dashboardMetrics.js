@@ -18,7 +18,6 @@ const statesColors = [
 Chart.defaults.font.family = "Poppins";
 
 const currentUserUid = document.querySelector("#current-user").dataset.uid;
-const pruneEmpty = false;
 
 let baseUrl = window.location.href.split("/");
 baseUrl.pop();
@@ -49,6 +48,12 @@ issuesOptions.onchange = function () {
   selectedIssues = this.value;
   updateCharts();
 };
+const showEmptyInput = document.getElementById("show-empty");
+let showEmpty = showEmptyInput.checked;
+showEmptyInput.addEventListener("change", (e) => {
+  showEmpty = e.target.checked;
+  updateCharts();
+});
 
 const epics = [...new Set(issues.map((d) => d.epic_name))];
 const types = [...new Set(issues.map((d) => d.type))];
@@ -66,28 +71,42 @@ const dataTypes = groupFilterIssues(groupedIssues, "type");
 createChart("types-chart", "Types", dataTypes, types, "y");
 
 function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
+  console.group(title);
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
 
   const canvas = document.getElementById(canvasId);
   canvas.parentElement.style.height = `${labels.length * 25 + 150}px`;
 
-  const labelHasData = {};
+  const labelHasData = Array(labels.length).fill(false);
+  console.log(statesData);
 
-  const datasets = statesColors.map(({ state, color }) => {
-    const storyPoints = labels.map((l) => {
+  let datasets = statesColors.map(({ state, color }) => {
+    console.group(state);
+    const storyPoints = labels.map((label, index) => {
       if (statesData[state]) {
-        const data = statesData[state][l] || 0;
-        labelHasData[l] = labelHasData[l] || data > 0;
+        const data = statesData[state][label] || 0;
+        labelHasData[index] = labelHasData[index] || data > 0;
+        console.log(label, data);
         return data;
       }
       return 0;
     });
+    console.groupEnd();
     return {
       label: `${state}`,
       data: storyPoints,
       backgroundColor: color,
     };
   });
+  console.log(datasets);
+  console.log(labelHasData);
+
+  if (!showEmpty) {
+    labels = labels.filter((_, i) => labelHasData[i]);
+    datasets.forEach((d) => {
+      d.data = d.data.filter((_, i) => labelHasData[i]);
+    });
+  }
 
   const totals = {};
   labels.forEach((l) => {
@@ -98,16 +117,8 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
     }, 0);
   });
 
-  if (pruneEmpty) {
-    labels = labels.filter((l) => {
-      const res = labelHasData[l];
-      if (!res) datasets.forEach((d) => d.data.splice(labels.indexOf(l), 1));
-      return res;
-    });
-  }
-
   labels = labels.map((l) => l || "N/A");
-
+  console.groupEnd();
   return new Chart(canvas, {
     type: "bar",
     data: {
@@ -234,13 +245,13 @@ function updateChart(canvasId, statesData, labels) {
   const secundaryAxis = chart.options.indexAxis === "y" ? "x" : "y";
 
   //Set the label "N/A" to null
-  const labelHasData = {};
+  const labelHasData = Array(labels.length).fill(false);
 
   const datasets = statesColors.map(({ state, color }) => {
-    const storyPoints = labels.map((l) => {
+    const storyPoints = labels.map((label, index) => {
       if (statesData[state]) {
-        const data = statesData[state][l] || 0;
-        labelHasData[l] = labelHasData[l] || data > 0;
+        const data = statesData[state][label] || 0;
+        labelHasData[index] = labelHasData[index] || data > 0;
         return data;
       }
       return 0;
@@ -252,6 +263,13 @@ function updateChart(canvasId, statesData, labels) {
     };
   });
 
+  if (!showEmpty) {
+    labels = labels.filter((_, i) => labelHasData[i]);
+    datasets.forEach((d) => {
+      d.data = d.data.filter((_, i) => labelHasData[i]);
+    });
+  }
+
   const totals = {};
   labels.forEach((l) => {
     totals[l] = statesColors.reduce((acc, { state }) => {
@@ -260,14 +278,6 @@ function updateChart(canvasId, statesData, labels) {
       return acc;
     }, 0);
   });
-
-  if (pruneEmpty) {
-    labels = labels.filter((l) => {
-      const res = labelHasData[l];
-      if (!res) datasets.forEach((d) => d.data.splice(labels.indexOf(l), 1));
-      return res;
-    });
-  }
 
   labels = labels.map((l) => l || "N/A");
 
