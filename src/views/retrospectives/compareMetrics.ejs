@@ -18,7 +18,7 @@
   <div class="filters-container">
     <div class="select-container">
       <select class="select" id="label-options">
-        <option value="All">Todos los Labels</option>
+        <option value="All"> Todos los Labels</option>
         <% for (let i=0; i < labels.length; i++) { %>
         <option value="<%= labels[i] %>"><%= labels[i] %></option>
         <% } %>
@@ -32,7 +32,7 @@
         <option value="Personal">Issues personales</option>
       </select>
     </div>
-    <div class="input horizontal-container" for="question-checkbox">
+    <div class="checkbox-container">
       <input type="checkbox" class="question-checkbox mr-1" id="stacked" checked />
       <label for="question-checkbox">Acumular</label>
     </div>
@@ -43,4 +43,19 @@
     <canvas id="general-chart"></canvas>
   </div>
 
+  <span class="line"></span>
+
+  <h3 class="subtitle">Epics</h3>
+  <div class="filters-container">
+    <div class="select-container">
+      <select class="select" id="epics-options">
+        <% for (let i=0; i < epics.length; i++) { %>
+        <option value="<%= epics[i] || "None" %>"><%= epics[i] || "No epic" %></option>
+        <% } %>
+      </select>
+    </div>
+  </div>
+  <div class="chart-container">
+    <canvas id="epics-chart"></canvas>
+  </div>
   <script type="module" src="/assets/js/compareMetrics.js"></script>

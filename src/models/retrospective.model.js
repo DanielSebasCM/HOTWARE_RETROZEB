@@ -170,6 +170,14 @@ class Retrospective {
     return labels.map((label) => label.label);
   }
 
+  async getEpics() {
+    const [epics, _] = await db.execute(
+      "select epic_name from issues as i, sprint as s, retrospective as r where r.id = 1 and r.id_sprint = s.id and s.id = i.id_sprint GROUP BY epic_name HAVING SUM(story_points) > 0",
+      [this.id]
+    );
+    return epics.map((epic) => epic.epic_name);
+  }
+
   async getUsers() {
     const [users, _] = await db.execute(
       "SELECT u.* FROM user u, team_users_retrospectives tur WHERE tur.id_team = ? AND tur.uid = u.uid AND tur.id_retrospective = ?",

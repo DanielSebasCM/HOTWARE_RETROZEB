@@ -230,16 +230,22 @@ const renderCompareRetroMetrics = async (req, res, next) => {
 
     retrospectives.sort((a, b) => a.end_date - b.end_date);
     let labels = new Set();
+    let epics = new Set();
     for (let retrospective of retrospectives) {
       const newLabels = await retrospective.getLabels();
       newLabels.forEach((label) => labels.add(label));
+
+      const newEpics = await retrospective.getEpics();
+      newEpics.forEach((epic) => epics.add(epic));
     }
     labels = Array.from(labels);
+    epics = Array.from(epics);
 
     res.render("retrospectives/compareMetrics", {
       title: "Comparativa",
       retrospectives,
       labels,
+      epics,
       n,
     });
   } catch (err) {

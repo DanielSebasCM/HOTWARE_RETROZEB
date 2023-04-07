@@ -132,7 +132,7 @@ class Team {
     // TODO - TEST THIS
     const [retros, _] = await db.execute(
       `
-    SELECT r.* 
+    SELECT r.* , s.name as sprint_name
     FROM retrospective as r, team as t, sprint as s
     WHERE r.id_team = t.id
     AND r.id_sprint = s.id
@@ -144,7 +144,11 @@ class Team {
       `,
       [this.id, n]
     );
-    return retros.map((retro) => new Retrospective(retro));
+    return retros.map((retro) => {
+      const r = new Retrospective(retro);
+      r.sprint_name = retro.sprint_name;
+      return r;
+    });
   }
 }
 

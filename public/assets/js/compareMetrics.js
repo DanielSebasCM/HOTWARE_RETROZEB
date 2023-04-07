@@ -54,12 +54,20 @@ nRetrospectivesInput.addEventListener("change", async (e) => {
 
 const stackedInput = document.getElementById("stacked");
 let stacked = stackedInput.checked;
-console.log(stacked);
 stackedInput.addEventListener("change", (e) => {
   stacked = e.target.checked;
-  console.log(stacked);
   updateCharts();
 });
+
+const epicsOptions = document.getElementById("epics-options");
+let selectedEpics = [epicsOptions.value];
+epicsOptions.onchange = function () {
+  selectedEpics = [this.value];
+  const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
+    filterIssuesEpics(i, selectedLabel, selectedIssues, selectedEpics)
+  );
+  updateChart("epics-chart", epicsData, sprints);
+};
 
 // CHARTS
 const retrospectives = await fetch(
@@ -96,13 +104,19 @@ let issues = await Promise.all(
 issues = issues.flat();
 
 const groupedIssues = issues.groupBy("state");
-
 const sprints = retrospectives.map((r) => {
-  return r.id_sprint;
+  return r.sprint_name;
 });
 
-const dataGeneral = groupFilterIssues(groupedIssues, "id_sprint");
+const dataGeneral = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
+  filterIssuesGeneral(i, selectedLabel, selectedIssues)
+);
 createChart("general-chart", "General", dataGeneral, sprints, "x");
+
+const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
+  filterIssuesEpics(i, selectedLabel, selectedIssues, selectedEpics)
+);
+createChart("epics-chart", "Epics", epicsData, sprints, "x");
 
 function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
@@ -131,11 +145,8 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
           if (j > 0) datasets[i].data[j] += datasets[i].data[j - 1];
         });
       }
-      console.log(d);
     });
   }
-  console.log(labels);
-  console.log(datasets);
 
   const totals = {};
   labels.forEach((l) => {
@@ -202,13 +213,11 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   });
 }
 
-function groupFilterIssues(rawData, key) {
+function groupFilterIssues(rawData, key, filterFn) {
   const data = {};
   // Por cada valor del filtro crear un objeto con los issues correspondinetes
   for (const state in rawData) {
-    const filteredData = rawData[state].filter((i) =>
-      filterIssues(i, selectedLabel, selectedIssues)
-    );
+    const filteredData = rawData[state].filter(filterFn);
     if (filteredData.length === 0) continue;
 
     const groupedFilteredData = key
@@ -227,7 +236,7 @@ function groupFilterIssues(rawData, key) {
   return data;
 }
 
-function filterIssues(issue, labelFilter, issuesFilter) {
+function filterIssuesGeneral(issue, labelFilter, issuesFilter) {
   // Filter by label
   let hasLabel;
   switch (labelFilter) {
@@ -257,9 +266,21 @@ function filterIssues(issue, labelFilter, issuesFilter) {
   return hasLabel && hasCorrectUser;
 }
 
+function filterIssuesEpics(issue, labelFilter, issuesFilter, epicFilters) {
+  const passesGeneral = filterIssuesGeneral(issue, labelFilter, issuesFilter);
+  return passesGeneral && epicFilters.includes(issue.epic_name || "None");
+}
+
 function updateCharts() {
-  const dataGeneral = groupFilterIssues(groupedIssues, "id_sprint");
+  const dataGeneral = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
+    filterIssuesGeneral(i, selectedLabel, selectedIssues)
+  );
   updateChart("general-chart", dataGeneral, sprints);
+
+  const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
+    filterIssuesEpics(i, selectedLabel, selectedIssues, selectedEpics)
+  );
+  updateChart("epics-chart", epicsData, sprints);
 }
 
 function updateChart(canvasId, statesData, labels) {
