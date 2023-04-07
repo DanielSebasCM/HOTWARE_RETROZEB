@@ -52,6 +52,13 @@ nRetrospectivesInput.addEventListener("change", async (e) => {
   window.location.href = `/retrospectivas/comparar/${n}`;
 });
 
+const accumInput = document.getElementById("accum");
+let accum = accumInput.checked;
+accumInput.addEventListener("change", (e) => {
+  accum = e.target.checked;
+  updateCharts();
+});
+
 const stackedInput = document.getElementById("stacked");
 let stacked = stackedInput.checked;
 stackedInput.addEventListener("change", (e) => {
@@ -122,22 +129,27 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
 
   const canvas = document.getElementById(canvasId);
-  // canvas.parentElement.style.height = "500px";
+  canvas.parentElement.style.height = "400px";
 
   const datasets = statesColors.map(({ state, color }) => {
     const storyPoints = labels.map((l) => {
-      if (statesData[state]) return statesData[state][l] || 0;
-      return 0;
+      if (statesData[state])
+        return statesData[state][l] || (accum && stacked ? 0 : null);
+      return null;
     });
+
+    let bgColor = color.slice();
+    // if (accum && stacked) bgColor = bgColor.slice(0, -4) + " 1)";
     return {
       label: `${state}`,
       data: storyPoints,
-      backgroundColor: color,
+      backgroundColor: bgColor,
       fill: true,
+      skipNull: true,
     };
   });
 
-  if (stacked) {
+  if (accum) {
     datasets.forEach((d, i) => {
       if (d.label === "Done") {
         // if (true) {
@@ -160,7 +172,7 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   labels = labels.map((l) => l || "N/A");
 
   return new Chart(canvas, {
-    type: stacked ? "line" : "bar",
+    type: accum && stacked ? "line" : "bar",
     data: {
       labels,
       datasets,
@@ -193,13 +205,13 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
       },
       scales: {
         [mainAxis]: {
-          stacked: true,
+          stacked,
           ticks: {
             autoSkip: false,
           },
         },
         [secundaryAxis]: {
-          stacked: true,
+          stacked,
           title: {
             display: true,
             text: "Story points",
