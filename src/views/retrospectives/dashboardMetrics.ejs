@@ -8,7 +8,7 @@
     </div>
 
     <div class="banner__section">
-      <% if(!answered) { %>
+      <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives)) { %>
       <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
       <% } else {%>
       <div class="toggle-buttons-container toggle-buttons-container--primary">
