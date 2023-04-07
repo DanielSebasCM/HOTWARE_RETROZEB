@@ -9,6 +9,7 @@ const renderActionables = async (req, res, next) => {
     const state = req.params.state;
     if (["pending", "accepted", "rejected"].includes(state)) {
       const actionables = await Actionable.getAllByState(state);
+      console.log(actionables);
       const arrRetros = [];
       const arrUsers = [];
 
