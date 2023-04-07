@@ -57,10 +57,6 @@ class SuggestedTodo {
         validationMessages.mustBeShorterThan(toDoTitleMaxLength)
       );
 
-    // description
-    if (!suggested_todo.description)
-      throw new ValidationError("description", validationMessages.isMandatory);
-
     if (suggested_todo.description.length > toDoDescriptionMaxLength)
       throw new ValidationError(
         "description",

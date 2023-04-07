@@ -59,23 +59,6 @@ test(`Todo title is less than ${toDoTitleMaxLength} characters`, () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Todo has a description", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "description",
-    validationMessages.isMandatory
-  );
-  try {
-    new SuggestedTodo({
-      title: "Test",
-      id_user_author: 1,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
 test(`Todo description is less than ${toDoDescriptionMaxLength} characters`, () => {
   let thrownError;
   const expectedError = new ValidationError(
