@@ -69,26 +69,32 @@ const retrospectives = await fetch(
 retrospectives.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
 
 const usersUids = {};
-for (let retrospective of retrospectives) {
-  const usersData = await fetch(`/retrospectivas/${retrospective.id}/usuarios`);
-  const users = await usersData.json();
-  const uids = users.map((u) => u.uid);
-  usersUids[retrospective.id] = uids;
-}
-
-let issues = retrospectives.map(async (r) =>
-  fetch(`/retrospectivas/${r.id}/issues`).then((res) =>
-    res.json().then((d) => {
-      d.forEach((i) => {
-        i.id_retrospective = r.id;
-      });
-      return d;
-    })
+const retrospectivesUsers = await Promise.all(
+  retrospectives.map((r) =>
+    fetch(`/retrospectivas/${r.id}/usuarios`).then((res) => res.json())
   )
 );
 
-issues = await Promise.all(issues);
+for (let i = 0; i < retrospectives.length; i++) {
+  const uids = retrospectivesUsers[i].map((u) => u.uid);
+  usersUids[retrospectives[i].id] = uids;
+}
+
+let issues = await Promise.all(
+  retrospectives.map(async (r) =>
+    fetch(`/retrospectivas/${r.id}/issues`).then((res) =>
+      res.json().then((d) => {
+        d.forEach((i) => {
+          i.id_retrospective = r.id;
+        });
+        return d;
+      })
+    )
+  )
+);
+
 issues = issues.flat();
+
 const groupedIssues = issues.groupBy("state");
 
 const sprints = retrospectives.map((r) => {
