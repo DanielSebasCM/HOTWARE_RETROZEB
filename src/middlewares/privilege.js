@@ -19,6 +19,8 @@ const authorize = (privileges) => {
       }
     }
 
+    req.app.locals.currentPrivileges = userPrivileges;
+
     return next();
   };
 };

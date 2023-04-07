@@ -7,9 +7,11 @@
       </h1>
       <p class="description">Listado de preguntas creadas</p>
     </div>
+    <% if(currentPrivileges.includes(privileges.questions.canPostQuestions)) { %>
     <div class="banner__section">
       <a class="button button--primary" href="preguntas/nueva">Añadir Pregunta</a>
     </div>
+    <% } %>
     <span class="line"></span>
   </div>
 
@@ -41,10 +43,12 @@
       <span class="line"></span>
       <p class="card__description"><%= question.options.join("/ ") %> </p>
       <% } %>
+      <% if(currentPrivileges.includes(privileges.questions.canDeleteQuestions)) { %>
       <form action="/preguntas?_method=DELETE" method="POST">
         <input type="hidden" name="id" value="<%=question.id %>">
         <button type="submit" class="button button--sm button--delete-alt remove-question-btn" data-id=<%=question.id %>>Eliminar</button>
       </form>
+      <% } %>
     </div>
     <% } %>
   </div>

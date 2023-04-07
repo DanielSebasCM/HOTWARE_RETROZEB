@@ -31,7 +31,7 @@ router.get(
 );
 router.get(
   "/:id/contestar",
-  authorize([privileges.canAnswerRetrospective]),
+  authorize([privileges.canAnswerRetrospectives]),
   controller.renderRetrospectiveAnswer
 );
 
@@ -62,7 +62,7 @@ router.post(
 );
 router.post(
   "/:id/contestar",
-  authorize([privileges.canAnswerRetrospective]),
+  authorize([privileges.canAnswerRetrospectives]),
   controller.postRetrospectiveAnswers
 );
 

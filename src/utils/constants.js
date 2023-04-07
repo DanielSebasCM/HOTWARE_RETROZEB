@@ -42,6 +42,7 @@ const constants = {
     teams: {
       getTeams: "getTeams",
       canJoinTeams: "canJoinTeams",
+      canCreateTeams: "canCreateTeams",
     },
     questions: {
       getQuestions: "getQuestions",
@@ -50,12 +51,15 @@ const constants = {
     },
     roles: {
       getRoles: "getRoles",
+      canCreateRoles: "canCreateRoles",
+      canDeleteRoles: "canDeleteRoles",
     },
     retrospectives: {
       getRetrospectives: "getRetrospectives",
       canCreateRetrospectives: "canCreateRetrospectives",
-      canAnswerRetrospective: "canAnswerRetrospective",
+      canAnswerRetrospectives: "canAnswerRetrospectives",
       getMetrics: "getMetrics",
+      canCompareRetrospectives: "canCompareRetrospectives",
     },
   },
 };

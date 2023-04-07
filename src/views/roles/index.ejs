@@ -7,9 +7,11 @@
       </h1>
       <p class="description">Listado de roles creados</p>
     </div>
+    <% if(currentPrivileges.includes(privileges.teams.canCreateRoles)) { %>
     <div class="banner__section">
       <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
     </div>
+    <% } %>
     <span class="line"></span>
   </div>
 
@@ -27,10 +29,12 @@
       <div class="card__header">
         <p class="card__subtitle"><%= role.name %></p>
       </div>
+      <% if(currentPrivileges.includes(privileges.teams.canDeleteRoles)) { %>
       <form action="/roles?_method=DELETE" method="POST">
         <input type="hidden" name="id" value="<%=role.id %>">
         <button type="submit" class="button button--sm button--delete-alt remove-role-btn" data-id=<%=role.id %>>Eliminar</button>
       </form>
+      <% } %>
     </div>
     <% } %>
   </div>
