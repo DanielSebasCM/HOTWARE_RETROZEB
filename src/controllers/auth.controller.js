@@ -2,6 +2,12 @@ const authUtil = require("../utils/auth");
 const User = require("../models/user.model");
 
 const renderLogin = (req, res) => {
+  if (req.session.currentUser) return res.redirect("/");
+
+  if (req.query.error)
+    res.locals.errorMessage =
+      "Ocurrió un error, por favor inicia sesión nuevamente";
+
   // LOCALS
   res.locals.activeTeams = [];
   res.locals.currentUser = null;
@@ -15,11 +21,8 @@ const renderLogin = (req, res) => {
   res.render("index", { title: "Login" });
 };
 
-// @zeb.mx
-// @luuna.mx
-// @nooz.mx
-// @mappa.mx
 const loginAPI = async (req, res, next) => {
+  // @zeb.mx, @luuna.mx, @nooz.mx, @mappa.mx
   try {
     const { token } = req.body;
 
@@ -87,15 +90,7 @@ const loginAPI = async (req, res, next) => {
 };
 
 const logoutAPI = (req, res) => {
-  // LOCALS
-  res.locals.activeTeams = [];
-  res.locals.currentUser = null;
-  res.locals.currentTeam = null;
-
-  // SESSION
-  req.session.destroy();
-
-  res.status(200).redirect("/login");
+  authUtil.deleteSession(req, res);
 };
 
 const refreshTokenAPI = async (req, res, next) => {
@@ -120,7 +115,7 @@ const refreshTokenAPI = async (req, res, next) => {
 
     if (isBlacklisted) {
       req.session.errorMessage = "Token invalido. Por favor inicia sesión";
-      return res.status(401).redirect("/login");
+      return authUtil.deleteSession(req, res);
     }
 
     await authUtil.blacklistToken(refreshToken);
@@ -132,7 +127,7 @@ const refreshTokenAPI = async (req, res, next) => {
     res.status(200).json({ authToken, refreshToken: newRefreshToken });
   } catch (error) {
     console.log("error: ", error);
-    res.redirect("/login");
+    authUtil.deleteSession(req, res);
   }
 };
 

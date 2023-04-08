@@ -1,6 +1,5 @@
 (function updateTokens() {
   const fourMinutes = 1000 * 60 * 4;
-  console.log("Updating tokens");
   refreshTokens();
 
   const interval = setInterval(() => {
@@ -12,7 +11,6 @@
 
 async function refreshTokens() {
   const { refreshToken } = getTokens();
-  console.log(refreshToken);
   if (!refreshToken) return;
 
   try {
@@ -28,12 +26,10 @@ async function refreshTokens() {
 
     const data = await res.json();
 
-    console.log(data);
-
     deleteTokens();
     setTokens(data);
   } catch (err) {
-    // deleteTokens();
+    deleteTokens();
     console.log(err);
   }
 }

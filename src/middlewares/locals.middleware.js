@@ -40,7 +40,6 @@ const setLocals = async (req, res, next) => {
     res.locals.selectedTeam = req.session.selectedTeam;
 
     next();
-    // res.status(200).redirect(req.headers.referer);
   } catch (err) {
     next(err);
   }

@@ -10,12 +10,12 @@ const authMiddleware = {
     else token = req.cookies.rzauthToken;
 
     try {
-      authUtil.verifyToken(token);
+      const auth = authUtil.verifyToken(token);
+      if (!req.session.currentUser) req.session.currentUser = auth;
 
       next();
     } catch (error) {
-      console.log("error: ", error);
-      res.redirect("/login");
+      next(error);
     }
   },
 };

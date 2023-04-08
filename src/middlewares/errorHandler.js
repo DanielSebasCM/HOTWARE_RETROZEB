@@ -1,4 +1,5 @@
 const { setLocals } = require("./locals.middleware");
+const authUtil = require("../utils/auth");
 
 const errorHandler = (err, req, res, next) => {
   console.log("Error Handler");
@@ -13,7 +14,7 @@ const errorHandler = (err, req, res, next) => {
       break;
     case "TokenExpiredError":
       req.session.errorMessage = "Su sesión ha expirado";
-      res.redirect("/login");
+      jwtTokenErrorHandler(err, req, res);
       break;
     case "JsonWebTokenError":
       jwtTokenErrorHandler(err, req, res);
@@ -55,6 +56,7 @@ const jwtErrorMessages = {
   "jwt malformed": undefined,
   "jwt signature is required": undefined,
   "invalid signature": undefined,
+  "jwt expired": "Su sesión ha expirado. Por favor inicie sesión de nuevo",
   "jwt audience invalid. expected: [OPTIONS AUDIENCE]": undefined,
   "jwt issuer invalid. expected: [OPTIONS ISSUER]": undefined,
   "jwt id invalid. expected: [OPTIONS JWT ID]": undefined,
@@ -63,12 +65,12 @@ const jwtErrorMessages = {
 
 function jwtTokenErrorHandler(err, req, res) {
   req.session.errorMessage = jwtErrorMessages[err.message] || err.message;
-  res.redirect("/login");
+  authUtil.deleteSession(req, res);
 }
 
 function jwtNotBeforeErrorHandler(err, req, res) {
   req.session.errorMessage = "Su sesión no está disponible";
-  res.redirect("/login");
+  authUtil.deleteSession(req, res);
 }
 
 // Structure of a DB error

@@ -1,8 +1,7 @@
 const jwt = require("jsonwebtoken");
 const Token = require("../models/token.model");
-const { OAuth2Client, auth } = require("google-auth-library");
+const { OAuth2Client } = require("google-auth-library");
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-const User = require("../models/user.model");
 
 const createTokenLogin = (data) => {
   return jwt.sign(data, process.env.JWT_LOGIN, { expiresIn: "300s" }); // 5 minutes
@@ -40,6 +39,26 @@ const blacklistToken = async (token) => {
   await tokenModel.post();
 };
 
+const deleteSession = (req, res) => {
+  const errorMessage = req.session.errorMessage
+    .replace(/\s/g, "-")
+    .toLowerCase();
+
+  // LOCALS
+  res.locals.activeTeams = [];
+  res.locals.currentUser = null;
+  res.locals.currentTeam = null;
+
+  // SESSION
+  req.session.destroy();
+
+  // COOKIES
+  res.clearCookie(this.cookie, { path: "/" });
+
+  // REDIRECT
+  res.status(301).redirect(`/login?error=1`);
+};
+
 module.exports = {
   createTokenLogin,
   createRefreshToken,
@@ -47,4 +66,5 @@ module.exports = {
   verifyGoogleToken,
   isBlacklisted,
   blacklistToken,
+  deleteSession,
 };
