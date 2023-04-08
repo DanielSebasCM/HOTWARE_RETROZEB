@@ -15,7 +15,6 @@ router.get(
   authorize([privileges.canCreateRetrospectives]),
   controller.renderInitRetrospective
 );
-
 router.get(
   "/comparar/:n",
   authorize([privileges.canCompareRetrospectives]),
