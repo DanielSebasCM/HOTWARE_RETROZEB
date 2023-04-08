@@ -49,15 +49,56 @@
 
   <span class="line"></span>
 
+
+  <style>
+    .dropdown {
+      width: 200px;
+      height: 30px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background-color: #fff;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dropdown option {
+      font-size: 14px;
+    }
+  </style>
+
   <h3 class="subtitle">Epics</h3>
   <div class="filters-container">
-    <div class="select-container">
+
+    <div class="multi-select-container" id="epics-options">
+      <div class="multi-select-button">
+        Seleccionar Epics
+        <img src="/assets/icon/preguntas.svg" alt="Chat icon" class="sidebar__icon" />
+      </div>
+      <div class="multi-select-dropdown">
+        <ul class="items__list">
+          <li class="items__item">
+            <input type="checkbox" class="multi-select-dropdown__checkbox" id="All" checked />
+            <label for="All" name="All">Todos</label>
+          </li>
+          <% for (let i=0; i < epics.length; i++) { %>
+          <li class="items__item">
+            <input type="checkbox" class="multi-select-dropdown__checkbox" id="<%= epics[i] %>" checked />
+            <label for="<%= epics[i] %>"><%= epics[i] || "No epic" %></label>
+          </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+    <!-- <div class="select-container">
       <select class="select" id="epics-options">
         <% for (let i=0; i < epics.length; i++) { %>
         <option value="<%= epics[i] || "None" %>"><%= epics[i] || "No epic" %></option>
         <% } %>
       </select>
-    </div>
+    </div> -->
   </div>
   <div class="chart-container">
     <canvas id="epics-chart"></canvas>

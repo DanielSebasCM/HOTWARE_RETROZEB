@@ -27,6 +27,68 @@
   });
 })();
 
+(function multiSelectSelection() {
+  const multiSelectContainers = document.querySelectorAll(
+    ".multi-select-container"
+  );
+  if (!multiSelectContainers) return;
+  multiSelectContainers.forEach((container) => {
+    const button = container.querySelector(".multi-select-button");
+    button.originalText = button.innerText;
+    const dropdown = container.querySelector(".multi-select-dropdown");
+    dropdown.classList.add("hide");
+    button.addEventListener("click", () => {
+      dropdown.classList.toggle("hide");
+    });
+    const options = dropdown.querySelectorAll(
+      ".multi-select-dropdown__checkbox"
+    );
+    container.selectedOptions = [];
+
+    options.forEach((option) => {
+      if (option.checked && option.id !== "All") {
+        container.selectedOptions.push(option.id || null);
+      }
+
+      option.addEventListener("change", () => {
+        if (option.id === "All") {
+          options.forEach((o) => {
+            o.checked = option.checked;
+          });
+          container.selectedOptions = [];
+          if (option.checked) {
+            options.forEach((o) => {
+              if (o.id !== "All") container.selectedOptions.push(o.id || null);
+            });
+          }
+        } else {
+          if (option.checked) {
+            container.selectedOptions.push(option.id || null);
+          } else {
+            options.forEach((o) => {
+              if (o.id === "All") o.checked = false;
+            });
+            container.selectedOptions = container.selectedOptions.filter(
+              (o) => o !== (option.id || null)
+            );
+          }
+        }
+        if (container.selectedOptions.length > 0) {
+          button.innerText = `${button.originalText} (${container.selectedOptions.length})`;
+        } else {
+          button.innerText = button.originalText;
+        }
+      });
+    });
+
+    if (container.selectedOptions.length > 0) {
+      button.innerText = `${button.originalText} (${container.selectedOptions.length})`;
+    } else {
+      button.innerText = button.originalText;
+    }
+  });
+})();
+
 (function selectactiveTeams() {
   const teamOptions = document.getElementById("team-options");
   if (!teamOptions) return;

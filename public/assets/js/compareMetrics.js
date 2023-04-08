@@ -67,9 +67,10 @@ stackedInput.addEventListener("change", (e) => {
 });
 
 const epicsOptions = document.getElementById("epics-options");
-let selectedEpics = [epicsOptions.value];
+let selectedEpics = epicsOptions.selectedOptions;
 epicsOptions.onchange = function () {
-  selectedEpics = [this.value];
+  selectedEpics = this.selectedOptions;
+  console.log(selectedEpics);
   const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
     filterIssuesEpics(i, selectedLabel, selectedIssues, selectedEpics)
   );
@@ -280,7 +281,7 @@ function filterIssuesGeneral(issue, labelFilter, issuesFilter) {
 
 function filterIssuesEpics(issue, labelFilter, issuesFilter, epicFilters) {
   const passesGeneral = filterIssuesGeneral(issue, labelFilter, issuesFilter);
-  return passesGeneral && epicFilters.includes(issue.epic_name || "None");
+  return passesGeneral && epicFilters.includes(issue.epic_name);
 }
 
 function updateCharts() {
