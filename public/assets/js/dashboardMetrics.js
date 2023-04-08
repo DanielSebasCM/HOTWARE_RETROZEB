@@ -75,7 +75,7 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
 
   const canvas = document.getElementById(canvasId);
-  canvas.parentElement.style.height = `${labels.length * 25 + 150}px`;
+  canvas.parentElement.style.height = `${labels.length * 15 + 150}px`;
 
   const labelHasData = Array(labels.length).fill(false);
   console.log(statesData);

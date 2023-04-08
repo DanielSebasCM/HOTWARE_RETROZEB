@@ -52,14 +52,30 @@ nRetrospectivesInput.addEventListener("change", async (e) => {
   window.location.href = `/retrospectivas/comparar/${n}`;
 });
 
-const stackedInput = document.getElementById("stacked");
-let stacked = stackedInput.checked;
-console.log(stacked);
-stackedInput.addEventListener("change", (e) => {
-  stacked = e.target.checked;
-  console.log(stacked);
+const accumInput = document.getElementById("accum");
+let accum = accumInput.checked;
+accumInput.addEventListener("change", (e) => {
+  accum = e.target.checked;
   updateCharts();
 });
+
+const stackedInput = document.getElementById("stacked");
+let stacked = stackedInput.checked;
+stackedInput.addEventListener("change", (e) => {
+  stacked = e.target.checked;
+  updateCharts();
+});
+
+const epicsOptions = document.getElementById("epics-options");
+let selectedEpics = epicsOptions.selectedOptions;
+epicsOptions.onchange = function () {
+  selectedEpics = this.selectedOptions;
+  console.log(selectedEpics);
+  const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
+    filterIssuesEpics(i, selectedLabel, selectedIssues, selectedEpics)
+  );
+  updateChart("epics-chart", epicsData, sprints);
+};
 
 // CHARTS
 const retrospectives = await fetch(
@@ -69,55 +85,72 @@ const retrospectives = await fetch(
 retrospectives.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
 
 const usersUids = {};
-for (let retrospective of retrospectives) {
-  const usersData = await fetch(`/retrospectivas/${retrospective.id}/usuarios`);
-  const users = await usersData.json();
-  const uids = users.map((u) => u.uid);
-  usersUids[retrospective.id] = uids;
-}
-
-let issues = retrospectives.map(async (r) =>
-  fetch(`/retrospectivas/${r.id}/issues`).then((res) =>
-    res.json().then((d) => {
-      d.forEach((i) => {
-        i.id_retrospective = r.id;
-      });
-      return d;
-    })
+const retrospectivesUsers = await Promise.all(
+  retrospectives.map((r) =>
+    fetch(`/retrospectivas/${r.id}/usuarios`).then((res) => res.json())
   )
 );
 
-issues = await Promise.all(issues);
-issues = issues.flat();
-const groupedIssues = issues.groupBy("state");
+for (let i = 0; i < retrospectives.length; i++) {
+  const uids = retrospectivesUsers[i].map((u) => u.uid);
+  usersUids[retrospectives[i].id] = uids;
+}
 
+let issues = await Promise.all(
+  retrospectives.map(async (r) =>
+    fetch(`/retrospectivas/${r.id}/issues`).then((res) =>
+      res.json().then((d) => {
+        d.forEach((i) => {
+          i.id_retrospective = r.id;
+        });
+        return d;
+      })
+    )
+  )
+);
+
+issues = issues.flat();
+
+const groupedIssues = issues.groupBy("state");
 const sprints = retrospectives.map((r) => {
-  return r.id_sprint;
+  return r.sprint_name;
 });
 
-const dataGeneral = groupFilterIssues(groupedIssues, "id_sprint");
+const dataGeneral = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
+  filterIssuesGeneral(i, selectedLabel, selectedIssues)
+);
 createChart("general-chart", "General", dataGeneral, sprints, "x");
+
+const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
+  filterIssuesEpics(i, selectedLabel, selectedIssues, selectedEpics)
+);
+createChart("epics-chart", "Epics", epicsData, sprints, "x");
 
 function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
 
   const canvas = document.getElementById(canvasId);
-  // canvas.parentElement.style.height = "500px";
+  canvas.parentElement.style.height = "400px";
 
   const datasets = statesColors.map(({ state, color }) => {
     const storyPoints = labels.map((l) => {
-      if (statesData[state]) return statesData[state][l] || 0;
-      return 0;
+      if (statesData[state])
+        return statesData[state][l] || (accum && stacked ? 0 : null);
+      return null;
     });
+
+    let bgColor = color.slice();
+    // if (accum && stacked) bgColor = bgColor.slice(0, -4) + " 1)";
     return {
       label: `${state}`,
       data: storyPoints,
-      backgroundColor: color,
+      backgroundColor: bgColor,
       fill: true,
+      skipNull: true,
     };
   });
 
-  if (stacked) {
+  if (accum) {
     datasets.forEach((d, i) => {
       if (d.label === "Done") {
         // if (true) {
@@ -125,11 +158,8 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
           if (j > 0) datasets[i].data[j] += datasets[i].data[j - 1];
         });
       }
-      console.log(d);
     });
   }
-  console.log(labels);
-  console.log(datasets);
 
   const totals = {};
   labels.forEach((l) => {
@@ -143,7 +173,7 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   labels = labels.map((l) => l || "N/A");
 
   return new Chart(canvas, {
-    type: stacked ? "line" : "bar",
+    type: accum && stacked ? "line" : "bar",
     data: {
       labels,
       datasets,
@@ -176,13 +206,13 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
       },
       scales: {
         [mainAxis]: {
-          stacked: true,
+          stacked,
           ticks: {
             autoSkip: false,
           },
         },
         [secundaryAxis]: {
-          stacked: true,
+          stacked,
           title: {
             display: true,
             text: "Story points",
@@ -196,13 +226,11 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   });
 }
 
-function groupFilterIssues(rawData, key) {
+function groupFilterIssues(rawData, key, filterFn) {
   const data = {};
   // Por cada valor del filtro crear un objeto con los issues correspondinetes
   for (const state in rawData) {
-    const filteredData = rawData[state].filter((i) =>
-      filterIssues(i, selectedLabel, selectedIssues)
-    );
+    const filteredData = rawData[state].filter(filterFn);
     if (filteredData.length === 0) continue;
 
     const groupedFilteredData = key
@@ -221,7 +249,7 @@ function groupFilterIssues(rawData, key) {
   return data;
 }
 
-function filterIssues(issue, labelFilter, issuesFilter) {
+function filterIssuesGeneral(issue, labelFilter, issuesFilter) {
   // Filter by label
   let hasLabel;
   switch (labelFilter) {
@@ -251,9 +279,21 @@ function filterIssues(issue, labelFilter, issuesFilter) {
   return hasLabel && hasCorrectUser;
 }
 
+function filterIssuesEpics(issue, labelFilter, issuesFilter, epicFilters) {
+  const passesGeneral = filterIssuesGeneral(issue, labelFilter, issuesFilter);
+  return passesGeneral && epicFilters.includes(issue.epic_name);
+}
+
 function updateCharts() {
-  const dataGeneral = groupFilterIssues(groupedIssues, "id_sprint");
+  const dataGeneral = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
+    filterIssuesGeneral(i, selectedLabel, selectedIssues)
+  );
   updateChart("general-chart", dataGeneral, sprints);
+
+  const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
+    filterIssuesEpics(i, selectedLabel, selectedIssues, selectedEpics)
+  );
+  updateChart("epics-chart", epicsData, sprints);
 }
 
 function updateChart(canvasId, statesData, labels) {

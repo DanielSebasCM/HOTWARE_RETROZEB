@@ -15,7 +15,11 @@ router.get(
   authorize([privileges.canCreateRetrospectives]),
   controller.renderInitRetrospective
 );
-
+router.get(
+  "/comparar/:n",
+  authorize([privileges.canCompareRetrospectives]),
+  controller.renderCompareRetroMetrics
+);
 router.get("/:id", authorize([privileges.getMetrics]), (req, res) =>
   res.redirect(req.originalUrl + "/metricas")
 );
