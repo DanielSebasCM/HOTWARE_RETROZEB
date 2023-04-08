@@ -672,8 +672,9 @@ a.toggle-button {
   cursor: default;
 }
 
-.multi-select-button__icon {
-  background-image: url("/assets/icon/search.svg");
+.multi-select-button .icon {
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .multi-select-dropdown {
@@ -694,6 +695,7 @@ a.toggle-button {
 .multi-select-container .items__list {
   margin: 0;
   padding: 0;
+  overflow-y: scroll;
 }
 
 .multi-select-container .items__item {

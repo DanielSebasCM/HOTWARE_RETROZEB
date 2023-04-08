@@ -34,17 +34,21 @@
   if (!multiSelectContainers) return;
   multiSelectContainers.forEach((container) => {
     const button = container.querySelector(".multi-select-button");
-    button.originalText = button.innerText;
+
+    const display = container.querySelector(".multi-select-display");
+    display.originalText = display.innerText;
+
     const dropdown = container.querySelector(".multi-select-dropdown");
     dropdown.classList.add("hide");
     button.addEventListener("click", () => {
       dropdown.classList.toggle("hide");
     });
+
     const options = dropdown.querySelectorAll(
       ".multi-select-dropdown__checkbox"
     );
-    container.selectedOptions = [];
 
+    container.selectedOptions = [];
     options.forEach((option) => {
       if (option.checked && option.id !== "All") {
         container.selectedOptions.push(option.id || null);
@@ -55,6 +59,7 @@
           options.forEach((o) => {
             o.checked = option.checked;
           });
+
           container.selectedOptions = [];
           if (option.checked) {
             options.forEach((o) => {
@@ -74,17 +79,17 @@
           }
         }
         if (container.selectedOptions.length > 0) {
-          button.innerText = `${button.originalText} (${container.selectedOptions.length})`;
+          display.innerText = `${display.originalText} (${container.selectedOptions.length})`;
         } else {
-          button.innerText = button.originalText;
+          display.innerText = display.originalText;
         }
       });
     });
 
     if (container.selectedOptions.length > 0) {
-      button.innerText = `${button.originalText} (${container.selectedOptions.length})`;
+      display.innerText = `${display.originalText} (${container.selectedOptions.length})`;
     } else {
-      button.innerText = button.originalText;
+      display.innerText = display.originalText;
     }
   });
 })();
