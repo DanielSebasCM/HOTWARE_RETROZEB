@@ -40,6 +40,7 @@
 
     const dropdown = container.querySelector(".multi-select-dropdown");
     dropdown.classList.add("hide");
+
     button.addEventListener("click", () => {
       dropdown.classList.toggle("hide");
     });

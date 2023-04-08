@@ -68,7 +68,7 @@ stackedInput.addEventListener("change", (e) => {
 });
 
 epicsOptions.addEventListener("change", (e) => {
-  selectedEpics = this.selectedOptions;
+  selectedEpics = epicsOptions.selectedOptions;
   console.log(selectedEpics);
   const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
     filterIssuesEpics(i, selectedLabel, selectedIssues, selectedEpics)
