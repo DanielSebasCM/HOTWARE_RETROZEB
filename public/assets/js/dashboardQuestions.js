@@ -1,10 +1,18 @@
+const tokens = getTokens();
+
 let url = window.location.href.split("/");
 url[5] = "respuestas";
 url = url.join("/");
 
 Chart.defaults.font.family = "Poppins";
 
-let response = await fetch(url);
+let response = await fetch(url, {
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: "Bearer " + tokens.authToken,
+  },
+});
 let data = await response.json();
 let questions = data.filter((question) => question.type !== "OPEN");
 

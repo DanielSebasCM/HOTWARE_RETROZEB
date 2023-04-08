@@ -1,13 +1,14 @@
-Array.prototype.groupBy = function (key) {
-  return this.reduce(function (rv, x) {
-    const v = x[key];
-    (rv[v] = rv[v] || []).push(x);
-    return rv;
-  }, {});
-};
-
+const currentUserUid = document.querySelector("#current-user").dataset.uid;
+const teamOptions = document.getElementById("team-options");
+const issuesOptions = document.getElementById("issues-options");
+const labelOptions = document.getElementById("label-options");
+const nRetrospectivesInput = document.getElementById("n_retrospectives");
+const epicsOptions = document.getElementById("epics-options");
+const stackedInput = document.getElementById("stacked");
+const accumInput = document.getElementById("accum");
+const tokens = getTokens();
 const pruneEmpty = false;
-// CONSTANTS and CONFIGS
+const usersUids = {};
 const statesColors = [
   { state: "To Do", color: "rgba(255, 99, 132, 0.6)" },
   { state: "En curso", color: "rgba(54, 162, 235, 0.6)" },
@@ -16,32 +17,36 @@ const statesColors = [
   { state: "Blocked", color: "rgba(153, 102, 255, 0.6)" },
   { state: "Done", color: "rgba(255, 159, 64, 0.6)" },
 ];
-Chart.defaults.font.family = "Poppins";
-const currentUserUid = document.querySelector("#current-user").dataset.uid;
 
-// SELECTORS
-// TEAMS
-const teamOptions = document.getElementById("team-options");
 let selectedTeamId = teamOptions.value;
-// ISSUES
-const issuesOptions = document.getElementById("issues-options");
 let selectedIssues = issuesOptions.value;
-issuesOptions.onchange = function () {
-  selectedIssues = this.value;
-  updateCharts();
+let selectedLabel = labelOptions.value;
+let stacked = stackedInput.checked;
+let accum = accumInput.checked;
+let selectedEpics = epicsOptions.selectedOptions;
+let nRetrospectives = nRetrospectivesInput.value;
+
+Chart.defaults.font.family = "Poppins";
+Array.prototype.groupBy = function (key) {
+  return this.reduce(function (rv, x) {
+    const v = x[key];
+    (rv[v] = rv[v] || []).push(x);
+    return rv;
+  }, {});
 };
+
+issuesOptions.addEventListener("change", (e) => {
+  selectedIssues = e.target.value;
+  updateCharts();
+});
 
 // LABELS
-const labelOptions = document.getElementById("label-options");
-let selectedLabel = labelOptions.value;
-labelOptions.onchange = function () {
-  selectedLabel = this.value;
+labelOptions.addEventListener("change", (e) => {
+  selectedLabel = e.target.value;
   updateCharts();
-};
+});
 
 // INPUTS
-const nRetrospectivesInput = document.getElementById("n_retrospectives");
-let nRetrospectives = nRetrospectivesInput.value;
 nRetrospectivesInput.addEventListener("change", async (e) => {
   let n = parseInt(e.target.value);
   if (n > 10) {
@@ -52,42 +57,48 @@ nRetrospectivesInput.addEventListener("change", async (e) => {
   window.location.href = `/retrospectivas/comparar/${n}`;
 });
 
-const accumInput = document.getElementById("accum");
-let accum = accumInput.checked;
 accumInput.addEventListener("change", (e) => {
   accum = e.target.checked;
   updateCharts();
 });
 
-const stackedInput = document.getElementById("stacked");
-let stacked = stackedInput.checked;
 stackedInput.addEventListener("change", (e) => {
   stacked = e.target.checked;
   updateCharts();
 });
 
-const epicsOptions = document.getElementById("epics-options");
-let selectedEpics = epicsOptions.selectedOptions;
-epicsOptions.onchange = function () {
+epicsOptions.addEventListener("change", (e) => {
   selectedEpics = this.selectedOptions;
   console.log(selectedEpics);
   const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
     filterIssuesEpics(i, selectedLabel, selectedIssues, selectedEpics)
   );
   updateChart("epics-chart", epicsData, sprints);
-};
+});
 
 // CHARTS
 const retrospectives = await fetch(
-  `/equipos/${selectedTeamId}/retrospectivas/${nRetrospectives}`
+  `/equipos/${selectedTeamId}/retrospectivas/${nRetrospectives}`,
+  {
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: "Bearer " + tokens.authToken,
+    },
+  }
 ).then((res) => res.json());
 
 retrospectives.sort((a, b) => new Date(a.start_date) - new Date(b.start_date));
 
-const usersUids = {};
 const retrospectivesUsers = await Promise.all(
   retrospectives.map((r) =>
-    fetch(`/retrospectivas/${r.id}/usuarios`).then((res) => res.json())
+    fetch(`/retrospectivas/${r.id}/usuarios`, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + tokens.authToken,
+      },
+    }).then((res) => res.json())
   )
 );
 
@@ -98,7 +109,13 @@ for (let i = 0; i < retrospectives.length; i++) {
 
 let issues = await Promise.all(
   retrospectives.map(async (r) =>
-    fetch(`/retrospectivas/${r.id}/issues`).then((res) =>
+    fetch(`/retrospectivas/${r.id}/issues`, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + tokens.authToken,
+      },
+    }).then((res) =>
       res.json().then((d) => {
         d.forEach((i) => {
           i.id_retrospective = r.id;
@@ -126,6 +143,7 @@ const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
 );
 createChart("epics-chart", "Epics", epicsData, sprints, "x");
 
+// FUNCTIONS
 function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
 

@@ -7,11 +7,16 @@
     <title>Retro Zeb - <%= title %></title>
 
     <!-- FAVICON -->
-    <link rel="shortcut icon" href="/assets/icon/favicon.png" type="image/x-icon" />
+    <link
+      rel="shortcut icon"
+      href="/assets/icon/favicon.png"
+      type="image/x-icon"
+    />
 
     <!-- GOOGLE -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="/assets/js/googleAuth.js"></script>
+    <script src="/assets/js/auth/googleAuth.js"></script>
+
     <script>
       function handleCredentialResponse(response) {
         handleLogin(response);
@@ -45,5 +50,9 @@
 
     <!-- CHARTJS -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- SCRIPTS -->
+    <script src="/assets/js/utils/constants.js"></script>
+    <script src="/assets/js/utils/index.js"></script>
   </head>
 </html>

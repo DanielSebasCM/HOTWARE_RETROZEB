@@ -4,10 +4,6 @@ const User = require("../models/user.model");
 const renderLogin = (req, res) => {
   if (req.session.currentUser) return res.redirect("/");
 
-  if (req.query.error)
-    res.locals.errorMessage =
-      "Ocurrió un error, por favor inicia sesión nuevamente";
-
   // LOCALS
   res.locals.activeTeams = [];
   res.locals.currentUser = null;

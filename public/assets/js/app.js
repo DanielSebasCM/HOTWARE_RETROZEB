@@ -132,11 +132,3 @@
     deleteTokens();
   });
 })();
-
-function deleteTokens() {
-  // Delete cookies
-  document.cookie =
-    "rzauthToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  document.cookie =
-    "rzrefreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-}

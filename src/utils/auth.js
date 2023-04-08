@@ -40,10 +40,6 @@ const blacklistToken = async (token) => {
 };
 
 const deleteSession = (req, res) => {
-  const errorMessage = req.session.errorMessage
-    .replace(/\s/g, "-")
-    .toLowerCase();
-
   // LOCALS
   res.locals.activeTeams = [];
   res.locals.currentUser = null;

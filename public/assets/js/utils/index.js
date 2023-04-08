@@ -1,39 +1,3 @@
-(function updateTokens() {
-  const fourMinutes = 1000 * 60 * 4;
-  refreshTokens();
-
-  const interval = setInterval(() => {
-    refreshTokens();
-  }, fourMinutes);
-
-  return () => clearInterval(interval);
-})();
-
-async function refreshTokens() {
-  const { refreshToken } = getTokens();
-  if (!refreshToken) return;
-
-  try {
-    const res = await fetch("/token/refresh", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        refreshToken,
-      }),
-    });
-
-    const data = await res.json();
-
-    deleteTokens();
-    setTokens(data);
-  } catch (err) {
-    deleteTokens();
-    console.log(err);
-  }
-}
-
 // UTILS
 function setTokens(tokens) {
   const { authToken, refreshToken } = tokens;
@@ -67,4 +31,19 @@ function deleteTokens() {
     "rzauthToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   document.cookie =
     "rzrefreshToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+}
+
+function decodeJwtResponse(token) {
+  var base64Url = token.split(".")[1];
+  var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  var jsonPayload = decodeURIComponent(
+    window
+      .atob(base64)
+      .split("")
+      .map(function (c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+  return JSON.parse(jsonPayload);
 }

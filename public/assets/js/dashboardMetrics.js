@@ -1,11 +1,8 @@
-Array.prototype.groupBy = function (key) {
-  return this.reduce(function (rv, x) {
-    const v = x[key];
-    (rv[v] = rv[v] || []).push(x);
-    return rv;
-  }, {});
-};
-
+const currentUserUid = document.querySelector("#current-user").dataset.uid;
+const labelOptions = document.getElementById("label-options");
+const issuesOptions = document.getElementById("issues-options");
+const showEmptyInput = document.getElementById("show-empty");
+const tokens = getTokens();
 const statesColors = [
   { state: "To Do", color: "rgba(255, 99, 132, 0.6)" },
   { state: "En curso", color: "rgba(54, 162, 235, 0.6)" },
@@ -16,40 +13,34 @@ const statesColors = [
 ];
 
 Chart.defaults.font.family = "Poppins";
+Array.prototype.groupBy = function (key) {
+  return this.reduce(function (rv, x) {
+    const v = x[key];
+    (rv[v] = rv[v] || []).push(x);
+    return rv;
+  }, {});
+};
 
-const currentUserUid = document.querySelector("#current-user").dataset.uid;
-
+let selectedLabel = labelOptions.value;
+let selectedIssues = issuesOptions.value;
+let showEmpty = showEmptyInput.checked;
 let baseUrl = window.location.href.split("/");
 baseUrl.pop();
 baseUrl = baseUrl.join("/");
 
-const issuesUrl = baseUrl + "/issues";
-const usersUrl = baseUrl + "/usuarios";
+const { issues, groupedIssues } = await getIssues();
+const { usersUids } = await getUsers();
 
-const issuesData = await fetch(issuesUrl);
-const issues = await issuesData.json();
-
-const groupedIssues = issues.groupBy("state");
-
-const usersData = await fetch(usersUrl);
-const users = await usersData.json();
-const usersUids = users.map((d) => d.uid);
-
-const labelOptions = document.getElementById("label-options");
-let selectedLabel = labelOptions.value;
-labelOptions.onchange = function () {
-  selectedLabel = this.value;
+labelOptions.addEventListener("change", (e) => {
+  selectedLabel = e.target.value;
   updateCharts();
-};
+});
 
-const issuesOptions = document.getElementById("issues-options");
-let selectedIssues = issuesOptions.value;
-issuesOptions.onchange = function () {
-  selectedIssues = this.value;
+issuesOptions.addEventListener("change", (e) => {
+  selectedIssues = e.target.value;
   updateCharts();
-};
-const showEmptyInput = document.getElementById("show-empty");
-let showEmpty = showEmptyInput.checked;
+});
+
 showEmptyInput.addEventListener("change", (e) => {
   showEmpty = e.target.checked;
   updateCharts();
@@ -63,43 +54,37 @@ createChart("general-chart", "General", dataGeneral, ["Total"], "y");
 
 const dataEpics = groupFilterIssues(groupedIssues, "epic_name");
 const epicChart = createChart("epics-chart", "Epics", dataEpics, epics, "y");
+
 //get chart labels
 const epicLabels = epicChart.data.labels;
-console.log(epicLabels);
 
 const dataTypes = groupFilterIssues(groupedIssues, "type");
 createChart("types-chart", "Types", dataTypes, types, "y");
 
+// FUNCTIONS
 function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
-  console.group(title);
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
 
   const canvas = document.getElementById(canvasId);
   canvas.parentElement.style.height = `${labels.length * 15 + 150}px`;
 
   const labelHasData = Array(labels.length).fill(false);
-  console.log(statesData);
 
   let datasets = statesColors.map(({ state, color }) => {
-    console.group(state);
     const storyPoints = labels.map((label, index) => {
       if (statesData[state]) {
         const data = statesData[state][label] || 0;
         labelHasData[index] = labelHasData[index] || data > 0;
-        console.log(label, data);
         return data;
       }
       return 0;
     });
-    console.groupEnd();
     return {
       label: `${state}`,
       data: storyPoints,
       backgroundColor: color,
     };
   });
-  console.log(datasets);
-  console.log(labelHasData);
 
   if (!showEmpty) {
     labels = labels.filter((_, i) => labelHasData[i]);
@@ -118,7 +103,6 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
   });
 
   labels = labels.map((l) => l || "N/A");
-  console.groupEnd();
   return new Chart(canvas, {
     type: "bar",
     data: {
@@ -291,4 +275,45 @@ function updateChart(canvasId, statesData, labels) {
     ).toFixed(2)}%`;
   };
   chart.update();
+}
+
+async function getIssues() {
+  const issuesUrl = baseUrl + "/issues";
+
+  try {
+    const issuesData = await fetch(issuesUrl, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + tokens.authToken,
+      },
+    });
+    const issues = await issuesData.json();
+    const groupedIssues = issues.groupBy("state");
+
+    return { issues, groupedIssues };
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function getUsers() {
+  const usersUrl = baseUrl + "/usuarios";
+
+  try {
+    const usersData = await fetch(usersUrl, {
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        Authorization: "Bearer " + tokens.authToken,
+      },
+    });
+
+    const users = await usersData.json();
+    const usersUids = users.map((d) => d.uid);
+
+    return { users, usersUids };
+  } catch (error) {
+    console.log(error);
+  }
 }

@@ -30,26 +30,25 @@
             </div>
             <% } %>
     </div>
-
     <% if (locals.currentUser) { %>
       <!-- NAV -->
       <%- include('../partials/nav.ejs') %>
-        <!-- SIDEBAR -->
-        <%- include('../partials/sidebar.ejs') %>
-          <div class="wrapper">
-            <main class="content">
-              <!-- BODY -->
-              <%- body %>
-            </main>
-            <% } else { %>
-              <!-- BODY -->
-              <div class="login">
-                <%- body %>
-              </div>
-              <% } %>
+      <!-- SIDEBAR -->
+      <%- include('../partials/sidebar.ejs') %>
+      <div class="wrapper">
+        <main class="content">
+          <!-- BODY -->
+          <%- body %>
+        </main>
+    <% } else { %>
+        <!-- BODY -->
+        <div class="login">
+        <%- body %>
+        </div>
+    <% } %>
 
-                <%- include('../partials/footer.ejs') %>
-          </div>
+        <%- include('../partials/footer.ejs') %>
+      </div>
   </body>
 
   </html>
