@@ -28,12 +28,17 @@
         <% } %>
           <li class="nav__item">
             <div class="user" id="current-user" data-uid="<%= currentUser.uid %>">
-              <div class="user__avatar">
-                <%= currentUser.first_name[0] %>
-              </div>
-              <div class="user__name">
-                <%= currentUser.first_name %>
-              </div>
+              <% if(locals.currentUser.picture) { %>
+                <img src="<%= locals.currentUser.picture %>" alt="<%= currentUser.first_name %>"
+                  class="user__avatar no-border" />
+                <% } else { %>
+                  <div class="user__avatar">
+                    <%= currentUser.first_name[0] %>
+                  </div>
+                  <% } %>
+                    <div class="user__name">
+                      <%= currentUser.first_name %>
+                    </div>
             </div>
           </li>
     </ul>

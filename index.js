@@ -43,6 +43,11 @@ app.use(
 // ROUTER
 initRoutes(app);
 
+// TODO - DELETE THIS
+app.get("/", (req, res) => {
+  res.redirect("/retrospectivas");
+});
+
 // 404
 app.use((req, res) => {
   res.locals.title = "Error 404";

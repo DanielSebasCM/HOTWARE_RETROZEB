@@ -3,7 +3,8 @@ const User = require("../models/user.model");
 const authorize = (privileges) => {
   return async (req, res, next) => {
     if (!req.session.currentUser) {
-      return res.redirect("/login");
+      return next();
+      // return res.redirect("/login");
     }
 
     const builtUser = new User(req.session.currentUser);

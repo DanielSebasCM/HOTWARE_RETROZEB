@@ -17,7 +17,7 @@
         </div>
         <% } %>
           <% if(locals.errorMessage && locals.errorMessage !="" ) { %>
-            <div class="notification notification--error">
+            <div class=" notification notification--error">
               <div class="notification__content">
                 <div class="notification__icon">
                   <span class="icon"></span>
@@ -30,26 +30,25 @@
             </div>
             <% } %>
     </div>
-
     <% if (locals.currentUser) { %>
       <!-- NAV -->
       <%- include('../partials/nav.ejs') %>
-        <!-- SIDEBAR -->
-        <%- include('../partials/sidebar.ejs') %>
-          <div class="wrapper">
-            <main class="content">
-              <!-- BODY -->
-              <%- body %>
-            </main>
-            <% } else { %>
-              <!-- BODY -->
-              <div class="login">
-                <%- body %>
-              </div>
-              <% } %>
+      <!-- SIDEBAR -->
+      <%- include('../partials/sidebar.ejs') %>
+      <div class="wrapper">
+        <main class="content">
+          <!-- BODY -->
+          <%- body %>
+        </main>
+    <% } else { %>
+        <!-- BODY -->
+        <div class="login">
+        <%- body %>
+        </div>
+    <% } %>
 
-                <%- include('../partials/footer.ejs') %>
-          </div>
+        <%- include('../partials/footer.ejs') %>
+      </div>
   </body>
 
   </html>

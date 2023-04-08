@@ -15,9 +15,20 @@ const jwt = require("jsonwebtoken");
 const db = require("../utils/db");
 
 const initRoutes = (app) => {
-  app.use(setLocals); // MIDDLEWARE
+  // PUBLIC ROUTES
   app.use("/", authRouter);
-  app.use(authMiddleware.validateTokenActive); // MIDDLEWARE
+
+  // MIDDLEWARES
+  app.use(authMiddleware.validateTokenActive);
+  app.use(setLocals);
+
+  // PRIVATE ROUTES
+  app.use(`${routes.locals}`, localsRouter);
+  app.use(`${routes.teams}`, teamRouter);
+  app.use(`${routes.actionables}`, actionableRouter);
+  app.use(`${routes.questions}`, questionRouter);
+  app.use(`${routes.retrospectives}`, retrospectiveRouter);
+  app.use(`${routes.roles}`, rolesRouter);
 
   // Temporary routes for testing errors
   app.use("/default_error", (req, res, next) => {
@@ -41,13 +52,6 @@ const initRoutes = (app) => {
       next(err);
     }
   });
-
-  app.use(`${routes.locals}`, localsRouter);
-  app.use(`${routes.teams}`, teamRouter);
-  app.use(`${routes.actionables}`, actionableRouter);
-  app.use(`${routes.questions}`, questionRouter);
-  app.use(`${routes.retrospectives}`, retrospectiveRouter);
-  app.use(`${routes.roles}`, rolesRouter);
 };
 
 module.exports = initRoutes;

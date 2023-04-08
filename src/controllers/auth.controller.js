@@ -1,11 +1,8 @@
 const authUtil = require("../utils/auth");
 const User = require("../models/user.model");
-const { OAuth2Client } = require("google-auth-library");
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const renderLogin = (req, res) => {
-  if (req.session.currentUser && req.cookies.rzauthToken)
-    return res.redirect("/");
+  if (req.session.currentUser) return res.redirect("/");
 
   // LOCALS
   res.locals.activeTeams = [];
@@ -13,25 +10,20 @@ const renderLogin = (req, res) => {
   res.locals.currentTeam = null;
 
   // SESSION
-  req.session.activeTeams = [];
   req.session.currentUser = null;
   req.session.currentTeam = null;
-  req.session.successMessage = "";
-  req.session.errorMessage = "";
+  req.session.activeTeams = [];
 
   res.render("index", { title: "Login" });
 };
 
-// @zeb.mx
-// @luuna.mx
-// @nooz.mx
-// @mappa.mx
 const loginAPI = async (req, res, next) => {
+  // @zeb.mx, @luuna.mx, @nooz.mx, @mappa.mx
   try {
     const { token } = req.body;
 
     // VALIDATE TOKEN
-    const data = await verifyGoogleToken(token);
+    const data = await authUtil.verifyGoogleToken(token);
 
     let uid = null;
     let id_jira = null;
@@ -54,7 +46,12 @@ const loginAPI = async (req, res, next) => {
       });
 
       const result = await newUser.post();
-      uid = result.insertId;
+      uid = newUser.uid = result.insertId;
+
+      // ADD USER ROLE
+      // admin = 1
+      // member = 2
+      await newUser.addRole({ id: 1 });
     }
 
     const userData = {
@@ -89,15 +86,7 @@ const loginAPI = async (req, res, next) => {
 };
 
 const logoutAPI = (req, res) => {
-  // LOCALS
-  res.locals.activeTeams = [];
-  res.locals.currentUser = null;
-  res.locals.currentTeam = null;
-
-  // SESSION
-  req.session.destroy();
-
-  res.status(200).redirect("/login");
+  authUtil.deleteSession(req, res);
 };
 
 const refreshTokenAPI = async (req, res, next) => {
@@ -122,7 +111,7 @@ const refreshTokenAPI = async (req, res, next) => {
 
     if (isBlacklisted) {
       req.session.errorMessage = "Token invalido. Por favor inicia sesión";
-      return res.status(401).redirect("/login");
+      return authUtil.deleteSession(req, res);
     }
 
     await authUtil.blacklistToken(refreshToken);
@@ -134,19 +123,9 @@ const refreshTokenAPI = async (req, res, next) => {
     res.status(200).json({ authToken, refreshToken: newRefreshToken });
   } catch (error) {
     console.log("error: ", error);
-    res.redirect("/login");
+    authUtil.deleteSession(req, res);
   }
 };
-
-// UTILS
-async function verifyGoogleToken(token) {
-  const ticket = await client.verifyIdToken({
-    idToken: token,
-    audience: process.env.GOOGLE_CLIENT_ID,
-  });
-  const payload = ticket.getPayload();
-  return payload;
-}
 
 module.exports = {
   renderLogin,
