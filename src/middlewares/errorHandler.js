@@ -2,6 +2,7 @@ const { setLocals } = require("./locals.middleware");
 
 const errorHandler = (err, req, res, next) => {
   console.log("Error Handler");
+  console.log("URL: " + req.url);
   const errorType = err.constructor.name;
   console.log("Tipo: " + errorType);
   console.log(err);

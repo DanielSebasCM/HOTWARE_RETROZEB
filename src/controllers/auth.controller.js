@@ -1,23 +1,16 @@
 const authUtil = require("../utils/auth");
 const User = require("../models/user.model");
-const { OAuth2Client } = require("google-auth-library");
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const renderLogin = (req, res) => {
-  if (req.session.currentUser && req.cookies.rzauthToken)
-    return res.redirect("/");
-
   // LOCALS
   res.locals.activeTeams = [];
   res.locals.currentUser = null;
   res.locals.currentTeam = null;
 
   // SESSION
-  req.session.activeTeams = [];
   req.session.currentUser = null;
   req.session.currentTeam = null;
-  req.session.successMessage = "";
-  req.session.errorMessage = "";
+  req.session.activeTeams = [];
 
   res.render("index", { title: "Login" });
 };
@@ -31,7 +24,7 @@ const loginAPI = async (req, res, next) => {
     const { token } = req.body;
 
     // VALIDATE TOKEN
-    const data = await verifyGoogleToken(token);
+    const data = await authUtil.verifyGoogleToken(token);
 
     let uid = null;
     let id_jira = null;
@@ -54,7 +47,12 @@ const loginAPI = async (req, res, next) => {
       });
 
       const result = await newUser.post();
-      uid = result.insertId;
+      uid = newUser.uid = result.insertId;
+
+      // ADD USER ROLE
+      // admin = 1
+      // member = 2
+      await newUser.addRole({ id: 1 });
     }
 
     const userData = {
@@ -137,16 +135,6 @@ const refreshTokenAPI = async (req, res, next) => {
     res.redirect("/login");
   }
 };
-
-// UTILS
-async function verifyGoogleToken(token) {
-  const ticket = await client.verifyIdToken({
-    idToken: token,
-    audience: process.env.GOOGLE_CLIENT_ID,
-  });
-  const payload = ticket.getPayload();
-  return payload;
-}
 
 module.exports = {
   renderLogin,

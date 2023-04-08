@@ -2,9 +2,7 @@ const authUtil = require("../utils/auth");
 
 const authMiddleware = {
   // VALIDATE ACTIVE TOKEN
-  validateTokenActive: (req, res, next) => {
-    if (!req.session.currentUser) return res.redirect("/login");
-
+  validateTokenActive: async (req, res, next) => {
     let token;
 
     if (req.headers.authorization)
@@ -13,6 +11,7 @@ const authMiddleware = {
 
     try {
       authUtil.verifyToken(token);
+
       next();
     } catch (error) {
       console.log("error: ", error);

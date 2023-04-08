@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
 const Token = require("../models/token.model");
+const { OAuth2Client, auth } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+const User = require("../models/user.model");
 
 const createTokenLogin = (data) => {
   return jwt.sign(data, process.env.JWT_LOGIN, { expiresIn: "300s" }); // 5 minutes
@@ -17,6 +20,15 @@ const verifyToken = (token, type = "login") => {
   return jwt.verify(token, typeToken);
 };
 
+async function verifyGoogleToken(token) {
+  const ticket = await client.verifyIdToken({
+    idToken: token,
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+  const payload = ticket.getPayload();
+  return payload;
+}
+
 const isBlacklisted = async (token) => {
   const tokenExixsts = await Token.getById(token);
   if (tokenExixsts) return true;
@@ -32,6 +44,7 @@ module.exports = {
   createTokenLogin,
   createRefreshToken,
   verifyToken,
+  verifyGoogleToken,
   isBlacklisted,
   blacklistToken,
 };

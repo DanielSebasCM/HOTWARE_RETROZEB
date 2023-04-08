@@ -15,9 +15,9 @@ const jwt = require("jsonwebtoken");
 const db = require("../utils/db");
 
 const initRoutes = (app) => {
-  app.use(setLocals); // MIDDLEWARE
   app.use("/", authRouter);
   app.use(authMiddleware.validateTokenActive); // MIDDLEWARE
+  app.use(setLocals); // MIDDLEWARE
 
   // Temporary routes for testing errors
   app.use("/default_error", (req, res, next) => {

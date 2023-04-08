@@ -1,4 +1,7 @@
-<script src="/assets/js/app.js"></script>
+<script src="/assets/js/auth.js"></script>
+<% if(locals.currentUser) { %>
+  <script src="/assets/js/app.js"></script>
+<% } %>
 
 <% if (locals.currentUser) { %>
 <!-- FOOTER -->
