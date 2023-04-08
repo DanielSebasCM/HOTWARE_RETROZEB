@@ -8,7 +8,7 @@
     </div>
     <div class="banner__section buttons-container">
       <% if(currentPrivileges.includes(privileges.retrospectives.canCompareRetrospectives)) { %>
-      <button class="button button--edit">Comparar</button>
+      <a class="button button--edit" href="<%= `${routes.retrospectives}/comparar/4`%>">Comparar</a>
       <% } %>
       <% if(currentPrivileges.includes(privileges.retrospectives.canCreateRetrospectives)) { %>
       <a class="button button--primary" href="/retrospectivas/iniciar">Iniciar Retrospectiva</a>

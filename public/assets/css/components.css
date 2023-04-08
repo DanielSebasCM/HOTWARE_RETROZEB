@@ -639,6 +639,7 @@ a.toggle-button {
 /* INPUT */
 .input,
 .search-bar,
+.multi-select-button,
 .select-container {
   height: var(--input-height);
   width: var(--input-width);
@@ -657,6 +658,52 @@ a.toggle-button {
 
 .select-container {
   max-width: 20rem;
+}
+
+.multi-select-container {
+  width: 100%;
+  max-width: 20rem;
+  position: relative;
+}
+
+.multi-select-button {
+  font-size: 1.2rem;
+  justify-content: space-between;
+  cursor: default;
+}
+
+.multi-select-button .icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.multi-select-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  max-height: 20rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-border-inactive);
+  border-radius: var(--border-radius);
+  z-index: 1;
+}
+
+.multi-select-container .items__list {
+  margin: 0;
+  padding: 0;
+  overflow-y: scroll;
+}
+
+.multi-select-container .items__item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
 }
 
 .input:focus,
