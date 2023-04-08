@@ -857,6 +857,43 @@ a.toggle-button {
   background-image: url("/assets/icon/danger.svg");
 }
 
+.description-question {
+  margin-top: 1rem;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--color-font-secondary);
+  margin-bottom: var(--component-mb);
+  color: blue;
+}
+
+.banner-question {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  /* align-content: baseline; */
+}
+
+.banner-question button {
+  margin: 0;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.option-container > button {
+  max-width: 4rem;
+}
+
 /* UTILS */
 .transition {
   transition: all 0.3s ease-in-out;
@@ -875,6 +912,10 @@ a.toggle-button {
   font-size: 1.4rem;
   font-weight: 600;
   color: var(--color-font-inactive);
+}
+
+.no-border {
+  border: none !important;
 }
 
 /* MARGINS */
@@ -1053,41 +1094,4 @@ a.toggle-button {
 
 .pl-5 {
   padding-left: 5rem;
-}
-
-.description-question {
-  margin-top: 1rem;
-  font-size: 1.4rem;
-  font-weight: 400;
-  color: var(--color-font-secondary);
-  margin-bottom: var(--component-mb);
-  color: blue;
-}
-
-.banner-question {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  /* align-content: baseline; */
-}
-
-.banner-question button {
-  margin: 0;
-}
-
-.options-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.option-container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 2rem;
-}
-
-.option-container > button {
-  max-width: 4rem;
 }
