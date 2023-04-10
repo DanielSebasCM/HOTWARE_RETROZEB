@@ -8,6 +8,7 @@ const createTokenLogin = (data) => {
 };
 
 const createRefreshToken = (data) => {
+  data.createdAt = Date.now();
   return jwt.sign(data, process.env.JWT_REFRESH, { expiresIn: "86400s" }); // 24 hours
 };
 

@@ -108,7 +108,6 @@ const refreshTokenAPI = async (req, res, next) => {
 
     // BLACKLIST REFRESH TOKEN
     const isBlacklisted = await authUtil.isBlacklisted(refreshToken);
-
     if (isBlacklisted) {
       req.session.errorMessage = "Token invalido. Por favor inicia sesión";
       return authUtil.deleteSession(req, res);
