@@ -11,8 +11,8 @@
   </div>
   <span class="line"></span>
 
-  <!-- CREATE ROLES -->
-  <form id="addRole" method="POST" action="/roles/nuevo">
+  <!--CREATE ROLE-->
+  <form action="/roles/nuevo" method="POST">
     <div class="banner-question">
       <div>
         <p class="description-question">Nombre del rol</p>
@@ -21,18 +21,24 @@
         </div>
       </div>
       <div>
-        <p class="description-question">Privilegios</p>
-        <!--Privileges checkbox-->
-        <div class="checkbox-container">
-          <input type="checkbox">addRole</input>
-          <input type="checkbox">getSelfDashboard</input>
-          <input type="checkbox">getSelfDashboard</input>
+        <p class="description-question">Descripción del rol</p>
+        <div class="input-container">
+          <!--Checkbox inputs-->
+          <div class="radio-container">
+            <% for(let privilege in privileges) { %>
+            <div class="radio-item">
+              <input type="checkbox" name="id" />
+              <label for="read"><%= privilege.name %></label>
+            </div>
+            <% } %>
+          </div>
         </div>
+      </div>
+      <div>
         <br>
         <button class="button button--primary" type="submit">
           Crear Rol
         </button>
       </div>
-    </div>
   </form>
 </section>

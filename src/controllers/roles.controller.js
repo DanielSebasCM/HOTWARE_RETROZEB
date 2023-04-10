@@ -34,9 +34,10 @@ const renderNewRole = async (req, res, next) => {
 
 const postRole = async (req, res, next) => {
   try {
-    const { name, privilege } = req.body;
-    const newRole = new Role({ name, privileges: privilege });
-    await newRole.post();
+    const { name, privileges } = req.body;
+    const role = new Role({ name });
+    await role.post();
+    await role.addPrivilege(privileges);
     req.session.successMessage = "Rol creado con éxito";
     res.redirect("/roles");
   } catch (err) {
