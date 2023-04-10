@@ -27,25 +27,81 @@
   });
 })();
 
+(function multiSelectSelection() {
+  const multiSelectContainers = document.querySelectorAll(
+    ".multi-select-container"
+  );
+  if (!multiSelectContainers) return;
+  multiSelectContainers.forEach((container) => {
+    const button = container.querySelector(".multi-select-button");
+
+    const display = container.querySelector(".multi-select-display");
+    display.originalText = display.innerText;
+
+    const dropdown = container.querySelector(".multi-select-dropdown");
+    dropdown.classList.add("hide");
+
+    button.addEventListener("click", () => {
+      dropdown.classList.toggle("hide");
+    });
+
+    const options = dropdown.querySelectorAll(
+      ".multi-select-dropdown__checkbox"
+    );
+
+    container.selectedOptions = [];
+    options.forEach((option) => {
+      if (option.checked && option.id !== "All") {
+        container.selectedOptions.push(option.id || null);
+      }
+
+      option.addEventListener("change", () => {
+        if (option.id === "All") {
+          options.forEach((o) => {
+            o.checked = option.checked;
+          });
+
+          container.selectedOptions = [];
+          if (option.checked) {
+            options.forEach((o) => {
+              if (o.id !== "All") container.selectedOptions.push(o.id || null);
+            });
+          }
+        } else {
+          if (option.checked) {
+            container.selectedOptions.push(option.id || null);
+          } else {
+            options.forEach((o) => {
+              if (o.id === "All") o.checked = false;
+            });
+            container.selectedOptions = container.selectedOptions.filter(
+              (o) => o !== (option.id || null)
+            );
+          }
+        }
+        if (container.selectedOptions.length > 0) {
+          display.innerText = `${display.originalText} (${container.selectedOptions.length})`;
+        } else {
+          display.innerText = display.originalText;
+        }
+      });
+    });
+
+    if (container.selectedOptions.length > 0) {
+      display.innerText = `${display.originalText} (${container.selectedOptions.length})`;
+    } else {
+      display.innerText = display.originalText;
+    }
+  });
+})();
+
 (function selectactiveTeams() {
   const teamOptions = document.getElementById("team-options");
   if (!teamOptions) return;
-  const teamList = teamOptions.querySelectorAll("option");
+  const form = teamOptions.closest("form");
 
-  teamOptions.addEventListener("change", (event) => {
-    teamList.forEach((team) => {
-      if (team.value == event.target.value) {
-        return fetch(`http://localhost:3000/locals`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ activeTeam: team.value }),
-        }).catch((err) => {
-          console.log(err);
-        });
-      }
-    });
+  teamOptions.addEventListener("change", () => {
+    return form.submit();
   });
 })();
 
@@ -53,21 +109,27 @@
   const closeBtn = document.querySelectorAll(".notification__close");
   closeBtn.forEach((btn) => {
     btn.addEventListener("click", async () => {
-      console.log("close")
       btn.parentElement.classList.add("hide");
-
-      const type = btn.dataset.type;
-
-      try {
-        return await fetch(`http://localhost:3000/locals/mensajes/${type}`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-      } catch (error) {
-        console.log(error);
-      }
     });
+  });
+})();
+
+(function hideNotificationAfterTime() {
+  const notification = document.querySelectorAll(".notification");
+  if (!notification) return;
+
+  notification.forEach((notification) => {
+    setTimeout(() => {
+      notification.classList.add("hide");
+    }, 5000);
+  });
+})();
+
+(function logout() {
+  // if (location.pathname == "/login") return deleteTokens();
+
+  const logoutForm = document.getElementById("logout-form");
+  logoutForm.addEventListener("submit", (e) => {
+    deleteTokens();
   });
 })();

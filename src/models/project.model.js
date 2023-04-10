@@ -1,6 +1,7 @@
 const db = require("../utils/db");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
+const projectMaxLength = require("../utils/constants").limits.projectMaxLength;
 
 class Project {
   constructor(project) {
@@ -21,6 +22,17 @@ class Project {
       id,
     ]);
 
+    if (project.length === 0) return null;
+    return new Project(project[0]);
+  }
+
+  static async getByJiraId(id_jira) {
+    let [project, _] = await db.execute(
+      `SELECT * FROM project WHERE id_jira = ?`,
+      [id_jira]
+    );
+
+    if (project.length === 0) return null;
     return new Project(project[0]);
   }
 

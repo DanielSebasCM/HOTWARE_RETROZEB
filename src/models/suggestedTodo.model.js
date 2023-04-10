@@ -2,7 +2,8 @@ const db = require("../utils/db");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const actionableStates = require("../utils/constants").enums.actionableStates;
-
+const { toDoTitleMaxLength, toDoDescriptionMaxLength } =
+  require("../utils/constants").limits;
 class SuggestedTodo {
   constructor(suggested_todo) {
     SuggestedTodo.verify(suggested_todo);
@@ -12,7 +13,6 @@ class SuggestedTodo {
     this.description = suggested_todo.description;
     this.state = suggested_todo.state || "PENDING";
     this.id_user_author = suggested_todo.id_user_author;
-    this.id_retrospective = suggested_todo.id_retrospective;
   }
 
   static async getById(id) {
@@ -21,6 +21,7 @@ class SuggestedTodo {
       [id]
     );
 
+    if (suggested_todo.length === 0) return null;
     return new SuggestedTodo(suggested_todo[0]);
   }
 
@@ -31,7 +32,7 @@ class SuggestedTodo {
     );
   }
 
-  static async getAllState(state) {
+  static async getAllByState(state) {
     let [suggested_todo_, _] = await db.execute(
       `SELECT * FROM suggested_todo WHERE state = ?`,
       [state]
@@ -42,59 +43,47 @@ class SuggestedTodo {
   }
 
   static verify(suggested_todo) {
-    // Length of title is less than 40
-    if (suggested_todo.title?.length > 40)
+    // id
+    if (suggested_todo.id && !Number.isInteger(Number(suggested_todo.id)))
+      throw new ValidationError("id", validationMessages.mustBeInteger);
+
+    // title
+    if (!suggested_todo.title)
+      throw new ValidationError("title", validationMessages.isMandatory);
+
+    if (suggested_todo.title.length > toDoTitleMaxLength)
       throw new ValidationError(
         "title",
-        validationMessages.mustBeShorterThan(40)
+        validationMessages.mustBeShorterThan(toDoTitleMaxLength)
       );
 
-    // Title is not empty or null
-    if (
-      suggested_todo.title?.length == 0 ||
-      suggested_todo.title == null ||
-      !suggested_todo.title
-    )
-      throw new ValidationError("title", validationMessages.isMandatory);
-
-    // Length of description is less than 255
-    if (suggested_todo.description?.length > 255)
+    if (suggested_todo.description.length > toDoDescriptionMaxLength)
       throw new ValidationError(
         "description",
-        validationMessages.mustBeShorterThan(255)
+        validationMessages.mustBeShorterThan(toDoDescriptionMaxLength)
       );
 
-    // Description is not empty or null
+    // state
     if (
-      suggested_todo.description?.length == 0 ||
-      suggested_todo.description == null ||
-      !suggested_todo.description
+      suggested_todo.state &&
+      !actionableStates.includes(suggested_todo.state)
     )
-      throw new ValidationError("description", validationMessages.isMandatory);
+      throw new ValidationError(
+        "state",
+        validationMessages.mustBeEnum(actionableStates)
+      );
 
-    //State is of type "PENDING", "ACCEPTED", "REJECTED"
-    if (suggested_todo.state) {
-      if (!actionableStates.includes(suggested_todo.state))
-        throw new ValidationError(
-          "state",
-          validationMessages.mustBeEnum(actionableStates)
-        );
-    }
-
-    //State is not null
-    if (suggested_todo.state == null || !suggested_todo.state)
-      throw new ValidationError("title", validationMessages.isMandatory);
-
+    // id_user_author
     if (!suggested_todo.id_user_author)
       throw new ValidationError(
         "id_user_author",
         validationMessages.isMandatory
       );
 
-    if (!suggested_todo.id_retrospective)
+    if (!Number.isInteger(Number(suggested_todo.id_user_author)))
       throw new ValidationError(
-        "id_retrospective",
-        validationMessages.isMandatory
+        "id_user_author",
+        validationMessages.mustBeInteger
       );
 
     return true;
@@ -102,10 +91,11 @@ class SuggestedTodo {
 
   async post() {
     let [suggested_todo, _] = await db.execute(
-      `INSERT INTO suggested_todo (title, description, id_user_author, id_retrospective) VALUES (?, ?, ?, ?)`,
-      [this.title, this.description, this.id_user_author, this.id_retrospective]
+      `INSERT INTO suggested_todo (title, description, id_user_author) VALUES (?, ?, ?)`,
+      [this.title, this.description, this.id_user_author]
     );
 
+    this.id = suggested_todo.insertId;
     return suggested_todo;
   }
 
@@ -115,6 +105,7 @@ class SuggestedTodo {
       [this.id]
     );
 
+    this.state = "ACCEPTED";
     return suggested_todo;
   }
 
@@ -124,6 +115,7 @@ class SuggestedTodo {
       [this.id]
     );
 
+    this.state = "REJECTED";
     return suggested_todo;
   }
 }

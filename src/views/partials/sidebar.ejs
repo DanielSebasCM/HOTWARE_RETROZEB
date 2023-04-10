@@ -3,11 +3,6 @@
     <li class="sidebar__nav-item">
       <a href=<%=routes.home %> class="sidebar__link">
         <img src="/assets/icon/dashboard.svg" alt="Dashboard icon" class="sidebar__icon" />
-        <span> Utils </span></a>
-    </li>
-    <li class="sidebar__nav-item">
-      <a href=<%=routes.home %> class="sidebar__link">
-        <img src="/assets/icon/dashboard.svg" alt="Dashboard icon" class="sidebar__icon" />
         <span> Dashboard </span></a>
     </li>
     <li class="sidebar__nav-item">
@@ -16,7 +11,7 @@
         <span> Retrospectivas </span></a>
     </li>
     <li class="sidebar__nav-item">
-      <a href=<%= routes.actionables %> class="sidebar__link">
+      <a href=<%=routes.actionables %> class="sidebar__link">
         <img src="/assets/icon/accionables.svg" alt="To do icon" class="sidebar__icon" />
         <span> Accionables </span></a>
     </li>
@@ -40,15 +35,17 @@
         <span> Ajustes </span></a>
     </li>
     <li class="sidebar__nav-item">
-      <a href="#" class="sidebar__link">
+      <a href="/roles" class="sidebar__link">
         <img src="/assets/icon/configuracion.svg" alt="Config icon" class="sidebar__icon" />
         <span> Configuración </span></a>
     </li>
     <li class="sidebar__nav-item">
-      <a href=<%=routes.login %> class="sidebar__link">
-        <img src="/assets/icon/cerrar-sesion.svg" alt="Lock icon" class="sidebar__icon" />
-        <span> Cerrar Sesión </span>
-      </a>
+      <form action="<%= routes.logout %>" method="GET" id="logout-form">
+        <button type="submit" class="sidebar__link">
+          <img src="/assets/icon/cerrar-sesion.svg" alt="Lock icon" class="sidebar__icon" />
+          <span> Cerrar Sesión </span>
+        </button>
+      </form>
     </li>
   </ul>
 </aside>

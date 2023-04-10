@@ -1,64 +1,53 @@
 const Team = require("../models/team.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
+const teamNameMaxLength =
+  require("../utils/constants").limits.teamNameMaxLength;
 
 // ------------------ VERIFIER ------------------
-test("name is not included", () => {
+test("Team id is an integer", () => {
+  let thrownError;
+  const expectedError = new ValidationError(
+    "id",
+    validationMessages.mustBeInteger
+  );
+  try {
+    new Team({ id: "a", name: "Default Team" });
+  } catch (error) {
+    thrownError = error;
+  }
+  expect(thrownError).toEqual(expectedError);
+});
+
+test("Team has a name", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "name",
     validationMessages.isMandatory
   );
   try {
-    new Team({});
+    new Team({ id: 1 });
   } catch (error) {
     thrownError = error;
   }
   expect(thrownError).toEqual(expectedError);
 });
 
-test("name is not empty", () => {
+test(`Team name is less than ${teamNameMaxLength} characters`, () => {
   let thrownError;
   const expectedError = new ValidationError(
     "name",
-    validationMessages.isMandatory
+    validationMessages.mustBeShorterThan(teamNameMaxLength)
   );
   try {
-    new Team({ name: "" });
+    new Team({
+      name: "a".repeat(teamNameMaxLength + 1),
+    });
   } catch (error) {
     thrownError = error;
   }
   expect(thrownError).toEqual(expectedError);
 });
-
-test("name is not null", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "name",
-    validationMessages.isMandatory
-  );
-  try {
-    new Team({ name: null });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("name is not null and length <= 40", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "name",
-    validationMessages.mustBeShorterThan(40)
-  );
-  try {
-    new Team({ name: "a".repeat(41) });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
 // ------------------ METHODS ------------------
 // getAllActive
 test("Get all active teams", async () => {
@@ -91,40 +80,19 @@ test("Team inserted, getById, soft delete and activated succesfully", async () =
   // Get team
   const createdTeam = await Team.getById(res.insertId);
   // Verify team
-  expect(createdTeam).not.toBeNull();
-  expect(createdTeam).toBeDefined();
-  expect(createdTeam.id).toBe(res.insertId);
-  expect(createdTeam.name).toBe(mockTeam.name);
-  expect(createdTeam.active).toBe(1);
-  expect(createdTeam.creation_date).not.toBeNull();
-  expect(createdTeam.creation_date).toBeDefined();
-  expect(createdTeam.creation_date).toBeInstanceOf(Date);
+  expect(createdTeam).toEqual(mockTeam);
 
   // Soft delete team
   await createdTeam.delete();
   const deletedTeam = await Team.getById(createdTeam.id);
 
   // Verify team
-  expect(deletedTeam).not.toBeNull();
-  expect(deletedTeam).toBeDefined();
-  expect(deletedTeam.id).toBe(res.insertId);
-  expect(deletedTeam.name).toBe(mockTeam.name);
-  expect(deletedTeam.active).toBe(0);
-  expect(deletedTeam.creation_date).not.toBeNull();
-  expect(deletedTeam.creation_date).toBeDefined();
-  expect(deletedTeam.creation_date).toBeInstanceOf(Date);
+  expect(deletedTeam).toEqual(createdTeam);
 
   // activate team
   await deletedTeam.activate();
   const activatedTeam = await Team.getById(deletedTeam.id);
 
   // Verify team
-  expect(activatedTeam).not.toBeNull();
-  expect(activatedTeam).toBeDefined();
-  expect(activatedTeam.id).toBe(res.insertId);
-  expect(activatedTeam.name).toBe(mockTeam.name);
-  expect(activatedTeam.active).toBe(1);
-  expect(activatedTeam.creation_date).not.toBeNull();
-  expect(activatedTeam.creation_date).toBeDefined();
-  expect(activatedTeam.creation_date).toBeInstanceOf(Date);
+  expect(activatedTeam).toEqual(deletedTeam);
 });

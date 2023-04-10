@@ -1,20 +1,22 @@
 const db = require("../utils/db");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
+const teamNameMaxLength =
+  require("../utils/constants").limits.teamNameMaxLength;
 
 class Team {
   constructor(team) {
     Team.verify(team);
     this.id = team.id || null;
     this.name = team.name;
-    this.active = team.active != 0 ? 1 : 0;
-    this.creation_date = team.creation_date || new Date();
+    this.active = team.active === 0 ? 0 : 1;
   }
 
   static async getById(id) {
     // ALREADY TESTED
     const [team, _] = await db.execute(`SELECT * FROM team WHERE id = ?`, [id]);
-    if (team.length == 0) throw new Error(messages.team.error.teamDoesNotExist);
+
+    if (team.length == 0) return null;
     return new Team(team[0]);
   }
 
@@ -32,7 +34,7 @@ class Team {
     const User = require("./user.model");
 
     const [members, _] = await db.execute(
-      "SELECT u.* FROM user u, team_users tu WHERE tu.id_team = ? AND tu.uid = u.uid AND tu.active = 1",
+      "SELECT u.* FROM user u, team_users tu WHERE tu.id_team = ? AND tu.uid = u.uid",
       [this.id]
     );
 
@@ -41,18 +43,18 @@ class Team {
 
   static verify(team) {
     // ALREADY TESTED
-    if (!team)
+    // id
+    if (team.id && !Number.isInteger(Number(team.id)))
+      throw new ValidationError("id", validationMessages.mustBeInteger);
+
+    // name
+    if (!team.name)
       throw new ValidationError("name", validationMessages.isMandatory);
 
-    // name is not empty
-    if (team.name?.length == 0 || team.name == null || !team.name)
-      throw new ValidationError("name", validationMessages.isMandatory);
-
-    // name is less than 41 characters
-    if (team.name?.length > 40)
+    if (team.name.length > teamNameMaxLength)
       throw new ValidationError(
         "name",
-        validationMessages.mustBeShorterThan(40)
+        validationMessages.mustBeShorterThan(teamNameMaxLength)
       );
 
     return true;
@@ -63,8 +65,8 @@ class Team {
     const [res, _] = await db.execute(`INSERT INTO team(name) VALUES (?)`, [
       this.name,
     ]);
-    this.id = res.insertId;
 
+    this.id = res.insertId;
     return res;
   }
 
@@ -72,6 +74,8 @@ class Team {
     const res = await db.execute(`UPDATE team SET active = 0 WHERE id = ?`, [
       this.id,
     ]);
+
+    this.active = 0;
     return res;
   }
 
@@ -79,6 +83,8 @@ class Team {
     const res = await db.execute(`UPDATE team SET active = 1 WHERE id = ?`, [
       this.id,
     ]);
+
+    this.active = 1;
     return res;
   }
 
@@ -95,12 +101,54 @@ class Team {
   async removeUser(uid) {
     // TODO - TEST THIS
     const [res, _] = await db.execute(
-      `UPDATE team_users 
-      SET active = 0, end_date = ?
-      WHERE id_team = ? AND uid = ?`,
-      [new Date(), this.id, uid]
+      `DELETE FROM team_users WHERE id_team = ? AND uid = ?`,
+      [this.id, uid]
     );
     return res;
+  }
+
+  async getActiveRetrospective() {
+    const Retrospective = require("./retrospective.model");
+
+    // TODO - TEST THIS
+    const [retros, _] = await db.execute(
+      `
+    SELECT r.* 
+    FROM retrospective as r, team as t, sprint as s
+    WHERE r.id_team = t.id
+    AND r.id_sprint = s.id
+    AND t.id = ?
+    AND (r.end_date IS NULL or r.state = "PENDING" or r.state = "IN_PROGRESS")
+      `,
+      [this.id]
+    );
+    if (retros.length == 0) return null;
+    return new Retrospective(retros[0]);
+  }
+
+  async getNClosedRetrospectives(n) {
+    const Retrospective = require("./retrospective.model");
+
+    // TODO - TEST THIS
+    const [retros, _] = await db.execute(
+      `
+    SELECT r.* , s.name as sprint_name
+    FROM retrospective as r, team as t, sprint as s
+    WHERE r.id_team = t.id
+    AND r.id_sprint = s.id
+    AND t.id = ?
+    AND r.end_date IS NOT NULL
+    AND r.state = "CLOSED"
+    ORDER BY r.end_date DESC
+    LIMIT ?
+      `,
+      [this.id, n]
+    );
+    return retros.map((retro) => {
+      const r = new Retrospective(retro);
+      r.sprint_name = retro.sprint_name;
+      return r;
+    });
   }
 }
 

@@ -1,11 +1,20 @@
+const tokens = getTokens();
+
 let url = window.location.href.split("/");
 url[5] = "respuestas";
 url = url.join("/");
 
-let response = await fetch(url);
+Chart.defaults.font.family = "Poppins";
+
+let response = await fetch(url, {
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: "Bearer " + tokens.authToken,
+  },
+});
 let data = await response.json();
 let questions = data.filter((question) => question.type !== "OPEN");
-console.log(questions);
 
 for (let question of questions) {
   let chart = document.getElementById(`chart-${question.id}`);
@@ -95,13 +104,21 @@ for (let question of questions) {
       count[answer.value] = count[answer.value] ? count[answer.value] + 1 : 1;
     }
     const answerCount = [];
+    const options = [];
     for (let attribute in count) {
       answerCount.push(count[attribute]);
+      options.push(attribute);
+    }
+    for (let option of question.options) {
+      if (!options.includes(option.description)) {
+        options.push(option.description);
+        answerCount.push(0);
+      }
     }
     new Chart(chart, {
       type: "bar",
       data: {
-        labels: question.options.map((option) => option.description),
+        labels: options,
         datasets: [
           {
             data: answerCount,

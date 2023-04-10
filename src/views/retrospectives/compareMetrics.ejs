@@ -1,0 +1,106 @@
+<!-- SEND DATA TO SCRIPT -->
+<section class="dashboard">
+  <!-- HEADER -->
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">Comparación de retrospectivas</h1>
+      <p class="description"><%= retrospectives.map(retrospective => retrospective.name).join(", ") %></p>
+    </div>
+
+    <div class="banner__section">
+      <input type="number" id="n_retrospectives" min="1" max="10" value="<%= n %>" class="input">
+    </div>
+
+    <span class="line"></span>
+  </div>
+
+  <h3 class="subtitle">Filtros</h3>
+  <div class="filters-container">
+    <div class="select-container">
+      <select class="select" id="label-options">
+        <option value="All"> Todos los Labels</option>
+        <% for (let i=0; i < labels.length; i++) { %>
+        <option value="<%= labels[i] %>"><%= labels[i] %></option>
+        <% } %>
+        <option value="None">Sin Label</option>
+      </select>
+    </div>
+    <div class="select-container">
+      <select class="select" id="issues-options">
+        <option value="All" selected>Todos los Issues</option>
+        <option value="Team">Issues <%= selectedTeam.name %></option>
+        <option value="Personal">Issues personales</option>
+      </select>
+    </div>
+    <div class="checkbox-container">
+      <input type="checkbox" class="question-checkbox mr-1" id="accum" checked />
+      <label for="accum">Acumular</label>
+    </div>
+    <div class="checkbox-container">
+      <input type="checkbox" class="question-checkbox mr-1" id="stacked" checked />
+      <label for="stacked">Apilar</label>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="chart-container">
+    <canvas id="general-chart"></canvas>
+  </div>
+
+  <span class="line"></span>
+
+
+  <style>
+    .dropdown {
+      width: 200px;
+      height: 30px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      background-color: #fff;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .dropdown option {
+      font-size: 14px;
+    }
+  </style>
+
+  <h3 class="subtitle">Epics</h3>
+  <div class="filters-container">
+
+    <div class="multi-select-container" id="epics-options">
+      <div class="multi-select-button">
+        <span class="multi-select-display">Seleccionar Epics</span>
+        <img src="/assets/icon/select-arrow.svg" alt="Chat icon" class="icon" />
+      </div>
+      <div class="multi-select-dropdown">
+        <ul class="items__list">
+          <li class="items__item">
+            <input type="checkbox" class="multi-select-dropdown__checkbox" id="All" checked />
+            <label for="All" name="All">Todos</label>
+          </li>
+          <% for (let i=0; i < epics.length; i++) { %>
+          <li class="items__item">
+            <input type="checkbox" class="multi-select-dropdown__checkbox" id="<%= epics[i] %>" checked />
+            <label for="<%= epics[i] %>"><%= epics[i] || "No epic" %></label>
+          </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+    <!-- <div class="select-container">
+      <select class="select" id="epics-options">
+        <% for (let i=0; i < epics.length; i++) { %>
+        <option value="<%= epics[i] || "None" %>"><%= epics[i] || "No epic" %></option>
+        <% } %>
+      </select>
+    </div> -->
+  </div>
+  <div class="chart-container">
+    <canvas id="epics-chart"></canvas>
+  </div>
+  <script type="module" src="/assets/js/compareMetrics.js"></script>

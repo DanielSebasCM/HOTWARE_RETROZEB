@@ -45,9 +45,7 @@
 .notification-container {
   position: fixed;
   top: 85px;
-  /* left: 2rem; */
-  /* right: 2rem; */
-  right: calc((100% - 266px) / 2);
+  right: calc((100% - 300px) / 2);
   z-index: 999;
   display: flex;
   flex-direction: column;
@@ -56,7 +54,8 @@
 .notification {
   min-height: 5rem;
   width: 100%;
-  max-width: 40rem;
+  min-width: 30rem;
+  max-width: 30rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -83,7 +82,7 @@
   align-items: center;
   background: var(--color-white);
   border-radius: 50%;
-  margin-right: 1rem;
+  margin-right: 2rem;
 }
 
 .notification__icon .icon {
@@ -133,9 +132,22 @@
   margin-top: 20vh;
 }
 
+.horizontal-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  min-height: 3rem;
+}
+
 /* CARDS */
 .cards-container,
 .charts-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.cards-container--full {
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -223,7 +235,7 @@
 }
 
 .card--team {
-  height: auto;
+  height: fit-content;
 }
 
 .card--question {
@@ -236,23 +248,49 @@
 }
 
 .card--question-checkbox {
+  display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  justify-content: space-between;
+  align-items: center;
   gap: 1rem;
+  overflow-x: scroll;
+}
+
+.questions__list .card--question-checkbox.selected {
+  opacity: 0.6;
+  background-color: var(--color-bg-inactive);
+}
+
+.card--question-checkbox .question-required-checkbox {
+  display: none;
+}
+
+.questions__resume
+  .card--question-checkbox.selected
+  .question-required-checkbox {
+  display: flex;
+}
+
+.card--question-checkbox div:first-child {
+  width: 100%;
+}
+
+.card--question-checkbox .selected {
+  width: 16px;
+  height: 16px;
 }
 
 .card--question-checkbox * {
   margin: 0;
 }
 
-.card--question-checkbox div {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.card--question-checkbox .question {
+  width: 100%;
+  min-width: 50rem;
 }
 
 .card--answers {
-  height: fit-content;
+  height: 45vh;
 }
 
 .card--answers .card__header {
@@ -268,6 +306,8 @@
 }
 
 .card--answers .items__list {
+  width: 100%;
+  overflow-y: scroll;
   margin-bottom: 0;
 }
 
@@ -342,7 +382,8 @@
 /* LABELS */
 .label {
   height: 1.8rem;
-  width: fit-content;
+  min-width: 7rem;
+  max-width: 7rem;
   padding: 0 1rem;
   display: flex;
   align-items: center;
@@ -388,7 +429,9 @@
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  flex-wrap: wrap;
   gap: 1rem;
+  white-space: nowrap;
 }
 
 .pill {
@@ -495,6 +538,17 @@
   color: var(--color-font-alert);
 }
 
+.button--delete-question {
+  background-color: var(--color-font-alert);
+  background-image: url("/assets/icon/erase.svg");
+  color: var(--color-white);
+}
+
+.button--delete-question:hover {
+  background-color: var(--color-bg-alert);
+  color: var(--color-font-alert);
+}
+
 .button--delete-alt {
   background-color: var(--color-bg-alert);
   color: var(--color-font-alert);
@@ -585,6 +639,7 @@ a.toggle-button {
 /* INPUT */
 .input,
 .search-bar,
+.multi-select-button,
 .select-container {
   height: var(--input-height);
   width: var(--input-width);
@@ -603,6 +658,52 @@ a.toggle-button {
 
 .select-container {
   max-width: 20rem;
+}
+
+.multi-select-container {
+  width: 100%;
+  max-width: 20rem;
+  position: relative;
+}
+
+.multi-select-button {
+  font-size: 1.2rem;
+  justify-content: space-between;
+  cursor: default;
+}
+
+.multi-select-button .icon {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.multi-select-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  max-height: 20rem;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  background: var(--color-white);
+  border: 1px solid var(--color-border-inactive);
+  border-radius: var(--border-radius);
+  z-index: 1;
+}
+
+.multi-select-container .items__list {
+  margin: 0;
+  padding: 0;
+  overflow-y: scroll;
+}
+
+.multi-select-container .items__item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
 }
 
 .input:focus,
@@ -715,16 +816,113 @@ a.toggle-button {
   color: var(--color-font-active);
 }
 
+/* CHECBOX */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.4rem;
+}
+
+/* ALERT MESSAGE */
+.alert-message {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+  background-color: var(--color-bg-danger);
+  color: var(--color-font-danger);
+  border: 1px solid var(--color-border-danger);
+  border-radius: var(--border-radius);
+}
+
+.alert-message .icon {
+  background-image: url("/assets/icon/alert.svg");
+}
+
+.danger-message {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+  background-color: var(--color-bg-alert);
+  color: var(--color-font-alert);
+  border: 1px solid var(--color-border-alert);
+  border-radius: var(--border-radius);
+}
+
+.danger-message .icon {
+  background-image: url("/assets/icon/danger.svg");
+}
+
+.description-question {
+  margin-top: 1rem;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--color-font-secondary);
+  margin-bottom: var(--component-mb);
+  color: blue;
+}
+
+.banner-question {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  /* align-content: baseline; */
+}
+
+.banner-question button {
+  margin: 0;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.option-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.option-container > button {
+  max-width: 4rem;
+}
+
 /* UTILS */
 .transition {
   transition: all 0.3s ease-in-out;
 }
 
 .hide {
-  display: none;
+  display: none !important;
+}
+
+.no-results {
+  margin: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-font-inactive);
+}
+
+.no-border {
+  border: none !important;
 }
 
 /* MARGINS */
+.mt-0 {
+  margin-top: 0;
+}
+
 .mt-1 {
   margin-top: 1rem;
 }
@@ -743,6 +941,10 @@ a.toggle-button {
 
 .mt-5 {
   margin-top: 5rem;
+}
+
+.mb-0 {
+  margin-bottom: 0;
 }
 
 .mb-1 {
@@ -765,6 +967,10 @@ a.toggle-button {
   margin-bottom: 5rem;
 }
 
+.mr-0 {
+  margin-right: 0;
+}
+
 .mr-1 {
   margin-right: 1rem;
 }
@@ -783,6 +989,10 @@ a.toggle-button {
 
 .mr-5 {
   margin-right: 5rem;
+}
+
+.ml-0 {
+  margin-left: 0;
 }
 
 .ml-1 {

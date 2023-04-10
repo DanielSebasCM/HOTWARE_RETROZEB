@@ -2,12 +2,16 @@
 <section class="dashboard">
   <div class="banner">
     <div class="banner__section">
-      <h1 class="title">Preguntas</h1>
+      <h1 class="title">
+        Preguntas <span class="meta">(<%= questions.length %>)</span>
+      </h1>
       <p class="description">Listado de preguntas creadas</p>
     </div>
+    <% if(currentPrivileges.includes(privileges.questions.canPostQuestions)) { %>
     <div class="banner__section">
-      <a href="" class="button button--primary" href="#">Añadir Pregunta</a>
+      <a class="button button--primary" href="preguntas/nueva">Añadir Pregunta</a>
     </div>
+    <% } %>
     <span class="line"></span>
   </div>
 
@@ -28,24 +32,32 @@
     </div>
   </div>
   <% if(questions && questions.length> 0) { %>
-    <div class="cards-container">
-      <% for(let question of questions) { %>
-        <div class="card card--question">
-          <p class="card__subtitle">
-            <%= question.description %>
-          </p>
-          <span class="label label--active">
-            <%= question.type %>
-          </span>
-        </div>
-        <% } %>
-    </div>
-    <% } else { %>
-      <div class="cards-container">
-        <div class="card">
-          <p class="card_subtitle">No hay preguntas</p>
-        </div>
+  <div class="cards-container">
+    <% for(let question of questions) { %>
+    <div class="card card--question">
+      <div class="card__header">
+        <p class="card__subtitle"><%= question.description %></p>
+        <span class="label label--active"> <%= question.type %> </span>
       </div>
+      <% if(question.type === 'SELECTION') { %>
+      <span class="line"></span>
+      <p class="card__description"><%= question.options.join("/ ") %> </p>
       <% } %>
+      <% if(currentPrivileges.includes(privileges.questions.canDeleteQuestions)) { %>
+      <form action="/preguntas?_method=DELETE" method="POST">
+        <input type="hidden" name="id" value="<%=question.id %>">
+        <button type="submit" class="button button--sm button--delete-alt remove-question-btn" data-id=<%=question.id %>>Eliminar</button>
+      </form>
+      <% } %>
+    </div>
+    <% } %>
+  </div>
+  <% } else { %>
+  <div class="cards-container">
+    <div class="card">
+      <p class="card__subtitle">No hay preguntas</p>
+    </div>
+  </div>
+  <% } %>
 </section>
 <script defer src="/assets/js/questions.js"></script>

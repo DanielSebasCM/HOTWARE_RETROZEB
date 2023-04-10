@@ -1,18 +1,22 @@
 const SuggestedTodo = require("../models/suggestedTodo.model");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
-const actionableStates = require("../utils/constants").actionableStates;
-
+const actionableStates = require("../utils/constants").enums.actionableStates;
+const { toDoTitleMaxLength, toDoDescriptionMaxLength } =
+  require("../utils/constants").limits;
 // ------------------ VERIFIER ------------------
-test("SuggestedTodo title is in range title.length < 40", () => {
+test("Todo id is an integer", () => {
   let thrownError;
   const expectedError = new ValidationError(
-    "title",
-    validationMessages.mustBeShorterThan(40)
+    "id",
+    validationMessages.mustBeInteger
   );
   try {
     new SuggestedTodo({
-      title: "a".repeat(41),
+      id: "a",
+      title: "Test",
+      description: "Test description",
+      id_user_author: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -20,37 +24,7 @@ test("SuggestedTodo title is in range title.length < 40", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("SuggestedTodo title.length > 0", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "title",
-    validationMessages.isMandatory
-  );
-  try {
-    new SuggestedTodo({
-      title: "",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("SuggestedTodo title is not empty", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "title",
-    validationMessages.isMandatory
-  );
-  try {
-    new SuggestedTodo({});
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("SuggestedTodo title is not null", () => {
+test("Todo has a title", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "title",
@@ -58,7 +32,8 @@ test("SuggestedTodo title is not null", () => {
   );
   try {
     new SuggestedTodo({
-      title: null,
+      description: "Test description",
+      id_user_author: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -66,16 +41,17 @@ test("SuggestedTodo title is not null", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("SuggestedTodo description is in range description.length < 255", () => {
+test(`Todo title is less than ${toDoTitleMaxLength} characters`, () => {
   let thrownError;
   const expectedError = new ValidationError(
-    "description",
-    validationMessages.mustBeShorterThan(255)
+    "title",
+    validationMessages.mustBeShorterThan(toDoTitleMaxLength)
   );
   try {
     new SuggestedTodo({
-      title: "q",
-      description: "a".repeat(256),
+      title: "a".repeat(toDoTitleMaxLength + 1),
+      description: "Test description",
+      id_user_author: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -83,16 +59,17 @@ test("SuggestedTodo description is in range description.length < 255", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("SuggestedTodo description.length > 0", () => {
+test(`Todo description is less than ${toDoDescriptionMaxLength} characters`, () => {
   let thrownError;
   const expectedError = new ValidationError(
     "description",
-    validationMessages.isMandatory
+    validationMessages.mustBeShorterThan(toDoDescriptionMaxLength)
   );
   try {
     new SuggestedTodo({
-      title: "a",
-      description: "",
+      title: "Test",
+      description: "a".repeat(toDoDescriptionMaxLength + 1),
+      id_user_author: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -100,15 +77,18 @@ test("SuggestedTodo description.length > 0", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("SuggestedTodo description is not empty", () => {
+test("Todo state is of type" + actionableStates, () => {
   let thrownError;
   const expectedError = new ValidationError(
-    "description",
-    validationMessages.isMandatory
+    "state",
+    validationMessages.mustBeEnum(actionableStates)
   );
   try {
     new SuggestedTodo({
-      title: "a",
+      title: "Test",
+      description: "Test description",
+      state: "INVALID",
+      id_user_author: 1,
     });
   } catch (error) {
     thrownError = error;
@@ -116,24 +96,7 @@ test("SuggestedTodo description is not empty", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("SuggestedTodo description is not null", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "description",
-    validationMessages.isMandatory
-  );
-  try {
-    new SuggestedTodo({
-      title: "a",
-      description: null,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("id_user_author is not null", () => {
+test("Todo has an author", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "id_user_author",
@@ -141,9 +104,8 @@ test("id_user_author is not null", () => {
   );
   try {
     new SuggestedTodo({
-      title: "a",
-      description: "asdas",
-      id_user_author: null,
+      title: "Test",
+      description: "Test description",
     });
   } catch (error) {
     thrownError = error;
@@ -151,93 +113,17 @@ test("id_user_author is not null", () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("id_user_author is not empty", () => {
+test("Todo author id is an integer", () => {
   let thrownError;
   const expectedError = new ValidationError(
     "id_user_author",
-    validationMessages.isMandatory
+    validationMessages.mustBeInteger
   );
   try {
     new SuggestedTodo({
-      title: "a",
-      description: "asdas",
-      id_user_author: "",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("id_user_author is included", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "id_user_author",
-    validationMessages.isMandatory
-  );
-  try {
-    new SuggestedTodo({
-      title: "a",
-      description: "asdas",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("id_retrospective is not empty", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "id_retrospective",
-    validationMessages.isMandatory
-  );
-  try {
-    new SuggestedTodo({
-      title: "a".repeat(40),
-      state: "ACCEPTED",
-      description: "...",
-      id_user_author: 4,
-      id_retrospective: "",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("id_retrospective is not null", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "id_retrospective",
-    validationMessages.isMandatory
-  );
-  try {
-    new SuggestedTodo({
-      title: "a".repeat(40),
-      state: "ACCEPTED",
-      description: "...",
-      id_user_author: 4,
-      id_retrospective: null,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("id_retrospective is included", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "id_retrospective",
-    validationMessages.isMandatory
-  );
-  try {
-    new SuggestedTodo({
-      title: "a".repeat(40),
-      state: "ACCEPTED",
-      description: "...",
-      id_user_author: 4,
+      title: "Test",
+      description: "Test description",
+      id_user_author: "a",
     });
   } catch (error) {
     thrownError = error;
@@ -272,11 +158,7 @@ test("insert, getById, Accept and Reject SuggestedTodo successfully", async () =
 
   // Get suggested todo
   const st = await SuggestedTodo.getById(res.insertId);
-  expect(st.id).toEqual(res.insertId);
-  expect(st.title).toEqual(mockSuggestedTodo.title);
-  expect(st.description).toEqual(mockSuggestedTodo.description);
-  expect(st.id_user_author).toEqual(mockSuggestedTodo.id_user_author);
-  expect(st.id_retrospective).toEqual(mockSuggestedTodo.id_retrospective);
+  expect(st).toEqual(mockSuggestedTodo);
 
   // Accept suggested todo
   let acceptedST = await st.accept();

@@ -8,18 +8,14 @@
     </div>
 
     <div class="banner__section">
+      <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives)) { %>
+      <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
+      <% } else {%>
       <div class="toggle-buttons-container toggle-buttons-container--primary">
-        <a
-          class="toggle-button toggle-button--active"
-          href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas"
-          >Métricas</a
-        >
-        <a
-          class="toggle-button"
-          href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas"
-          >Preguntas</a
-        >
+        <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
+        <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
       </div>
+      <% } %>
     </div>
 
     <span class="line"></span>
@@ -30,11 +26,18 @@
   <div class="filters-container">
     <div class="select-container">
       <select class="select" id="label-options">
-        <option value="Todos">Todos los Labels</option>
-        <option value="Sin Label">Sin Label</option>
+        <option value="All">Todos los Labels</option>
         <% for (let i=0; i < labels.length; i++) { %>
         <option value="<%= labels[i] %>"><%= labels[i] %></option>
         <% } %>
+        <option value="None">Sin Label</option>
+      </select>
+    </div>
+    <div class="select-container">
+      <select class="select" id="issues-options">
+        <option value="All">Todos los Issues</option>
+        <option value="Team" selected>Issues <%= retrospective.team_name %></option>
+        <option value="Personal">Issues personales</option>
       </select>
     </div>
   </div>
@@ -46,15 +49,18 @@
 
   <span class="line"></span>
   <h2 class="subtitle">Otras métricas</h2>
+  <div class="filters-container">
+    <div class="checkbox-container">
+      <input type="checkbox" class="question-checkbox mr-1" id="show-empty" />
+      <label for="show-empty">Mostrar atributos vacíos</label>
+    </div>
+  </div>
   <div class="charts-container charts-container--no-col">
     <div class="chart-container">
       <canvas id="epics-chart"></canvas>
     </div>
     <div class="chart-container">
       <canvas id="types-chart"></canvas>
-    </div>
-    <div class="chart-container">
-      <canvas id="priorities-chart"></canvas>
     </div>
   </div>
 </section>
