@@ -26,6 +26,7 @@ const deleteRole = async (req, res, next) => {
 const renderNewRole = async (req, res, next) => {
   try {
     const privileges = await Privilege.getAll();
+    console.log(privileges);
     res.render("roles/new", { privileges, title: "Nuevo rol" });
   } catch (err) {
     next(err);
@@ -37,7 +38,10 @@ const postRole = async (req, res, next) => {
     const { name, privileges } = req.body;
     const role = new Role({ name });
     await role.post();
-    await role.addPrivilege(privileges);
+
+    for (const privilege of privileges) {
+      await role.addPrivilege({ id: privilege });
+    }
     req.session.successMessage = "Rol creado con éxito";
     res.redirect("/roles");
   } catch (err) {

@@ -25,9 +25,9 @@
         <div class="input-container">
           <!--Checkbox inputs-->
           <div class="radio-container">
-            <% for(let privilege in privileges) { %>
-            <div class="radio-item">
-              <input type="checkbox" name="id" />
+            <% for(let privilege of privileges) { %>
+            <div class="checkbox-container">
+              <input type="checkbox" name="privileges" value="<%= privilege.id %>" />
               <label for="read"><%= privilege.name %></label>
             </div>
             <% } %>
