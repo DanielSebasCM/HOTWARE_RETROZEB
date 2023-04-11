@@ -27,6 +27,16 @@
       <div class="card__header">
         <p class="card__subtitle"><%= role.name %></p>
       </div>
+      <span class="line"></span>
+      <ol>
+      <% for(let privilege of privileges) { %>
+        <% for(let role_privilege of role_privileges){
+          if(role_privilege.id_privilege == privilege.id && role_privilege.id_role == role.id) { %>
+            <li class="card__description"><%= privilege.name %></li>
+          <% } %>
+        <% } %>
+      <% } %>
+      </ol>
       <form action="/roles?_method=DELETE" method="POST">
         <input type="hidden" name="id" value="<%=role.id %>">
         <button type="submit" class="button button--sm button--delete-alt remove-role-btn" data-id=<%=role.id %>>Eliminar</button>
@@ -42,4 +52,6 @@
   </div>
   <% } %>
 </section>
+
+
 <script defer src="/assets/js/roles.js"></script>

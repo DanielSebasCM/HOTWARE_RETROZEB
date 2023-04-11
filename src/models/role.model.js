@@ -28,6 +28,11 @@ class Role {
     return roles.map((role) => new Role(role));
   }
 
+  static async getPrivileges() {
+    let [role_privileges, _] = await db.execute(`SELECT * FROM role_privilege`);
+    return role_privileges;
+  }
+
   //----------------VERIFIER----------------
 
   static verify(role) {

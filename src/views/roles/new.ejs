@@ -19,26 +19,23 @@
         <div class="input-container">
           <input name="name" class="input" type="text" placeholder="Nombre del rol" id="role-input" required maxlength="255" />
         </div>
-      </div>
-      <div>
-        <p class="description-question">Descripción del rol</p>
-        <div class="input-container">
-          <!--Checkbox inputs-->
-          <div class="radio-container">
-            <% for(let privilege of privileges) { %>
-            <div class="checkbox-container">
-              <input type="checkbox" name="privileges" value="<%= privilege.id %>" />
-              <label for="read"><%= privilege.name %></label>
-            </div>
-            <% } %>
-          </div>
-        </div>
-      </div>
-      <div>
         <br>
         <button class="button button--primary" type="submit">
           Crear Rol
         </button>
       </div>
+      <div>
+        <p class="description-question">Descripción del rol</p>
+        <div class="filters-container">
+          <!--Checkbox inputs-->
+          <% for(let privilege of privileges) { %>
+          <div class="checkbox-container">
+            <input type="checkbox" class="question-checkbox mr-1" name="privileges" value="<%= privilege.id %>" />
+            <label for="read"><%= privilege.name %></label>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
   </form>
 </section>

@@ -1044,3 +1044,9 @@ a.toggle-button {
 .option-container > button {
   max-width: 4rem;
 }
+
+ol {
+  justify-content: space-between;
+  padding: 10px;
+  margin: 10px;
+}

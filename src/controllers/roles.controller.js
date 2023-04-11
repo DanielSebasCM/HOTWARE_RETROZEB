@@ -5,7 +5,8 @@ const renderRoles = async (req, res, next) => {
   try {
     const roles = await Role.getAllActive();
     const privileges = await Privilege.getAll();
-    res.render("roles", { roles, privileges, title: "Roles" });
+    const role_privileges = await Role.getPrivileges();
+    res.render("roles", { roles, privileges, role_privileges, title: "Roles" });
   } catch (err) {
     next(err);
   }
@@ -26,7 +27,6 @@ const deleteRole = async (req, res, next) => {
 const renderNewRole = async (req, res, next) => {
   try {
     const privileges = await Privilege.getAll();
-    console.log(privileges);
     res.render("roles/new", { privileges, title: "Nuevo rol" });
   } catch (err) {
     next(err);

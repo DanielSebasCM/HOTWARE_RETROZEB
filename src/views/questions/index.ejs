@@ -39,7 +39,7 @@
       </div>
       <% if(question.type === 'SELECTION') { %>
       <span class="line"></span>
-      <p class="card__description"><%= question.options.join("/ ") %> </p>
+      <p class="card__description"><%= question.options.join(" / ") %> </p>
       <% } %>
       <form action="/preguntas?_method=DELETE" method="POST">
         <input type="hidden" name="id" value="<%=question.id %>">
