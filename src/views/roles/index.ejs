@@ -28,11 +28,13 @@
         <p class="card__subtitle"><%= role.name %></p>
       </div>
       <span class="line"></span>
-      <ol>
+      <ol class="items__list">
+      <% let index = 1 %>
       <% for(let privilege of privileges) { %>
         <% for(let role_privilege of role_privileges){
           if(role_privilege.id_privilege == privilege.id && role_privilege.id_role == role.id) { %>
-            <li class="card__description"><%= privilege.name %></li>
+            <li class="card__description"><span class="index"><%= index %>. </span><%= privilege.name %></li>
+            <% index++ %>
           <% } %>
         <% } %>
       <% } %>
