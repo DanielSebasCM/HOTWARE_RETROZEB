@@ -7,8 +7,12 @@
       <p class="description">Listado de todas las retrospectivas creadas</p>
     </div>
     <div class="banner__section buttons-container">
-      <button class="button button--edit">Comparar</button>
+      <% if(currentPrivileges.includes(privileges.retrospectives.canCompareRetrospectives)) { %>
+      <a class="button button--edit" href="<%= `${routes.retrospectives}/comparar/4`%>">Comparar</a>
+      <% } %>
+      <% if(currentPrivileges.includes(privileges.retrospectives.canCreateRetrospectives)) { %>
       <a class="button button--primary" href="/retrospectivas/iniciar">Iniciar Retrospectiva</a>
+      <% } %>
     </div>
     <span class="line"></span>
   </div>
@@ -29,65 +33,62 @@
       <select class="select" id="select-team-name" name="nombreEquipo">
         <option value="all">Todos</option>
         <% if(teams && teams.length> 0) { %> <% for(let i=0; i < teams.length; i++) { %>
-            <option value="<%=  teams[i].id  %>">
-              <%= teams[i].name %>
-            </option>
-            <% }}%>
+        <option value="<%=  teams[i].id  %>">
+          <%= teams[i].name %>
+        </option>
+        <% }}%>
       </select>
     </div>
   </div>
 
   <% if(retrospectives && retrospectives.length> 0) { %>
-    <div class="banner--nomargin">
-      <div class="table-container">
-        <table class="table" id="retrospectivasSearch">
-          <thead>
-            <tr class="subtitle">
-              <td>Titulo</td>
-              <td>Sprint</td>
-              <td>Equipo</td>
-              <td>Fecha Inicio</td>
-              <td>Estado</td>
-            </tr>
-          </thead>
-          <tbody>
-            <% for(let i=0; i < retrospectives.length; i++) { %>
-              <tr onclick="window.location ='<%= routes.retrospectives %>/<%= retrospectives[i].id %>'"
-                id="retrospectives-list" class="retrospective"
-                data-fecha="<%= retrospectives[i].start_date.toISOString() %>"
-                data-idTeam="<%= retrospectives[i].id_team %>">
-                <td class="table__title">
-                  <%= retrospectives[i].name %>
-                </td>
+  <div class="banner--nomargin">
+    <div class="table-container">
+      <table class="table" id="retrospectivasSearch">
+        <thead>
+          <tr class="subtitle">
+            <td>Titulo</td>
+            <td>Sprint</td>
+            <td>Equipo</td>
+            <td>Fecha Inicio</td>
+            <td>Estado</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let i=0; i < retrospectives.length; i++) { %>
+          <tr onclick="window.location ='<%= routes.retrospectives %>/<%= retrospectives[i].id %>'" id="retrospectives-list" class="retrospective" data-fecha="<%= retrospectives[i].start_date.toISOString() %>" data-idTeam="<%= retrospectives[i].id_team %>">
+            <td class="table__title">
+              <%= retrospectives[i].name %>
+            </td>
 
-                <td>
-                  <%= retrospectives[i].sprint_name %>
-                </td>
-                <td class="table__team" data-idTeam="<%= retrospectives[i].id_team %>">
-                  <%= retrospectives[i].team_name %>
-                </td>
-                <td class="table__date">
-                  <%= moment(retrospectives[i].start_date).format('LL') %>
-                </td>
-                <td>
-                  <% if(retrospectives[i].state=='PENDING' ) { %>
-                    <span class="label label--danger">Pendiente</span>
-                    <% } else if(retrospectives[i].state=='IN_PROGRESS' ){ %>
-                      <span class="label label--active">En progreso</span>
-                      <% } else if(retrospectives[i].state=='CLOSED' ){ %>
-                        <span class="label label--success">Terminado</span>
-                        <% } else { %> No se pudo cargar <% } %>
-                </td>
-              </tr>
-              <% } %>
-          </tbody>
-        </table>
-      </div>
+            <td>
+              <%= retrospectives[i].sprint_name %>
+            </td>
+            <td class="table__team" data-idTeam="<%= retrospectives[i].id_team %>">
+              <%= retrospectives[i].team_name %>
+            </td>
+            <td class="table__date">
+              <%= moment(retrospectives[i].start_date).format('LL') %>
+            </td>
+            <td>
+              <% if(retrospectives[i].state=='PENDING' ) { %>
+              <span class="label label--danger">Pendiente</span>
+              <% } else if(retrospectives[i].state=='IN_PROGRESS' ){ %>
+              <span class="label label--active">En progreso</span>
+              <% } else if(retrospectives[i].state=='CLOSED' ){ %>
+              <span class="label label--success">Terminado</span>
+              <% } else { %> No se pudo cargar <% } %>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
     </div>
-    <% } else { %>
-      <p class="no-results">Por el momento no existe ninguna retrospectiva</p>
-      <% } %>
-        <p class="no-results hide"></p>
+  </div>
+  <% } else { %>
+  <p class="no-results">Por el momento no existe ninguna retrospectiva</p>
+  <% } %>
+  <p class="no-results hide"></p>
 </section>
 
 <script src="/assets/js/retrospective.js"></script>

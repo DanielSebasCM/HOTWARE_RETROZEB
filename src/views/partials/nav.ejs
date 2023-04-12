@@ -9,15 +9,16 @@
       </a>
     </div>
     <ul class="nav__list">
-      <% if(activeTeams.length> 0) { %>
+      <% if(locals.activeTeams.length> 0) { %>
         <li class="nav__item">
           <form action="/locals/activeteam" method="POST">
             <div class="select-container">
               <select class="select" id="team-options" name="activeTeam">
-                <% for(let i=0; i < activeTeams.length; i++) { %>
-                  <option value="<%= activeTeams[i].id %>" data-name="<%= activeTeams[i].name %>"
-                    <%if(activeTeams[i].id==selectedTeam.id) { %> selected <% } %>>
-                      <%= activeTeams[i].name %>
+                <% for(let i=0; i < locals.activeTeams.length; i++) { %>
+                  <option value="<%= locals.activeTeams[i].id%>-<%= locals.activeTeams[i].name %> "
+                    data-name="<%= locals.activeTeams[i].name %>" <%if(locals.activeTeams[i].id==locals.selectedTeam.id)
+                    { %> selected <% } %>>
+                      <%= locals.activeTeams[i].name %>
                   </option>
                   <% } %>
               </select>
@@ -27,12 +28,17 @@
         <% } %>
           <li class="nav__item">
             <div class="user" id="current-user" data-uid="<%= currentUser.uid %>">
-              <div class="user__avatar">
-                <%= currentUser.first_name[0] %>
-              </div>
-              <div class="user__name">
-                <%= currentUser.first_name %>
-              </div>
+              <% if(locals.currentUser.picture) { %>
+                <img src="<%= locals.currentUser.picture %>" alt="<%= currentUser.first_name %>"
+                  class="user__avatar no-border" />
+                <% } else { %>
+                  <div class="user__avatar">
+                    <%= currentUser.first_name[0] %>
+                  </div>
+                  <% } %>
+                    <div class="user__name">
+                      <%= currentUser.first_name %>
+                    </div>
             </div>
           </li>
     </ul>

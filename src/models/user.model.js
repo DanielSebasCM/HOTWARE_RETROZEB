@@ -2,6 +2,7 @@ const db = require("../utils/db");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const Team = require("./team.model");
+const Privilege = require("./privilege.model");
 
 class User {
   constructor(user) {
@@ -12,6 +13,7 @@ class User {
     this.first_name = user.first_name;
     this.last_name = user.last_name;
     this.email = user.email;
+    this.picture = user.picture || null;
     this.active = user.active === 0 ? 0 : 1;
   }
   static async getAll() {
@@ -40,7 +42,7 @@ class User {
       email,
     ]);
 
-    if (answer.length === 0) return null;
+    if (user.length === 0) return null;
     return new User(user[0]);
   }
 
@@ -60,6 +62,15 @@ class User {
     );
     teams.map((team) => new Team(team));
     return teams;
+  }
+
+  async getPrivileges() {
+    const [privileges, _] = await db.execute(
+      "SELECT p.* FROM privilege p, users_roles ur, role_privilege rp WHERE ur.uid = ? AND ur.id_role = rp.id_role AND rp.id_privilege = p.id",
+      [this.uid]
+    );
+
+    return privileges.map((privilege) => new Privilege(privilege));
   }
 
   static async getByGoogleId(id_google_auth) {
@@ -101,13 +112,14 @@ class User {
   //---------------------------POST----------------------------------
   async post() {
     let [res, _] = await db.execute(
-      `INSERT INTO user (id_jira, id_google_auth, first_name, last_name, email) VALUES (?, ?, ?, ?, ?)`,
+      `INSERT INTO user (id_jira, id_google_auth, first_name, last_name, email, picture) VALUES (?, ?, ?, ?, ?, ?)`,
       [
         this.id_jira,
         this.id_google_auth,
         this.first_name,
         this.last_name,
         this.email,
+        this.picture,
       ]
     );
     this.uid = res.insertId;

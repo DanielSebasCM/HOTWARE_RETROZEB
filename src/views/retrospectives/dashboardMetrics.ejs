@@ -8,7 +8,7 @@
     </div>
 
     <div class="banner__section">
-      <% if(!answered) { %>
+      <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives)) { %>
       <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
       <% } else {%>
       <div class="toggle-buttons-container toggle-buttons-container--primary">
@@ -49,6 +49,12 @@
 
   <span class="line"></span>
   <h2 class="subtitle">Otras métricas</h2>
+  <div class="filters-container">
+    <div class="checkbox-container">
+      <input type="checkbox" class="question-checkbox mr-1" id="show-empty" />
+      <label for="show-empty">Mostrar atributos vacíos</label>
+    </div>
+  </div>
   <div class="charts-container charts-container--no-col">
     <div class="chart-container">
       <canvas id="epics-chart"></canvas>

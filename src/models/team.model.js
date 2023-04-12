@@ -125,6 +125,31 @@ class Team {
     if (retros.length == 0) return null;
     return new Retrospective(retros[0]);
   }
+
+  async getNClosedRetrospectives(n) {
+    const Retrospective = require("./retrospective.model");
+
+    // TODO - TEST THIS
+    const [retros, _] = await db.execute(
+      `
+    SELECT r.* , s.name as sprint_name
+    FROM retrospective as r, team as t, sprint as s
+    WHERE r.id_team = t.id
+    AND r.id_sprint = s.id
+    AND t.id = ?
+    AND r.end_date IS NOT NULL
+    AND r.state = "CLOSED"
+    ORDER BY r.end_date DESC
+    LIMIT ?
+      `,
+      [this.id, n]
+    );
+    return retros.map((retro) => {
+      const r = new Retrospective(retro);
+      r.sprint_name = retro.sprint_name;
+      return r;
+    });
+  }
 }
 
 module.exports = Team;

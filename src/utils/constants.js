@@ -24,12 +24,43 @@ const constants = {
   routes: {
     home: "/",
     login: "/login",
+    logout: "/logout",
+    refreshToken: "/token/refresh",
     teams: "/equipos",
     actionables: "/accionables",
     retrospectives: "/retrospectivas",
     questions: "/preguntas",
     roles: "/roles",
     locals: "/locals",
+  },
+  privileges: {
+    actionables: {
+      getActionables: "getActionables",
+      canAcceptActionables: "canAcceptActionables",
+      canRejectActionables: "canRejectActionables",
+    },
+    teams: {
+      getTeams: "getTeams",
+      canJoinTeams: "canJoinTeams",
+      canCreateTeams: "canCreateTeams",
+    },
+    questions: {
+      getQuestions: "getQuestions",
+      canPostQuestions: "canPostQuestions",
+      canDeleteQuestions: "canDeleteQuestions",
+    },
+    roles: {
+      getRoles: "getRoles",
+      canCreateRoles: "canCreateRoles",
+      canDeleteRoles: "canDeleteRoles",
+    },
+    retrospectives: {
+      getRetrospectives: "getRetrospectives",
+      canCreateRetrospectives: "canCreateRetrospectives",
+      canAnswerRetrospectives: "canAnswerRetrospectives",
+      getMetrics: "getMetrics",
+      canCompareRetrospectives: "canCompareRetrospectives",
+    },
   },
 };
 
