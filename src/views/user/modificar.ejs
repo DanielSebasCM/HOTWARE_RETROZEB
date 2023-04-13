@@ -1,0 +1,24 @@
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">
+        Modificar rol del usuario<span class="meta"></span>
+      </h1>
+      <p class="description"><%= user.first_name %> <%= user.last_name %></p>
+    </div>
+    <span class="line"></span>
+  </div>
+  <form>
+    <p class="description-question">Selecciona los roles para el usuario</p>
+    <% for (let i=0; i<allroles.length; i++){ %>
+    <div class="checkbox-container">
+      <input type="checkbox" class="question-checkbox mr-1" id="accum" <%=roles.map(role=>role.id).includes(allroles[i].id)?"checked":""%> />
+      <label for="accum"> <%= allroles[i].name %></label>
+    </div>
+    <% } %>
+    <div class="centcontainer">
+      <button class="button button--primary" type="submit">Guardar</button>
+    </div>
+  </form>
+
+</section>

@@ -3,6 +3,7 @@ const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const Team = require("./team.model");
 const Privilege = require("./privilege.model");
+const Role = require("./role.model");
 
 class User {
   constructor(user) {
@@ -71,6 +72,14 @@ class User {
     );
 
     return privileges.map((privilege) => new Privilege(privilege));
+  }
+
+  async getRoles() {
+    const [roles, _] = await db.execute(
+      "SELECT r.* FROM role r, users_roles ur WHERE ur.uid = ? AND ur.id_role = r.id",
+      [this.uid]
+    );
+    return roles.map((role) => new Role(role));
   }
 
   static async getByGoogleId(id_google_auth) {

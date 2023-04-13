@@ -1,0 +1,55 @@
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">
+        Usuarios <span class="meta"> (<%=users.length %>)</span>
+      </h1>
+      <p class="description">Usuarios activos actuales</p>
+    </div>
+    <span class="line"></span>
+  </div>
+
+  <% if(users && users.length> 0) { %>
+  <div class="banner--nomargin">
+    <div class="table-container">
+      <table class="table" id="userSearch">
+        <thead>
+          <tr class="subtitle">
+            <td>Nombre</td>
+            <td>E-mail</td>
+
+          </tr>
+        </thead>
+        <tbody>
+
+          <% for(let i=0; i < users.length; i++) { %>
+          <tr>
+            <td class="table__title">
+              <%= users[i].first_name %> <%= users[i].last_name %>
+            </td>
+            <td>
+              <%= users[i].email %>
+            </td>
+            <td>
+              <% if (currentPrivileges.includes(privileges.users.deleteUsers)){ %>
+              <form action="/usuarios/<%= users[i].uid %>/borrar?_method=DELETE" method="POST">
+                <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn">Eliminar</button>
+              </form>
+              <% } %>
+            </td>
+            <td>
+              <% if (currentPrivileges.includes(privileges.users.canModifyUsers)){ %>
+              <a class="button button--sm button--edit" href="/usuarios/<%= users[i].uid %>/modificar">Modificar</button>
+                <% } %>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <% } else { %>
+  <p class="no-results">No hay usuarios activos</p>
+  <% } %>
+  <p class="no-results hide"></p>
+</section>
