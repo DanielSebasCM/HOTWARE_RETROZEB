@@ -44,9 +44,17 @@ const modifyUser = async (req, res, next) => {
 const modifyUserPost = async (req, res, next) => {
   try {
     const { uid } = req.params;
+    const roles = [];
+    for (let key in req.body) {
+      roles.push(await Role.getById(key));
+    }
+    const user = await User.getById(uid);
+    await user.setRoles(roles);
+    req.session.successMessage = "Usuario modificado correctamente";
+    res.redirect("/usuarios");
   } catch (err) {
     next(err);
   }
 };
 
-module.exports = { renderUsers, deleteUser, modifyUser };
+module.exports = { renderUsers, deleteUser, modifyUser, modifyUserPost };

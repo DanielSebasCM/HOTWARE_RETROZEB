@@ -152,6 +152,12 @@ class User {
       role.id,
     ]);
   }
+  async setRoles(roles) {
+    await db.execute(`DELETE FROM users_roles WHERE uid = ?`, [this.uid]);
+    for (let role of roles) {
+      await this.addRole(role);
+    }
+  }
 }
 
 module.exports = User;

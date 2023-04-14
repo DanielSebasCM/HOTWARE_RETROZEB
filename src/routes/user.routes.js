@@ -18,5 +18,10 @@ router.get(
   authorize([privileges.canModifyUsers]),
   controller.modifyUser
 );
+router.post(
+  "/:uid/modificar",
+  authorize([privileges.canModifyUsers]),
+  controller.modifyUserPost
+);
 
 module.exports = router;

@@ -8,11 +8,11 @@
     </div>
     <span class="line"></span>
   </div>
-  <form>
+  <form id="change_role" action="/usuarios/<%= user.uid %>/modificar" method="POST">
     <p class="description-question">Selecciona los roles para el usuario</p>
     <% for (let i=0; i<allroles.length; i++){ %>
     <div class="checkbox-container">
-      <input type="checkbox" class="question-checkbox mr-1" id="accum" <%=roles.map(role=>role.id).includes(allroles[i].id)?"checked":""%> />
+      <input type="checkbox" class="question-checkbox mr-1" id="accum" name="<%=allroles[i].id%>" <%=roles.map(role=>role.id).includes(allroles[i].id)?"checked":""%> />
       <label for="accum"> <%= allroles[i].name %></label>
     </div>
     <% } %>
