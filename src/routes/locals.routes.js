@@ -7,8 +7,17 @@ router.post("/", () => {
 });
 
 router.post("/activeteam", (req, res) => {
-  const { activeTeam } = req.body;
-  req.session.selectedTeam = activeTeam;
+  let { activeTeam } = req.body;
+  activeTeam = activeTeam.split("-");
+
+  const team = {
+    id: activeTeam[0],
+    name: activeTeam[1],
+  };
+
+  req.session.selectedTeam = team;
+  res.locals.selectedTeam = team;
+
   res.status(301).redirect(req.headers.referer);
 });
 

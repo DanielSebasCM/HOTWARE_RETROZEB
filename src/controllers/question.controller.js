@@ -18,7 +18,19 @@ const postQuestion = async (req, res, next) => {
     const { description, type, option } = req.body;
     const newQuestion = new Question({ description, type, options: option });
     await newQuestion.post();
-    req.session.successMessage = "Pregunta creada con éxito"
+    req.session.successMessage = "Pregunta creada con éxito";
+    res.redirect("/preguntas");
+  } catch (err) {
+    next(err);
+  }
+};
+
+const deleteQuestion = async (req, res, next) => {
+  try {
+    const { id } = req.body;
+    const question = await Question.getById(id);
+    await question.delete();
+    req.session.successMessage = "Pregunta eliminada con éxito";
     res.redirect("/preguntas");
   } catch (err) {
     next(err);
@@ -29,4 +41,5 @@ module.exports = {
   renderQuestions,
   renderNewQuestion,
   postQuestion,
+  deleteQuestion,
 };

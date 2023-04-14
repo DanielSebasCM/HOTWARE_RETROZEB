@@ -23,6 +23,16 @@ class Sprint {
     return new Sprint(sprint[0]);
   }
 
+  static async getByJiraId(id_jira) {
+    let [sprint, _] = await db.execute(
+      `SELECT * FROM sprint WHERE id_jira = ?`,
+      [id_jira]
+    );
+
+    if (sprint.length === 0) return null;
+    return new Sprint(sprint[0]);
+  }
+
   static async getLastWithoutRetroByTeamId(id_team) {
     let [sprint, _] = await db.execute(
       `

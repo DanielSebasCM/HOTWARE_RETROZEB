@@ -1,25 +1,73 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/retrospective.controller");
+const authorize = require("../middlewares/privilege");
+const privileges = require("../utils/constants").privileges.retrospectives;
 
 // RENDERING ROUTES
-router.get("/", controller.renderRetrospectives);
-router.get("/iniciar", controller.renderInitRetrospective);
-
-router.get("/:id", (req, res) => res.redirect(req.originalUrl + "/metricas"));
-router.get("/:id/metricas", controller.renderRetrospectiveMetrics);
-router.get("/:id/preguntas", controller.renderRetrospectiveQuestions);
-router.get("/:id/contestar", controller.renderRetrospectiveAnswer);
+router.get(
+  "/",
+  authorize([privileges.getRetrospectives]),
+  controller.renderRetrospectives
+);
+router.get(
+  "/iniciar",
+  authorize([privileges.canCreateRetrospectives]),
+  controller.renderInitRetrospective
+);
+router.get(
+  "/comparar/:n",
+  authorize([privileges.canCompareRetrospectives]),
+  controller.renderCompareRetroMetrics
+);
+router.get("/:id", authorize([privileges.getMetrics]), (req, res) =>
+  res.redirect(req.originalUrl + "/metricas")
+);
+router.get(
+  "/:id/metricas",
+  authorize([privileges.getMetrics]),
+  controller.renderRetrospectiveMetrics
+);
+router.get(
+  "/:id/preguntas",
+  authorize([privileges.getMetrics]),
+  controller.renderRetrospectiveQuestions
+);
+router.get(
+  "/:id/contestar",
+  authorize([privileges.canAnswerRetrospectives]),
+  controller.renderRetrospectiveAnswer
+);
 
 // API ROUTES
 
 // GET
-router.get("/:id/issues", controller.getRetrospectiveIssues);
-router.get("/:id/respuestas", controller.getRetrospectiveAnswers);
-router.get("/:id/usuarios", controller.getRetrospectiveUsers);
+router.get(
+  "/:id/issues",
+  authorize([privileges.getMetrics]),
+  controller.getRetrospectiveIssues
+);
+router.get(
+  "/:id/respuestas",
+  authorize([privileges.getMetrics]),
+  controller.getRetrospectiveAnswers
+);
+router.get(
+  "/:id/usuarios",
+  authorize([privileges.getMetrics]),
+  controller.getRetrospectiveUsers
+);
 
 // POST
-router.post("/iniciar", controller.post);
-router.post("/:id/contestar", controller.postRetrospectiveAnswers);
+router.post(
+  "/iniciar",
+  authorize([privileges.canCreateRetrospectives]),
+  controller.post
+);
+router.post(
+  "/:id/contestar",
+  authorize([privileges.canAnswerRetrospectives]),
+  controller.postRetrospectiveAnswers
+);
 
 module.exports = router;

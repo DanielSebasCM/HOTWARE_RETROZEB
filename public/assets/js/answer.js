@@ -2,16 +2,19 @@ const form = document.getElementById("question-form");
 const idRetrospective = window.location.href.split("/")[4];
 const uid = document.getElementsByClassName("user")[0].getAttribute("data-uid");
 
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
   const body = { idRetrospective, uid, questionIds: [] };
   const openQuestions = document.querySelectorAll("article[data-type='OPEN']");
   const scaleQuestions = document.querySelectorAll(
     "article[data-type='SCALE']"
   );
+
   const booleanQuestions = document.querySelectorAll(
     "article[data-type='BOOLEAN']"
   );
+
   const selectionQuestions = document.querySelectorAll(
     "article[data-type='SELECTION']"
   );
@@ -48,13 +51,21 @@ form.addEventListener("submit", (e) => {
     body["questionIds"].push(id);
   }
 
+  const tokens = getTokens();
+
   fetch(window.location.href, {
     method: "POST",
     body: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json",
+      Accept: "application/json",
+      Authorization: "Bearer " + tokens.authToken,
     },
-  }).then((res) => {
-    window.location.href = `/retrospectivas/${idRetrospective}/preguntas`;
-  });
+  })
+    .then(() => {
+      window.location.href = `${routes.retrospectives}/${idRetrospective}/preguntas`;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
