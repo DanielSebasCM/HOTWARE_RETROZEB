@@ -75,8 +75,7 @@ async function getJiraActionables() {
     return new SuggestedTodo(suggested_todo);
   });
 
-  let temp = await Promise.all(actionables);
-  return temp;
+  return await Promise.all(actionables);
 }
 
 async function postJiraActionable(actionable) {
