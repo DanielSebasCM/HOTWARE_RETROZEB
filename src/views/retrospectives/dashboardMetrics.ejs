@@ -8,7 +8,7 @@
     </div>
 
     <div class="banner__section">
-      <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives) && retrospective.state !== "CLOSED" && activeTeams.map(team => team.id).includes(retrospective.id_team)) { %>
+      <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives) && retrospective.state !== "CLOSED" && isMember) { %>
       <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
       <% } else {%>
       <div class="toggle-buttons-container toggle-buttons-container--primary">
