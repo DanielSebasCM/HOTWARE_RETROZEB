@@ -1,23 +1,21 @@
 const Actionable = require("../models/suggestedTodo.model.js");
-const Retrospective = require("../models/retrospective.model.js");
 const User = require("../models/user.model.js");
+const issuePriorities = require("../utils/constants").enums.issuePriorities;
 const moment = require("moment");
 moment.locale("es");
 
 const renderActionables = async (req, res, next) => {
   try {
     const state = req.params.state;
-    if (["pending", "accepted", "rejected"].includes(state)) {
-      const actionables = await Actionable.getAllByState(state);
-      console.log(actionables);
-      const arrRetros = [];
+    const priority = req.params.priority;
+    if (
+      ["pending", "accepted", "rejected", "completed", "process"].includes(
+        state
+      )
+    ) {
+      const actionables = await Actionable.getAllByState(state.toUpperCase());
       const arrUsers = [];
 
-      for (let i = 0; i < actionables.length; i++) {
-        arrRetros.push(
-          await Retrospective.getById(actionables[i].id_retrospective)
-        );
-      }
       for (let i = 0; i < actionables.length; i++) {
         arrUsers.push(await User.getById(actionables[i].id_user_author));
       }
@@ -25,13 +23,12 @@ const renderActionables = async (req, res, next) => {
         title: "Accionables",
         actionables,
         state,
-        arrRetros,
         arrUsers,
         moment,
+        priority,
       });
     } else {
-      let url = req.originalUrl.split("/").pop().join("/");
-      res.redirect(url);
+      res.redirect("/accionables");
     }
   } catch (err) {
     next(err);
@@ -71,8 +68,40 @@ const rejectActionable = async (req, res, next) => {
   }
 };
 
+const renderNewActionable = async (req, res, next) => {
+  try {
+    const Users = await User.getAllActive();
+    const priority = issuePriorities;
+    res.render("actionables/new", {
+      title: "Crear accionable",
+      Users,
+      priority,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+const postActionable = async (req, res, next) => {
+  try {
+    const { title, description, priority, id_user_author } = req.body;
+    const actionable = new Actionable({
+      title,
+      description,
+      priority,
+      id_user_author,
+    });
+    await actionable.post();
+    res.redirect("/accionables/pending");
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   renderActionables,
   acceptActionable,
   rejectActionable,
+  renderNewActionable,
+  postActionable,
 };
