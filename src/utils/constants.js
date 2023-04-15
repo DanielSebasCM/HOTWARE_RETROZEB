@@ -31,6 +31,7 @@ const constants = {
     retrospectives: "/retrospectivas",
     questions: "/preguntas",
     roles: "/roles",
+    users: "/usuarios",
     locals: "/locals",
   },
   privileges: {
@@ -60,6 +61,11 @@ const constants = {
       canAnswerRetrospectives: "canAnswerRetrospectives",
       getMetrics: "getMetrics",
       canCompareRetrospectives: "canCompareRetrospectives",
+    },
+    users: {
+      getUsers: "getUsers",
+      deleteUsers: "deleteUsers",
+      canModifyUsers: "canModifyUsers",
     },
   },
 };
