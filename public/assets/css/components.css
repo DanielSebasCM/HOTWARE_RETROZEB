@@ -466,16 +466,51 @@
   border-color: var(--color-font-alert);
 }
 
-.pill--small {
+.pill--small-vhigh {
   height: 1rem;
   max-width: 2rem;
   min-width: 2rem;
   border-radius: 0.3rem;
 
-  background-color: var(--color-font-active);
-  border-color: var(--color-font-active);
+  background-color: #ff7452;
+  border-color: #ff7452;
 }
+.pill--small-high {
+  height: 1rem;
+  max-width: 2rem;
+  min-width: 2rem;
+  border-radius: 0.3rem;
 
+  background-color: #ff8f73;
+  border-color: #ff8f73;
+}
+.pill--small-medium {
+  height: 1rem;
+  max-width: 2rem;
+  min-width: 2rem;
+  border-radius: 0.3rem;
+
+  background-color: #ffab00;
+  border-color: #ffab00;
+}
+.pill--small-low {
+  height: 1rem;
+  max-width: 2rem;
+  min-width: 2rem;
+  border-radius: 0.3rem;
+
+  background-color: #0065ff;
+  border-color: #0065ff;
+}
+.pill--small-vlow {
+  height: 1rem;
+  max-width: 2rem;
+  min-width: 2rem;
+  border-radius: 0.3rem;
+
+  background-color: #2684ff;
+  border-color: #2684ff;
+}
 /* BUTTON */
 .button {
   display: flex;

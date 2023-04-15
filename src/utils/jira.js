@@ -76,7 +76,6 @@ async function getJiraActionables() {
   });
 
   let temp = await Promise.all(actionables);
-  console.log(temp);
   return temp;
 }
 
