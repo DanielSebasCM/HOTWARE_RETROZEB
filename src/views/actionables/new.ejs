@@ -15,7 +15,16 @@
     <div class="input-container">
       <input name="title" class="input input--md" type="text" placeholder="Titulo del accionable" id="question-input" required maxlength="40" />
       <input name="description" class="input input--md" type="text" placeholder="Descripción del accionable" id="question-input" required maxlength="255" />
-      <input name="priority" class="input input--md" type="text" placeholder="Prioridad del accionable" id="question-input" required maxlength="40" />
+    </div>
+
+    <p class="description-question">Seleciona un nivel de prioridad</p>
+
+    <div class="select-container">
+      <select class="select" name="priority">
+        <% for(let i=0; i<priority.length;i++) {%>
+        <option value="<%=priority[i] %>"><%=priority[i]%></option>
+        <% } %>
+      </select>
     </div>
     <p class="description-question">Seleciona un responsable de accionable</p>
 

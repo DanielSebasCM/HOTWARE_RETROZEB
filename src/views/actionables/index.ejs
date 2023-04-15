@@ -40,15 +40,17 @@
         <h3 class="card__title mr-2">
           <%= actionables[i].title %>
         </h3>
+        <% if (state!=="pending" ) { %>
         <div class="pills-container">
           <span class="pill pill--ontime"></span>
         </div>
+        <% } %>
       </div>
 
       <p class="card__description">
         <%= actionables[i].description %>
       </p>
-
+      <% if (arrUsers[i]){ %>
       <p class="card__subtitle">
         Responsable
       </p>
@@ -61,13 +63,13 @@
           <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
         </span>
       </div>
-
+      <% } %>
       <ul class="items__list">
 
         <li class="pills-container">
           <span class="pill pill--small"></span>
           <p>
-            Prioridad
+            <%= actionables[i].priority %>
           </p>
         </li>
       </ul>
