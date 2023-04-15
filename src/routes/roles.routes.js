@@ -5,7 +5,7 @@ const authorize = require("../middlewares/privilege");
 const privileges = require("../utils/constants").privileges.roles;
 
 // RENDERING ROUTES
-router.get("/", controller.renderRoles);
+router.get("/", authorize([privileges.getRoles]) ,controller.renderRoles);
 
 // POSTING ROLES
 router.get("/nuevo", controller.renderNewRole);
