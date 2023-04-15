@@ -16,6 +16,13 @@
         <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
       </div>
       <% } %>
+      <% if(currentPrivileges.includes(privileges.retrospectives.canCloseRetrospectives && retrospective.state !== "CLOSED")) { %>
+      <div>
+        <form action="<%= routes.retrospectives %>/<%= retrospective.id %>/cerrar?_method=PATCH" method="POST">
+          <button class="button button--alert mt-2">Cerrar Retrospectiva</button>
+        </form>
+      </div>
+      <% } %>
     </div>
 
     <span class="line"></span>

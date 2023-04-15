@@ -145,6 +145,18 @@ const post = async (request, response, next) => {
   }
 };
 
+const patchRetrospectiveState = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const retrospective = await Retrospective.getById(id);
+    await retrospective.close();
+    req.session.successMessage = "Retrospectiva cerrada con éxito";
+    res.redirect(`/retrospectivas/${id}`);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const renderRetrospectiveQuestions = async (req, res, next) => {
   try {
     const id_retrospective = req.params.id;
@@ -305,4 +317,5 @@ module.exports = {
   getRetrospectiveUsers,
   post,
   postRetrospectiveAnswers,
+  patchRetrospectiveState,
 };
