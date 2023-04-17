@@ -254,6 +254,11 @@
   margin: 0;
 }
 
+.card--question-roles {
+  flex-direction: column;
+  gap: 1rem;
+}
+
 .card--question-checkbox {
   display: flex;
   flex-direction: row;
