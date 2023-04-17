@@ -28,8 +28,6 @@ const modifyUser = async (req, res, next) => {
     const user = await User.getById(uid); //primero saco el usuario
     const roles = await user.getRoles(uid);
     const allroles = await Role.getAllActive();
-    console.log(roles);
-    console.log(allroles);
     res.render("user/modificar", {
       title: "Modificar usuario",
       user,
