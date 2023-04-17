@@ -82,6 +82,19 @@ const renderInitRetrospective = async (req, res, next) => {
 const postRetrospectiveAnswers = async (req, res, next) => {
   try {
     const { idRetrospective, questionIds, uid } = req.body;
+    const retrospective = await Retrospective.getById(idRetrospective);
+    if (retrospective.state !== "IN_PROGRESS") {
+      req.session.errorMessage = "La retrospectiva ya ha sido cerrada";
+      res.redirect(`/retrospectivas/${idRetrospective}`);
+      return;
+    }
+    const teamUsers = await retrospective.getTeamUsers();
+    if (!teamUsers.some((user) => user.id === uid)) {
+      req.session.errorMessage =
+        "No estabas unido al equipo cuando se creó la retrospectiva";
+      res.redirect(`/retrospectivas/${idRetrospective}`);
+      return;
+    }
     const answers = [];
     for (let qId of questionIds) {
       if (!req.body[qId]) continue;
@@ -93,7 +106,6 @@ const postRetrospectiveAnswers = async (req, res, next) => {
         answers.push({ id_question: qId, value: optionId });
       }
     }
-    const retrospective = await Retrospective.getById(idRetrospective);
     retrospective.postAnswers(answers, uid);
     req.session.successMessage = "Respuestas enviadas con éxito";
     res.send("Respuestas enviadas con éxito");
@@ -178,12 +190,17 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
     let answer = await retrospective.getAnswers(questions[0]);
     answer = answer.filter((a) => a.uid === req.session.currentUser.uid);
     let answered = answer.length ? true : false;
+    const teamUsers = await retrospective.getUsers();
+    let isMember = teamUsers.some(
+      (user) => user.id === req.session.currentUser.uid
+    );
     const labels = await retrospective.getLabels();
     res.render("retrospectives/dashboardMetrics", {
       title: "Dashboard",
       retrospective,
       labels,
       answered,
+      isMember,
     });
   } catch (err) {
     next(err);
@@ -197,6 +214,15 @@ const renderRetrospectiveAnswer = async (req, res, next) => {
     if (!retrospective) {
       req.session.errorMessage = "No existe la retrospectiva";
       return res.redirect("..");
+    }
+    if (retrospective.state !== "IN_PROGRESS") {
+      return res.redirect(`/retrospectivas/${retrospectiveId}/preguntas`);
+    }
+    const teamUsers = await retrospective.getUsers();
+    if (!teamUsers.some((user) => user.id === req.session.currentUser.uid)) {
+      req.session.errorMessage =
+        "No eras miembro del equipo cuando se creó la retrospectiva";
+      return res.redirect(`/retrospectivas/${retrospectiveId}/preguntas`);
     }
     const questions = await retrospective.getQuestions();
     let answer = await retrospective.getAnswers(questions[0]);

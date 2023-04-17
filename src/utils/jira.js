@@ -1,4 +1,3 @@
-require("dotenv").config();
 const Project = require("../models/project.model");
 const Sprint = require("../models/sprint.model");
 const Issue = require("../models/issue.model");
@@ -32,6 +31,7 @@ const {
  * @returns Array of actionables
  */
 async function getJiraActionables() {
+  const SuggestedTodo = require("../models/suggestedTodo.model");
   const url = `${JIRA_URL_HOTWARE}/rest/api/3/search`;
   let actionables = await getAll(
     url,
@@ -60,14 +60,19 @@ async function getJiraActionables() {
         }
       });
     }
-    return {
-      id_jira: actionable.id,
+
+    let state = "PROCESS";
+    if (actionable.fields.status.name === "Done") {
+      state = "COMPLETED";
+    }
+    let suggested_todo = {
       title: actionable.fields.summary,
       description,
+      state,
+      id_user_author: user?.uid,
       priority: actionable.fields.priority.name,
-      state: actionable.fields.status.name,
-      uid_assignee: user?.id,
     };
+    return new SuggestedTodo(suggested_todo);
   });
 
   return await Promise.all(actionables);
@@ -343,3 +348,11 @@ function isDone(res) {
   if (res.total !== undefined) return res.startAt + res.maxResults >= res.total;
   return true;
 }
+
+module.exports = {
+  getJiraActionables,
+  fetchProjectJiraSprints,
+  fetchProjectJiraLatestSprint,
+  fetchBoardSprints,
+  fetchProjectBoards,
+};

@@ -6,92 +6,107 @@
     </div>
     <div class="banner__section">
       <div class="toggle-buttons-container toggle-buttons-container--primary">
-        <a class="toggle-button <%= (state === "accepted") && "toggle-button--active" %>"
-          href="/accionables/accepted">Aprobado</a>
-        <a class="toggle-button <%= (state === "pending") && "toggle-button--active" %>"
-          href="/accionables/pending">Por Aprobar</a>
-        <a class="toggle-button <%= (state === "rejected") && "toggle-button--active" %>"
-          href="/accionables/rejected">Rechazado </a>
+        <a class="toggle-button <%= (state === "process") && "toggle-button--active" %>" href="/accionables/process">En proceso </a>
+        <a class="toggle-button <%= (state === "pending") && "toggle-button--active" %>" href="/accionables/pending">Por Aprobar</a>
+        <a class="toggle-button <%= (state === "completed") && "toggle-button--active" %>" href="/accionables/completed">Completados</a>
       </div>
     </div>
     <span class="line"></span>
   </div>
-  <% if (state==="accepted" ) { %>
-    <h2 class="subtitle"> Accionables Aprobados <span class="meta"></span></h2>
-    <% } %>
-      <% if (state==="pending" ) { %>
-        <h2 class="subtitle"> Accionables Por Aprobar <span class="meta"></span></h2>
+  <% if (state==="process" ) { %>
+  <h2 class="subtitle"> Accionables en Proceso <span class="meta"></span></h2>
+  <% } %>
+  <% if (state==="pending" ) { %>
+  <h2 class="subtitle"> Accionables Por Aprobar <span class="meta"></span></h2>
+  <% } %>
+  <% if (state==="completed" ) { %>
+  <h2 class="subtitle"> Accionables Completados <span class="meta"></span></h2>
+  <% } %>
+  <% if (actionables.length==0) { %>
+  <div class="centcontainer">
+    <div class="vertical-center">
+      <h2 class="card__title">No hay accionables para mostrar</h2>
+    </div>
+  </div>
+  <% } %>
+
+  <% if (actionables.length>0) { %>
+  <div class="cards-container">
+    <% for(let i=0; i< actionables.length; i++) {%>
+    <div class="card card--actionable">
+      <div class="card__header">
+        <h3 class="card__title mr-2">
+          <%= actionables[i].title %>
+        </h3>
+        <% if (state!=="pending" ) { %>
+        <div class="pills-container">
+          <span class="pill pill--ontime"></span>
+        </div>
         <% } %>
-          <% if (state==="rejected" ) { %>
-            <h2 class="subtitle"> Accionables Rechazados <span class="meta"></span></h2>
-            <% } %>
-              <% if (actionables.length==0) { %>
-                <div class="centcontainer">
-                  <div class="vertical-center">
-                    <h2 class="card__title">No hay accionables para mostrar</h2>
-                  </div>
-                </div>
-                <% } %>
+      </div>
 
-                  <% if (actionables.length>0) { %>
-                    <div class="cards-container">
-                      <% for(let i=0; i< actionables.length; i++) {%>
-                        <div class="card card--actionable">
-                          <div class="card__header">
-                            <h3 class="card__title mr-2">
-                              <%= actionables[i].title %>
-                            </h3>
-                            <div class="pills-container">
-                              <%= moment( arrRetros[i].start_date).fromNow(); %>
-                                <span class="pill pill--ontime"></span>
-                            </div>
-                          </div>
+      <p class="card__description">
+        <%= actionables[i].description %>
+      </p>
+      <% if (arrUsers[i]){ %>
+      <p class="card__subtitle">
+        Responsable
+      </p>
 
-                          <p class="card__description">
-                            <%= actionables[i].description %>
-                          </p>
+      <div class="user__item">
+        <span class="user__avatar">
+          <%= arrUsers[i].first_name[0] %>
+        </span>
+        <span class="user__name">
+          <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
+        </span>
+      </div>
+      <% } %>
 
-                          <p class="card__subtitle">
-                            Responsable
-                          </p>
+      <ul class="items__list">
+        <li class="pills-container">
+          <% if (actionables[i].priority==="Highest"){ %>
+          <span class="pill pill--small-vhigh"></span>
+          <% } %>
+          <% if (actionables[i].priority==="High"){ %>
+          <span class="pill pill--small-high"></span>
+          <% } %>
+          <% if (actionables[i].priority==="Medium"){ %>
+          <span class="pill pill--small-medium"></span>
+          <% } %>
+          <% if (actionables[i].priority==="Low"){ %>
+          <span class="pill pill--small-low"></span>
+          <% } %>
+          <% if (actionables[i].priority==="Lowest"){ %>
+          <span class="pill pill--small-vlow"></span>
+          <% } %>
+          <p>
+            <%= actionables[i].priority %>
+          </p>
+        </li>
+      </ul>
 
-                          <div class="user__item">
-                            <span class="user__avatar">
-                              <%= arrUsers[i].first_name[0] %>
-                            </span>
-                            <span class="user__name">
-                              <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
-                            </span>
-                          </div>
+      <% if(state==="pending" ) { %>
+      <div class="buttons-container card__footer mt-2">
+        <form action="<%= actionables[i].id %>/accept" method="POST">
+          <button class="button button--primary" type="submit">Aprobar</button>
+        </form>
+        <form action="<%= actionables[i].id %>/reject" method="POST">
+          <button class="button button--discard" type="submit">Rechazar</button>
+        </form>
+      </div>
+      <% } %>
 
-                          <ul class="items__list">
-                            <li class="pills-container">
-                              <span class="pill pill--small"></span>
-                              <p>
-                                <%= moment(arrRetros[i].end_date).format('LL') %>
-                              </p>
-                            </li>
-                            <li class="pills-container">
-                              <span class="pill pill--small"></span>
-                              <p>
-                                <%=arrRetros[i].name %>
-                              </p>
-                            </li>
-                          </ul>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+  <% if(state==="pending" ) { %>
+  <div class="centcontainer_min">
+    <a class="button button--add-actionable icon" href="/accionables/nuevo">
+      <img src="/assets/icon/add.svg" alt="icono de agregar accionable">
+    </a>
+  </div>
+  <% } %>
 
-                          <% if(state==="pending" ) { %>
-                            <div class="buttons-container card__footer mt-2">
-                              <form action="<%= actionables[i].id %>/accept" method="POST">
-                                <button class="button button--primary" type="submit">Aprobar</button>
-                              </form>
-                              <form action="<%= actionables[i].id %>/reject" method="POST">
-                                <button class="button button--discard" type="submit">Rechazar</button>
-                              </form>
-                            </div>
-                            <% } %>
-
-                        </div>
-                        <% } %>
-                    </div>
-                    <% } %>
 </section>

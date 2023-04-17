@@ -96,23 +96,6 @@ test("Todo state is of type" + actionableStates, () => {
   expect(thrownError).toEqual(expectedError);
 });
 
-test("Todo has an author", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "id_user_author",
-    validationMessages.isMandatory
-  );
-  try {
-    new SuggestedTodo({
-      title: "Test",
-      description: "Test description",
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
 test("Todo author id is an integer", () => {
   let thrownError;
   const expectedError = new ValidationError(
