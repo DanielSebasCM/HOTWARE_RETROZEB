@@ -95,8 +95,6 @@ async function postJiraActionable(actionable) {
   ).toString("base64")}`;
 
   const user = await User.getById(actionable.id_user_author);
-  const accountId = user ? user.id_jira : null;
-  console.log(accountId);
   let description = null;
   if (actionable.description) {
     description = {
@@ -130,7 +128,7 @@ async function postJiraActionable(actionable) {
         name: actionable.priority ? actionable.priority : "Medium",
       },
       assignee: {
-        accountId,
+        accountId: user ? user.id_jira : null,
       },
     },
   });
