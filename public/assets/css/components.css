@@ -1170,3 +1170,9 @@ a.toggle-button {
 .pl-5 {
   padding-left: 5rem;
 }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 10px;
+}
