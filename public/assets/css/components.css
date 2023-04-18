@@ -132,7 +132,7 @@
   margin-top: 20vh;
 }
 
-.centcontainer_min{
+.centcontainer_min {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -967,6 +967,25 @@ a.toggle-button {
 
 .option-container > button {
   max-width: 4rem;
+}
+
+.error-view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.error-view--404 {
+  background-image: url("/assets/img/zeb404.svg");
+}
+
+.error-view--500 {
+  background-image: url("/assets/img/zeb500-mobile.svg");
 }
 
 /* UTILS */

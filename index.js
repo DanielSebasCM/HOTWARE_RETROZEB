@@ -50,10 +50,10 @@ app.get("/", (req, res) => {
 
 // 404
 app.use((req, res) => {
-  res.locals.title = "Error 404";
+  res.locals.errorView = true;
   res
     .status(404)
-    .render("errors/404", { message: `Página no encontrada: ${req.url}` });
+    .render("errors/404", {title: "Error 404", message: `Página no encontrada: ${req.url}` });
 });
 
 // ERROR HANDLER
