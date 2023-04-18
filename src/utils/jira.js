@@ -72,7 +72,9 @@ async function getJiraActionables() {
       id_user_author: user?.uid,
       priority: actionable.fields.priority.name,
     };
-    return new SuggestedTodo(suggested_todo);
+    let builtTodo = new SuggestedTodo(suggested_todo);
+    builtTodo.jira_state = actionable.fields.status.name;
+    return builtTodo;
   });
 
   return await Promise.all(actionables);
