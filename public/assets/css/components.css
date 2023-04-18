@@ -132,7 +132,7 @@
   margin-top: 20vh;
 }
 
-.centcontainer_min{
+.centcontainer_min {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -729,6 +729,10 @@ a.toggle-button {
   width: 100rem;
   margin-top: 1rem;
   margin-bottom: 2rem;
+}
+
+.input--number {
+  width: 5rem;
 }
 
 .select-container {
