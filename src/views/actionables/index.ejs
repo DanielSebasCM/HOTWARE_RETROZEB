@@ -48,6 +48,15 @@
       <p class="card__description">
         <%= actionables[i].description %>
       </p>
+
+      <p class="card__description">
+        <%= actionables[i].jira_state %>
+      </p>
+
+      <p class="card__description">
+        <%= actionables[i].creation_date %>
+      </p>
+
       <% if (arrUsers[i]){ %>
       <p class="card__subtitle">
         Responsable
