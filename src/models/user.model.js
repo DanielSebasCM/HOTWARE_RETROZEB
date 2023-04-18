@@ -15,6 +15,7 @@ class User {
     this.last_name = user.last_name;
     this.email = user.email;
     this.picture = user.picture || null;
+    // this.active = user.active;
     this.active = user.active === 0 ? 0 : 1;
   }
   static async getAll() {
