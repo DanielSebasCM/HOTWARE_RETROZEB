@@ -6,7 +6,12 @@ const renderRoles = async (req, res, next) => {
     const roles = await Role.getAllActive();
     const privileges_db = await Privilege.getAll();
     const role_privileges = await Role.getPrivileges();
-    res.render("roles", { roles, privileges_db, role_privileges, title: "Roles" });
+    res.render("roles", {
+      roles,
+      privileges_db,
+      role_privileges,
+      title: "Roles",
+    });
   } catch (err) {
     next(err);
   }
@@ -16,7 +21,14 @@ const deleteRole = async (req, res, next) => {
   try {
     const { id } = req.body;
     const role = await Role.getById(id);
-    await role.delete();
+    try {
+      await role.delete();
+    } catch (err) {
+      req.session.errorMessage =
+        "No se puede eliminar un rol que tiene usuarios asociados";
+      res.redirect("/roles");
+      return;
+    }
     req.session.successMessage = "Rol eliminado con éxito";
     res.redirect("/roles");
   } catch (err) {
