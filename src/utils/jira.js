@@ -94,7 +94,9 @@ async function postJiraActionable(actionable) {
     `${JIRA_USER_HOTWARE}:${JIRA_API_KEY_HOTWARE}`
   ).toString("base64")}`;
 
-  const user = await User.getById(actionable.uid_assignee);
+  const user = await User.getById(actionable.id_user_author);
+  const accountId = user ? user.id_jira : null;
+  console.log(accountId);
   let description = null;
   if (actionable.description) {
     description = {
@@ -128,7 +130,7 @@ async function postJiraActionable(actionable) {
         name: actionable.priority ? actionable.priority : "Medium",
       },
       assignee: {
-        accountId: user ? user.jira_id : null,
+        accountId,
       },
     },
   });
@@ -365,4 +367,5 @@ module.exports = {
   fetchProjectJiraLatestSprint,
   fetchBoardSprints,
   fetchProjectBoards,
+  postJiraActionable,
 };

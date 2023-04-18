@@ -144,6 +144,7 @@
   justify-content: flex-start;
   align-items: center;
   min-height: 3rem;
+  gap: 1rem;
 }
 
 /* CARDS */
@@ -220,6 +221,26 @@
   margin-top: var(--text-mb);
 }
 
+
+.card__description__footer {
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--color-font-secondary);
+  margin-top: auto;
+  margin-left: auto;
+
+}
+
+.act__description{
+  font-size: 1.3rem;
+  font-weight: 400;
+  color: var(--color-font-secondary);
+  margin-top: 0.8rem;
+  margin-bottom: 0;
+}
+
+
+
 .card .user__avatar {
   min-width: 3.2rem;
   min-height: 3.2rem;
@@ -232,7 +253,7 @@
 }
 
 .card__footer {
-  margin-top: auto !important;
+  margin-top: auto;
   width: 100%;
 }
 
@@ -476,6 +497,7 @@
   max-width: 2rem;
   min-width: 2rem;
   border-radius: 0.3rem;
+  margin-top: 0.8rem;
 
   background-color: #ff7452;
   border-color: #ff7452;
@@ -485,6 +507,7 @@
   max-width: 2rem;
   min-width: 2rem;
   border-radius: 0.3rem;
+  margin-top: 0.8rem;
 
   background-color: #ff8f73;
   border-color: #ff8f73;
@@ -494,7 +517,7 @@
   max-width: 2rem;
   min-width: 2rem;
   border-radius: 0.3rem;
-
+  margin-top: 0.8rem;
   background-color: #ffab00;
   border-color: #ffab00;
 }
@@ -503,6 +526,7 @@
   max-width: 2rem;
   min-width: 2rem;
   border-radius: 0.3rem;
+  margin-top: 0.8rem;
 
   background-color: #0065ff;
   border-color: #0065ff;
@@ -512,6 +536,7 @@
   max-width: 2rem;
   min-width: 2rem;
   border-radius: 0.3rem;
+  margin-top: 0.8rem;
 
   background-color: #2684ff;
   border-color: #2684ff;
