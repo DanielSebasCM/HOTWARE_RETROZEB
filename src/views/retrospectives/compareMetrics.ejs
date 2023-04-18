@@ -4,13 +4,11 @@
   <div class="banner">
     <div class="banner__section">
       <h1 class="title">Comparación de retrospectivas</h1>
-      <p class="description"><%= retrospectives.map(retrospective => retrospective.name).join(", ") %></p>
+      <div class="horizontal-container">
+        <p class="description"> Retrospectivas a comparar: </p>
+        <input type="number" id="n_retrospectives" min="2" max="10" value="<%= n %>" class="input input--number">
+      </div>
     </div>
-
-    <div class="banner__section">
-      <input type="number" id="n_retrospectives" min="1" max="10" value="<%= n %>" class="input">
-    </div>
-
     <span class="line"></span>
   </div>
 

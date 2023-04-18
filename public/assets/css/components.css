@@ -756,6 +756,10 @@ a.toggle-button {
   margin-bottom: 2rem;
 }
 
+.input--number {
+  width: 5rem;
+}
+
 .select-container {
   max-width: 20rem;
 }
