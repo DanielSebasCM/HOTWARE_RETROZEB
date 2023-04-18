@@ -8,54 +8,53 @@
       <p class="description">Listado de roles creados</p>
     </div>
     <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
-    <div class="banner__section">
-      <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
-    </div>
-    <% } %>
-    <span class="line"></span>
+      <div class="banner__section">
+        <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
+      </div>
+      <% } %>
+        <span class="line"></span>
   </div>
 
   <!-- ROLES -->
-  <div class="filters-container">
-    <div class="input search-bar">
-      <span class="icon search-bar__icon"></span>
-      <input type="text" placeholder="Buscar" />
-    </div>
-  </div>
-  <% if(roles && roles.length > 0) { %>
-  <div class="cards-container">
-    <% for(let role of roles) { %>
-    <div class="card card--question-roles">
-      <div class="card__header">
-        <p class="card__subtitle"><%= role.name %></p>
-      </div>
-      <span class="line"></span>
-      <ol class="items__list">
-      <% let index = 1 %>
-      <% for(let privilege_db of privileges_db) { %>
-        <% for(let role_privilege of role_privileges){
-          if(role_privilege.id_privilege == privilege_db.id && role_privilege.id_role == role.id) { %>
-            <li class="card__description"><span class="index"><%= index %>. </span><%= privilege_db.name %></li>
-            <% index++ %>
-          <% } %>
+  <% if(roles && roles.length> 0) { %>
+    <div class="cards-container">
+      <% for(let role of roles) { %>
+        <div class="card card--question-roles">
+          <div class="card__header">
+            <h3 class="card__title">
+              <%= role.name %>
+            </h3>
+          </div>
+          <ol class="items__list">
+            <% let index=1 %>
+              <% for(let privilege_db of privileges_db) { %>
+                <% for(let role_privilege of role_privileges){ if(role_privilege.id_privilege==privilege_db.id &&
+                  role_privilege.id_role==role.id) { %>
+                  <li class="card__description">
+                    <span class="index"><%= index %>.</span>
+                    <%= privilege_db.description %>
+                  </li>
+                  <% index++ %>
+                <% } %>
+              <% } %>
+            <% } %>
+          </ol>
+          <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
+            <form action="/roles?_method=DELETE" method="POST">
+              <input type="hidden" name="id" value="<%=role.id %>">
+              <button type="submit" class="button button--sm button--delete-alt remove-role-btn" data-id=<%=role.id
+                %>>Eliminar</button>
+            </form>
+            <% } %>
+        </div>
         <% } %>
-      <% } %>
-      </ol>
-      <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
-      <form action="/roles?_method=DELETE" method="POST">
-        <input type="hidden" name="id" value="<%=role.id %>">
-        <button type="submit" class="button button--sm button--delete-alt remove-role-btn" data-id=<%=role.id %>>Eliminar</button>
-      </form>
-      <% } %>
     </div>
-    <% } %>
-  </div>
   <% } else { %>
-  <div class="cards-container">
-    <div class="card">
-      <p class="card__subtitle">No hay roles</p>
+    <div class="cards-container">
+      <div class="card">
+        <p class="card__subtitle">No hay roles</p>
+      </div>
     </div>
-  </div>
   <% } %>
 </section>
 

@@ -297,8 +297,8 @@
 }
 
 .card--question-checkbox .question {
-  width: 100%;
-  min-width: 50rem;
+  width: fit-content;
+  min-width: fit-content;
 }
 
 .card--answers {
