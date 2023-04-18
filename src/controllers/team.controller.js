@@ -1,4 +1,5 @@
 const Team = require("../models/team.model");
+const User = require("../models/user.model");
 const messages = require("../utils/messages");
 
 const renderTeams = async (req, res, next) => {
@@ -91,9 +92,67 @@ const getNClosedRetrospectives = async (req, res, next) => {
     next(err);
   }
 };
+
+const nuevo = async (request, response, next) => {
+  try {
+    let name = request.body.name;
+    if (!name) {
+      request.session.errorMessage =
+        "No puedes crear un equipo sin nombre";
+      return response.redirect("/equipos");
+    }
+    const newTeam = new Team({
+      name,
+    });
+    const team = await newTeam.post();
+    newTeam.id = team.insertId;
+
+    request.session.successMessage = "Equipo creado con éxito";
+    response.status(201).redirect("/equipos");
+  } catch (err) {
+    next(err);
+  }
+};
+
+const removeTeam = async (req, res, next) => {
+  try {
+    const {id_team} = req.body;
+    const team = await Team.getById(id_team);
+
+    await team.removeTeam(id_team);
+    req.session.successMessage = "El equipo se elimino con éxito";
+    res.status(200).redirect("/equipos");
+  } catch (err) {
+    next(err);
+  }
+};
+
+const renderModifyTeam = async (req, res, next) => {
+
+  try{
+    const id_team = req.params.id;
+    const team = await Team.getById(id_team);
+    const members = await team.getMembers();
+    const users = await User.getAll();
+
+    res.render("teams/modifyTeam", {
+      title: "Equipos",
+      team,
+      members, 
+      users,
+    });
+
+  }catch (err){
+    next(err);
+  }
+};
+
 module.exports = {
   renderTeams,
   addUser,
   removeUser,
   getNClosedRetrospectives,
+  nuevo,
+  removeTeam,
+  renderModifyTeam,
 };

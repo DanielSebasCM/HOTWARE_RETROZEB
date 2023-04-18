@@ -1,0 +1,44 @@
+<section class="dashboard">
+    <div class="banner">
+        <div class="banner__section">
+          <h1 class="title">Modificar equipo - <%= team.name %>  </h1>
+        </div>
+        <div class="banner__section">
+          <a class="button button--primary">
+            Guardar
+          </a>
+        </div>
+        <span class="line"></span>
+      </div>
+
+    <h2 class="subtitle">Miembros del equipo: </h2> 
+
+    <div class="cards-container">
+    <% for(let i = 0; i < members.length; i++) { %>
+      <div class="card card--team">
+      <div class="card__header">
+        <span class="user__avatar">
+        <%= members[i].first_name[0] %>
+        </span>
+        <span class="user__name">
+        <%= members[i].first_name%>
+        <%= members[i].last_name%>
+        </span>
+        <form action="" >
+          <input type="hidden" name="id_member" value="id-member">
+          <button type="submit" class="button button--sm button--delete-alt " data-id=<%=members[i].id %>>Eliminar</button>
+        </form>
+      </div>
+      </div>
+    <% } %>
+    </div>
+    <span class="line"></span>    
+
+    <h2 class="subtitle">Personas: </h2> 
+    <% for(let i = 0; i < users.length; i++) { %>
+
+    <% } %>
+
+
+
+</section>
