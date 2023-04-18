@@ -39,7 +39,14 @@ async function getJiraActionables() {
     JIRA_API_KEY_HOTWARE,
     {
       jql: "project=APIT AND issuetype=Act",
-      fields: ["summary", "description", "priority", "status", "assignee"],
+      fields: [
+        "summary",
+        "description",
+        "priority",
+        "status",
+        "assignee",
+        "created",
+      ],
     },
     "issues"
   );
@@ -74,6 +81,7 @@ async function getJiraActionables() {
     };
     let builtTodo = new SuggestedTodo(suggested_todo);
     builtTodo.jira_state = actionable.fields.status.name;
+    builtTodo.creation_date = new Date(actionable.fields.created);
     return builtTodo;
   });
 
