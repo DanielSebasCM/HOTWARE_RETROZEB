@@ -190,6 +190,21 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
 
   labels = labels.map((l) => l || "N/A");
 
+  let tooltip = undefined;
+
+  if (!accum) {
+    tooltip = {
+      callbacks: {
+        afterLabel: function (context) {
+          return `${(
+            (context.parsed[secundaryAxis] / totals[context.label]) *
+            100
+          ).toFixed(2)}%`;
+        },
+      },
+    };
+  }
+
   return new Chart(canvas, {
     type: accum && stacked ? "line" : "bar",
     data: {
@@ -211,16 +226,7 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
             usePointStyle: true,
           },
         },
-        tooltip: {
-          callbacks: {
-            afterLabel: function (context) {
-              return `${(
-                (context.parsed[secundaryAxis] / totals[context.label]) *
-                100
-              ).toFixed(2)}%`;
-            },
-          },
-        },
+        tooltip,
       },
       scales: {
         [mainAxis]: {
