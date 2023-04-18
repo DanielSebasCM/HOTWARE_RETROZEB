@@ -181,6 +181,19 @@
   margin-bottom: var(--component-mb);
 }
 
+.card-table {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  padding: 2rem;
+  margin-bottom: var(--component-mb);
+}
+
 .card .line {
   margin: 1rem 0;
 }
@@ -1176,3 +1189,4 @@ a.toggle-button {
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 10px;
 }
+

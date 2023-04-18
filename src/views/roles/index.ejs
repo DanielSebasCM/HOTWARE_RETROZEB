@@ -1,3 +1,20 @@
+<style>
+  .table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 1.4rem;
+  }
+
+  .table td {
+    text-align: center;
+    background-color: transparent;
+  }
+
+  .tr-header {
+    background-color: #DDE7FF;
+  }
+</style>
+
 <!--MAIN-->
 <section class="dashboard">
   <div class="banner">
@@ -8,56 +25,47 @@
       <p class="description">Listado de roles creados</p>
     </div>
     <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
-      <div class="banner__section">
-        <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
-      </div>
-      <% } %>
-        <span class="line"></span>
+    <div class="banner__section">
+      <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
+      <a class="button button--primary" href="roles/nuevo">Modificar Rol</a>
+    </div>
+    <% } %>
+    <span class="line"></span>
   </div>
 
   <!-- ROLES -->
-  <% if(roles && roles.length> 0) { %>
-    <div class="cards-container">
-      <% for(let role of roles) { %>
-        <div class="card card--question-roles">
-          <div class="card__header">
-            <h3 class="card__title">
-              <%= role.name %>
-            </h3>
-          </div>
-          <ol class="items__list">
-            <% let index=1 %>
-              <% for(let privilege_db of privileges_db) { %>
-                <% for(let role_privilege of role_privileges){ if(role_privilege.id_privilege==privilege_db.id &&
-                  role_privilege.id_role==role.id) { %>
-                  <li class="card__description">
-                    <span class="index">
-                      <%= index %>.
-                    </span>
-                    <%= privilege_db.description %> <span class="meta">(<%= privilege_db.tag %>)</span>
-                  </li>
-                  <% index++ %>
-                    <% } %>
-                      <% } %>
-                        <% } %>
-          </ol>
-          <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
-            <form action="/roles?_method=DELETE" method="POST">
-              <input type="hidden" name="id" value="<%=role.id %>">
-              <button type="submit" class="button button--sm button--delete-alt remove-role-btn" data-id=<%=role.id
-                %>>Eliminar</button>
-            </form>
-            <% } %>
-        </div>
-        <% } %>
-    </div>
-    <% } else { %>
-      <div class="cards-container">
-        <div class="card">
-          <p class="card__subtitle">No hay roles</p>
-        </div>
-      </div>
-      <% } %>
+  <div class="card-table">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Privilegios</th>
+          <th>Admin</th>
+          <th>Team Member</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="tr-header">
+          <td>Retrospectivas</td>
+          <td></td>
+          <td></td>
+        <tr>
+          <td>getActionables</td>
+          <td><input type="checkbox" name="privilege1"></td>
+          <td><input type="checkbox" name="privilege1"></td>
+        </tr>
+        <tr>
+          <td>getActionables</td>
+          <td><input type="checkbox" name="privilege2"></td>
+          <td><input type="checkbox" name="privilege2"></td>
+        </tr>
+        <tr>
+          <td>getActionables</td>
+          <td><input type="checkbox" name="privilege3"></td>
+          <td><input type="checkbox" name="privilege3"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </section>
 
 
