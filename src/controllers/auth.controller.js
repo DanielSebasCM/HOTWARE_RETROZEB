@@ -25,11 +25,29 @@ const loginAPI = async (req, res, next) => {
     // VALIDATE TOKEN
     const data = await authUtil.verifyGoogleToken(token);
 
+    let user = null;
     let uid = null;
     let id_jira = null;
 
     // VERIFY IF USER EXISTS ALREADY IN DB
-    const user = await User.getByEmail(data.email);
+    try {
+      user = await User.getByEmail(data.email);
+    } catch {
+      return res
+        .status(500)
+        .json({
+          message:
+            "Ocurrió un error con el servidor. Por favor intenta más tarde.",
+        });
+    }
+
+    if (user && user.active === 0)
+      return res
+        .status(401)
+        .json({
+          message:
+            "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
+        });
 
     if (!user) {
       // GET ID JIRA
@@ -43,15 +61,21 @@ const loginAPI = async (req, res, next) => {
         first_name: data.given_name,
         last_name: data.family_name,
         picture: data.picture,
+        active: 0,
       });
 
       const result = await newUser.post();
       uid = newUser.uid = result.insertId;
 
       // ADD USER ROLE
-      // admin = 1
-      // member = 2
-      await newUser.addRole({ id: 1 });
+      await newUser.addRole({ id: 2 });
+
+      return res
+        .status(401)
+        .json({
+          message:
+            "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
+        });
     }
 
     const userData = {
@@ -62,6 +86,7 @@ const loginAPI = async (req, res, next) => {
       first_name: data.given_name,
       last_name: data.family_name,
       picture: data.picture,
+      active: 1,
     };
 
     // SAVE IN SESSION

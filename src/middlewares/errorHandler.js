@@ -105,7 +105,7 @@ function dbErrorHandler(err, req, res, next) {
       "Ocurrió un error inesperado, por favor intente de nuevo";
     res.status(500).render("errors/500", {
       title: "Error 500",
-      message: err.sqlMessage,
+      message: "Ocurrió un error con el servidor. Por favor contacte al administrador"
     });
   }
 }
