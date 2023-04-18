@@ -107,6 +107,10 @@
   .card--question-checkbox {
     overflow-x: hidden;
   }
+
+  .error-view--500 {
+    background-image: url("/assets/img/zeb500.svg");
+  }
 }
 
 @media screen and (min-width: 1200px) {

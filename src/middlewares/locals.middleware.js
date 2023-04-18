@@ -2,6 +2,7 @@ const User = require("../models/user.model");
 const { routes } = require("../utils/constants");
 
 const setLocals = async (req, res, next) => {
+
   try {
     // MESSAGES
     res.locals.successMessage = req.session.successMessage;
@@ -20,7 +21,7 @@ const setLocals = async (req, res, next) => {
 
     // ACTIVE TEAMS
     const user = await User.getById(req.session.currentUser.uid);
-    const teams = await user.getActiveTeams();
+    const teams = user ? await user.getActiveTeams() : null;
 
     req.session.activeTeams = teams;
     res.locals.activeTeams = teams;
@@ -38,6 +39,7 @@ const setLocals = async (req, res, next) => {
     }
 
     res.locals.selectedTeam = req.session.selectedTeam;
+    res.locals.errorView = false;
 
     next();
   } catch (err) {
