@@ -38,7 +38,7 @@
         <h3 class="card__title mr-2">
           <%= actionables[i].title %>
         </h3>
-        <% if (state!=="pending" ) { %>
+        <% if (state==="process" ) { %>
         <div class="pills-container">
           <span class="pill pill--ontime"></span>
         </div>
@@ -56,21 +56,6 @@
       <p class="card__description">
         <%= actionables[i].creation_date %>
       </p>
-
-      <% if (arrUsers[i]){ %>
-      <p class="card__subtitle">
-        Responsable
-      </p>
-
-      <div class="user__item">
-        <span class="user__avatar">
-          <%= arrUsers[i].first_name[0] %>
-        </span>
-        <span class="user__name">
-          <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
-        </span>
-      </div>
-      <% } %>
 
       <ul class="items__list">
         <li class="pills-container">
@@ -94,6 +79,20 @@
           </p>
         </li>
       </ul>
+      <% if (arrUsers[i]){ %>
+      <p class="card__subtitle">
+        Responsable
+      </p>
+      <div class="user__item">
+        <span class="user__avatar">
+          <%= arrUsers[i].first_name[0] %>
+        </span>
+        <span class="user__name">
+          <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
+        </span>
+      </div>
+      <% } %>
+
 
       <% if(state==="pending" ) { %>
       <div class="buttons-container card__footer mt-2">
