@@ -9,47 +9,60 @@
     <span class="line"></span>
   </div>
 
-  <% if(users && users.length> 0) { %>
-  <div class="banner--nomargin">
-    <div class="table-container">
-      <table class="table" id="userSearch">
-        <thead>
-          <tr class="subtitle">
-            <td>Nombre</td>
-            <td>E-mail</td>
-
-          </tr>
-        </thead>
-        <tbody>
-
-          <% for(let i=0; i < users.length; i++) { %>
-          <tr>
-            <td class="table__title">
-              <%= users[i].first_name %> <%= users[i].last_name %>
-            </td>
-            <td>
-              <%= users[i].email %>
-            </td>
-            <td>
-              <% if (currentPrivileges.includes(privileges.users.deleteUsers)){ %>
-              <form action="/usuarios/<%= users[i].uid %>/borrar?_method=DELETE" method="POST">
-                <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn">Eliminar</button>
-              </form>
-              <% } %>
-            </td>
-            <td>
-              <% if (currentPrivileges.includes(privileges.users.canModifyUsers)){ %>
-              <a class="button button--sm button--edit" href="/usuarios/<%= users[i].uid %>/modificar">Modificar</button>
-                <% } %>
-            </td>
-          </tr>
-          <% } %>
-        </tbody>
-      </table>
+  <div class="filters-container">
+    <div class="input search-bar">
+      <span class="icon search-bar__icon"></span>
+      <input type="text" placeholder="Buscar" />
     </div>
   </div>
-  <% } else { %>
-  <p class="no-results">No hay usuarios activos</p>
-  <% } %>
-  <p class="no-results hide"></p>
+
+  <% if(users && users.length> 0) { %>
+    <div class="banner--nomargin">
+      <div class="table-container">
+        <table class="table" id="userSearch">
+          <thead>
+            <tr class="subtitle">
+              <td>Nombre</td>
+              <td>E-mail</td>
+
+            </tr>
+          </thead>
+          <tbody>
+
+            <% for(let i=0; i < users.length; i++) { %>
+              <tr>
+                <td class="table__title">
+                  <%= users[i].first_name %>
+                    <%= users[i].last_name %>
+                      <% if(currentUser.uid===users[i].uid) { %> <span class="meta">(Tú)</span>
+                        <% } %>
+                </td>
+                <td>
+                  <%= users[i].email %>
+                </td>
+
+                <td>
+                  <% if (currentPrivileges.includes(privileges.users.canModifyUsers)){ %>
+                    <a class="button button--sm button--edit"
+                      href="/usuarios/<%= users[i].uid %>/modificar">Modificar</button>
+                      <% } %>
+                </td>
+                <td>
+                  <% if (currentPrivileges.includes(privileges.users.deleteUsers) && currentUser.uid!==users[i].uid){ %>
+                    <form action="/usuarios/<%= users[i].uid %>/borrar?_method=DELETE" method="POST">
+                      <button type="submit"
+                        class="button button--sm button--delete-alt remove-team-user-btn">Eliminar</button>
+                    </form>
+                    <% } %>
+                </td>
+              </tr>
+              <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <% } else { %>
+      <p class="no-results">No hay usuarios activos</p>
+      <% } %>
+        <p class="no-results hide"></p>
 </section>

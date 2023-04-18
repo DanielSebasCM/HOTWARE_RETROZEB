@@ -12,7 +12,7 @@ const messages = {
       teamCreated: "Equipo creado correctamente",
       teamDeleted: "Equipo eliminado correctamente",
       teamActivated: "Equipo activado correctamente",
-      teamMemberAdded: "Te has unido al equipo correctamente",
+      teamMemberAdded: "¡Te has unido al equipo con éxito!",
       teamMemberRemoved: "Has abandonado al equipo con éxito",
     },
   },
