@@ -6,7 +6,6 @@ const privileges = require("../utils/constants").privileges.teams;
 
 // RENDERING ROUTES
 router.get("/", authorize([privileges.getTeams]), controller.renderTeams);
-//router.get("/modificar", controller.renderModifyTeam);
 router.get("/:id/modificar", controller.renderModifyTeam);
 
 // API ROUTES
@@ -24,6 +23,14 @@ router.post(
 router.post(
   "/eliminar",
   controller.removeTeam
+);
+router.post(
+  "/modificar/eliminar",
+  controller.removeUserTeam
+);
+router.post(
+  "/modificar/anadir",
+  controller.addUserTeam
 );
 // DELETE
 router.patch("/eliminar/usuario", controller.removeUser);

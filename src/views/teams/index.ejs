@@ -42,20 +42,6 @@
           <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn" data-uid=<%=locals.currentUser.uid %> data-id_team=<%=userTeams[i].id %>>Abandonar</button>
         </form>
 
-        <div class="button--sm">
-          <div class="dropdown">
-            <button>...</button>
-            <div class="dropdown-menu">
-              <a class="description" href="<%= routes.teams %>/<%= userTeams[i].id %>/modificar">Modificar</a>
-              <form method="POST" action="/equipos/eliminar" id="formE">
-                <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
-              <button class="description" type="submit">Eliminar</button>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div id="modify-container" class="cards-container"></div>
-
       </div>
       <p class="card__subtitle">
         Miembros <span class="meta"> (<%=userTeams[i].members.length %>) </span>
@@ -73,7 +59,13 @@
         </div>
         <% } %>
       </div>
-
+      <div class="charts-container">
+        <a class="button button--sm button--edit" href="<%= routes.teams %>/<%= userTeams[i].id %>/modificar">Modificar</a>
+        <form method="POST" action="/equipos/eliminar" id="formE">
+          <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
+          <button class="button button--sm button--delete-alt" type="submit">Eliminar</button>
+        </form>
+      </div>    
     </div>
     <% } %>
     <% } %>
@@ -130,6 +122,14 @@
           </button>
         </form>
         <% } %>
+        <br>
+        <div class="charts-container">
+          <a class="button button--sm button--edit" href="<%= routes.teams %>/<%= availableTeams[i].id %>/modificar">Modificar</a>
+          <form method="POST" action="/equipos/eliminar" id="formE">
+            <input type="hidden" name="id_team" value="<%=availableTeams[i].id %>">
+            <button class="button button--sm button--delete-alt" type="submit">Eliminar</button>
+          </form>
+        </div>  
       </div>
     </div>
     <% } %>

@@ -135,17 +135,51 @@ const renderModifyTeam = async (req, res, next) => {
     const members = await team.getMembers();
     const users = await User.getAll();
 
+    const userIdsInTeam = members.map(member => member.uid);
+    const usersNotInTeam = users.filter(user => !userIdsInTeam.includes(user.uid));
+
     res.render("teams/modifyTeam", {
       title: "Equipos",
       team,
       members, 
       users,
+      usersNotInTeam,
     });
 
   }catch (err){
     next(err);
   }
 };
+
+const removeUserTeam = async (req, res, next) => {
+  try {
+    const {id_team, uid} = req.body;
+
+    const team = await Team.getById(id_team);
+    await team.removeUser(uid);
+
+    req.session.successMessage = "Usuario eliminado";
+    res.status(200).redirect("/equipos/"+id_team+"/modificar");
+  } catch (err) {
+    next(err);
+  }
+};
+
+const addUserTeam = async (req, res, next) => {
+  try {
+    const { id_team, uid } = req.body;
+
+    const team = await Team.getById(id_team);
+
+    await team.addUser(uid);
+    req.session.successMessage = "Usuario añadido";
+    return res.status(200).redirect("/equipos/"+id_team+"/modificar");
+  } catch (err) {
+    next(err);
+  }
+};
+
+
 
 module.exports = {
   renderTeams,
@@ -155,4 +189,6 @@ module.exports = {
   nuevo,
   removeTeam,
   renderModifyTeam,
+  removeUserTeam,
+  addUserTeam,
 };
