@@ -121,6 +121,27 @@ const refreshTokenAPI = async (req, res, next) => {
     // VERIFY REFRESH TOKEN
     const verified = authUtil.verifyToken(refreshToken, "refresh");
 
+    let user;
+    // VERIFY IF USER EXISTS ALREADY IN DB
+    try {
+      user = await User.getByEmail(verified.email);
+    } catch {
+      return res
+        .status(500)
+        .json({
+          message:
+            "Ocurrió un error con el servidor. Por favor intenta más tarde.",
+        });
+    }
+
+    if (!user || user.active === 0)
+      return res
+        .status(401)
+        .json({
+          message:
+            "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
+        });
+
     const userData = {
       uid: verified.uid,
       id_google_auth: verified.id_google_auth,
@@ -129,6 +150,7 @@ const refreshTokenAPI = async (req, res, next) => {
       first_name: verified.first_name,
       last_name: verified.last_name,
       picture: verified.picture,
+      active: 1,
     };
 
     // BLACKLIST REFRESH TOKEN

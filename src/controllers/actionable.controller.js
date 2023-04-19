@@ -2,6 +2,7 @@ const Actionable = require("../models/suggestedTodo.model.js");
 const User = require("../models/user.model.js");
 const issuePriorities = require("../utils/constants").enums.issuePriorities;
 const moment = require("moment");
+const { postJiraActionable } = require("../utils/jira");
 moment.locale("es");
 
 const renderActionables = async (req, res, next) => {
@@ -15,10 +16,26 @@ const renderActionables = async (req, res, next) => {
     ) {
       const actionables = await Actionable.getAllByState(state.toUpperCase());
       const arrUsers = [];
-
       for (let i = 0; i < actionables.length; i++) {
         arrUsers.push(await User.getById(actionables[i].id_user_author));
       }
+
+      for (let i = 0; i < actionables.length; i++) {
+        if (actionables[i].state == "PROCESS") {
+          const now = Date.now();
+          const creationDate = actionables[i].creation_date;
+          const diff = now - creationDate.getTime();
+          const days = Math.round(diff / (1000 * 60 * 60 * 24));
+          if (days < 14) {
+            actionables[i].pillcolor = "green";
+          } else if (days < 30) {
+            actionables[i].pillcolor = "yellow";
+          } else {
+            actionables[i].pillcolor = "red";
+          }
+        }
+      }
+
       res.status(200).render("actionables", {
         title: "Accionables",
         actionables,
@@ -44,6 +61,8 @@ const acceptActionable = async (req, res, next) => {
     const actionable = await Actionable.getById(id);
     //aquí ya está la instancia
     let res2 = await actionable.accept();
+    console.log("actionable", actionable);
+    await postJiraActionable(actionable);
     actionable.state = "ACCEPTED";
     //req.session.successMessage =
     //messages.actionables.success.statusActionableUpdated;
