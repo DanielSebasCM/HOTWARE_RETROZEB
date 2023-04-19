@@ -6,7 +6,7 @@ const privileges = require("../utils/constants").privileges.teams;
 
 // RENDERING ROUTES
 router.get("/", authorize([privileges.getTeams]), controller.renderTeams);
-router.get("/:id/modificar", controller.renderModifyTeam);
+router.get("/:id/modificar",authorize([privileges.canModifyTeams]), controller.renderModifyTeam);
 
 // API ROUTES
 router.get("/:id/retrospectivas/:n", controller.getNClosedRetrospectives);
@@ -17,11 +17,11 @@ router.post(
   controller.addUser
 );
 router.post(
-  "/nuevo",
+  "/nuevo", authorize([privileges.canCreateTeams]),
   controller.nuevo
 );
 router.post(
-  "/eliminar",
+  "/eliminar",authorize([privileges.canDeleteTeams]),
   controller.removeTeam
 );
 router.post(

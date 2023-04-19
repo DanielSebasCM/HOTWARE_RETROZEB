@@ -8,13 +8,14 @@
         Visualiza tu equipo o selecciona uno al cual unirte
       </p>
     </div>
-
+    <% if(currentPrivileges.includes(privileges.teams.canCreateTeams)) { %>
     <div class="banner__section">
       <a class="button button--primary" class="dropdown-item" id="modal-button">
         Crear Equipo
       </a>
       <div id="modal-container" class="cards-container"></div>
     </div>
+    <% } %>
 
     <span class="line"></span>
   </div>
@@ -59,12 +60,17 @@
         </div>
         <% } %>
       </div>
+      
       <div class="charts-container">
+        <% if(currentPrivileges.includes(privileges.teams.canModifyTeams)) { %>
         <a class="button button--sm button--edit" href="<%= routes.teams %>/<%= userTeams[i].id %>/modificar">Modificar</a>
+        <% } %>
+        <% if(currentPrivileges.includes(privileges.teams.canDeleteTeams)) { %>
         <form method="POST" action="/equipos/eliminar" id="formE">
           <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
           <button class="button button--sm button--delete-alt" type="submit">Eliminar</button>
         </form>
+        <% } %>
       </div>    
     </div>
     <% } %>
