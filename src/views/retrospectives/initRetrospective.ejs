@@ -5,23 +5,23 @@
       <p class="description">Registrar una nueva sesión de retrospectiva</p>
 
       <% if(locals.selectedTeam){%>
-        <% if(sprint){%>
-          <div class="pills-container">
-            <div class="pills-container">
-              <p class="label label--active">Equipo</p>
-              <span class="card__description">
-                <%= locals.selectedTeam.name %>
-              </span>
-            </div>
-            <div class="pills-container">
-              <p class="label label--active">Sprint</p>
-              <span class="card__description">
-                <%= sprint.name %>
-              </span>
-            </div>
-          </div>
+      <% if(sprint){%>
+      <div class="pills-container">
+        <div class="pills-container">
+          <p class="label label--active">Equipo</p>
+          <span class="card__description">
+            <%= locals.selectedTeam.name %>
+          </span>
+        </div>
+        <div class="pills-container">
+          <p class="label label--active">Sprint</p>
+          <span class="card__description">
+            <%= sprint.name %>
+          </span>
+        </div>
+      </div>
 
-          <%} %>
+      <%} %>
     </div>
 
     <div class="banner__section">
@@ -30,61 +30,59 @@
     <span class="line"></span>
   </div>
   <% if(sprint){%>
-    <form method="POST" action="/retrospectivas/iniciar" id="form">
-      <input type="number" value="<%= sprint.id %>" hidden name="id_sprint" />
-      <h2 class="subtitle">Nombre de la retrospectiva</h2>
-      <div class="input-container">
-        <label class="input__label" for="name">Nombre</label>
-        <input class="input" type="text" name="name" maxlength="255" placeholder="Nombre de la Retrospectiva" required
-          value="<%= sprint.name %>: <%= locals.selectedTeam.name %>" />
+  <form method="POST" action="/retrospectivas/iniciar" id="form">
+    <input type="number" value="<%= sprint.id %>" hidden name="id_sprint" />
+    <h2 class="subtitle">Nombre de la retrospectiva</h2>
+    <div class="input-container">
+      <label class="input__label" for="name">Nombre</label>
+      <input class="input" type="text" name="name" maxlength="255" placeholder="Nombre de la Retrospectiva" required value="<%= sprint.name %>: <%= locals.selectedTeam.name %>" />
+    </div>
+
+    <h2 class="subtitle mt-3" id="questions-quantity">
+      Preguntas <span class="meta">(<%= questions.length %>)</span>
+    </h2>
+    <p class="description mb-2">
+      Selecciona las preguntas que desees incluir o crea preguntas nuevas.
+    </p>
+
+    <div class="filters-container mb-2">
+      <div class="input search-bar">
+        <span class="icon search-bar__icon"></span>
+        <input type="text" placeholder="Buscar por título" id="buscar" />
       </div>
+    </div>
 
-      <h2 class="subtitle mt-3" id="questions-quantity">
-        Preguntas <span class="meta">(<%= questions.length %>)</span>
-      </h2>
-      <p class="description mb-2">
-        Selecciona las preguntas que desees incluir o crea preguntas nuevas.
-      </p>
+    <div class="questions__list">
+      <% if(questions.length> 0) { for(let i=0; i < questions.length; i++) { %>
+      <div class="card card--question-checkbox" data-id="<%= questions[i].id %>">
+        <div class="horizontal-container">
+          <input type="checkbox" class="question-checkbox" value="<%= questions[i].id %>" />
+          <input type="text" readonly class="subtitle question" value="<%=questions[i].description %>" />
+        </div>
+        <div class="horizontal-container">
+          <div class="horizontal-container">
+            <input type="checkbox" class="question-required-checkbox" checked value="<%= questions[i].id %>" />
+            <label class="description mr-2">Obligatorio</label>
+          </div>
 
-      <div class="filters-container mb-2">
-        <div class="input search-bar">
-          <span class="icon search-bar__icon"></span>
-          <input type="text" placeholder="Buscar por título" id="buscar" />
+          <span class="label label--inactive">
+            <%= questions[i].type %>
+          </span>
         </div>
       </div>
+      <% } } else { %>
+      <p class="no-results">
+        Por el momento no hay preguntas registradas. Empieza a crear las tuyas!
+      </p>
+      <% } %>
+    </div>
+    <p class="no-results search hide"></p>
 
-      <div class="questions__list">
-        <% if(questions.length> 0) { for(let i=0; i < questions.length; i++) { %>
-            <div class="card card--question-checkbox" data-id="<%= questions[i].id %>">
-              <div class="horizontal-container">
-                <input type="checkbox" class="question-checkbox mr-1" value="<%= questions[i].id %>" />
-                <input type="text" readonly class="subtitle question" value="<%=questions[i].description %>" />
-              </div>
-              <div class="horizontal-container">
-                <div class="horizontal-container">
-                  <input type="checkbox" class="mr-1 question-required-checkbox" checked
-                    value="<%= questions[i].id %>" />
-                  <label class="description mr-2">Obligatorio</label>
-                </div>
-
-                <span class="label label--inactive">
-                  <%= questions[i].type %>
-                </span>
-              </div>
-            </div>
-            <% } } else { %>
-              <p class="no-results">
-                Por el momento no hay preguntas registradas. Empieza a crear las tuyas!
-              </p>
-              <% } %>
-      </div>
-      <p class="no-results search hide"></p>
-
-      <div class="questions__resume mt-5 mb-5" id="selected-questions">
-        <span class="line"></span>
-        <h3 class="subtitle">Resumen de preguntas</h3>
-        <div class="questions__resume-list"></div>
-      </div>
+    <div class="questions__resume mt-5 mb-5" id="selected-questions">
+      <span class="line"></span>
+      <h3 class="subtitle">Resumen de preguntas</h3>
+      <div class="questions__resume-list"></div>
+    </div>
 
       <div class="banner mt-4">
         <div class="buttons-container">
@@ -93,9 +91,10 @@
         </div>
         <a class="button button--edit" href="<%=routes.questions + "/nueva" %>">Crear pregunta</a>
       </div>
-    </form>
-    <%} %>
-      <%} %>
+    </div>
+  </form>
+  <%} %>
+  <%} %>
 </section>
 
 <script src="/assets/js/initRetrospective.js"></script>

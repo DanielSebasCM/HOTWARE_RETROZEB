@@ -46,36 +46,40 @@
         <h3 class="card__title mr-2">
           <%= actionables[i].title %>
         </h3>
-        <% if (state!=="pending" ) { %>
+        <% if (state==="process") { %>
         <div class="pills-container">
+          <% if(actionables[i].pillcolor==="green"){ %>
           <span class="pill pill--ontime"></span>
+          <% } %>
+          <% if(actionables[i].pillcolor==="yellow"){ %>
+          <span class="pill pill--late"></span>
+          <% } %>
+          <% if(actionables[i].pillcolor==="red"){ %>
+          <span class="pill pill--alert"></span>
+          <% } %>
         </div>
         <% } %>
       </div>
 
-      <p class="card__description">
+
+      <span class="line"></span>
+      <p class="act__description">
         <%= actionables[i].description %>
       </p>
-      <% if (arrUsers[i]){ %>
-      <p class="card__subtitle">
-        Responsable
+      <% if (state==="process") { %>
+      <p class="act__description">
+        <b>Estado:</b> <%= actionables[i].jira_state %>
       </p>
-
-      <div class="user__item">
-        <span class="user__avatar">
-          <%= arrUsers[i].first_name[0] %>
-        </span>
-        <span class="user__name">
-          <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
-        </span>
-      </div>
       <% } %>
+
+      <!--PRIORIDADES-->
 
       <p class="card__subtitle mt-3 mb-0">
         Prioridad
       </p>
-      <ul class="items__list mt-0">
-        <li class="pills-container">
+      
+      <div class="horizontal-container">
+        <div class="pills-container">
           <% if (actionables[i].priority==="Highest"){ %>
           <span class="pill pill--small-vhigh"></span>
           <% } %>
@@ -91,12 +95,34 @@
           <% if (actionables[i].priority==="Lowest"){ %>
           <span class="pill pill--small-vlow"></span>
           <% } %>
-          <p class="meta">
-            <%= actionables[i].priority %>
-          </p>
-        </li>
-      </ul>
+        </div>
+        <p class="act__description">
+          <%= actionables[i].priority %>
+        </p>
+      </div>
 
+      <!--RESPONSABLE-->
+      <div>
+        <% if (arrUsers[i]){ %> <p class="card__subtitle">
+          Responsable
+        </p>
+        <div class="user__item">
+          <span class="user__avatar">
+            <%= arrUsers[i].first_name[0] %>
+          </span>
+          <span class="user__name">
+            <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
+          </span>
+        </div>
+        <% } %>
+      </div>
+      <!--FECHA HACE CUANTO SE CREO-->
+      <% if (state==="process") { %>
+      <p class="card__description__footer">
+        <%= moment(actionables[i].creation_date).fromNow(); %>
+      </p>
+      <% } %>
+      <!--BOTONES-->
       <% if(state==="pending" ) { %>
       <div class="buttons-container card__footer mt-2">
         <form action="<%= actionables[i].id %>/accept" method="POST">

@@ -39,7 +39,14 @@ async function getJiraActionables() {
     JIRA_API_KEY_HOTWARE,
     {
       jql: "project=APIT AND issuetype=Act",
-      fields: ["summary", "description", "priority", "status", "assignee"],
+      fields: [
+        "summary",
+        "description",
+        "priority",
+        "status",
+        "assignee",
+        "created",
+      ],
     },
     "issues"
   );
@@ -72,7 +79,10 @@ async function getJiraActionables() {
       id_user_author: user?.uid,
       priority: actionable.fields.priority.name,
     };
-    return new SuggestedTodo(suggested_todo);
+    let builtTodo = new SuggestedTodo(suggested_todo);
+    builtTodo.jira_state = actionable.fields.status.name;
+    builtTodo.creation_date = new Date(actionable.fields.created);
+    return builtTodo;
   });
 
   return await Promise.all(actionables);
@@ -84,7 +94,7 @@ async function postJiraActionable(actionable) {
     `${JIRA_USER_HOTWARE}:${JIRA_API_KEY_HOTWARE}`
   ).toString("base64")}`;
 
-  const user = await User.getById(actionable.uid_assignee);
+  const user = await User.getById(actionable.id_user_author);
   let description = null;
   if (actionable.description) {
     description = {
@@ -118,7 +128,7 @@ async function postJiraActionable(actionable) {
         name: actionable.priority ? actionable.priority : "Medium",
       },
       assignee: {
-        accountId: user ? user.jira_id : null,
+        accountId: user ? user.id_jira : null,
       },
     },
   });
@@ -355,4 +365,5 @@ module.exports = {
   fetchProjectJiraLatestSprint,
   fetchBoardSprints,
   fetchProjectBoards,
+  postJiraActionable,
 };
