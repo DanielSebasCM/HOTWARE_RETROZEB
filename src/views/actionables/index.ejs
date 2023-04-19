@@ -5,23 +5,31 @@
       <p class="description">Visualiza tus accionables</p>
     </div>
     <div class="banner__section">
-      <div class="toggle-buttons-container toggle-buttons-container--primary">
-        <a class="toggle-button <%= (state === "process") && "toggle-button--active" %>" href="/accionables/process">En proceso </a>
-        <a class="toggle-button <%= (state === "pending") && "toggle-button--active" %>" href="/accionables/pending">Por Aprobar</a>
-        <a class="toggle-button <%= (state === "completed") && "toggle-button--active" %>" href="/accionables/completed">Completados</a>
-      </div>
+      <a class="button button--primary" href="/accionables/nuevo">
+        Añadir Accionable
+      </a>
     </div>
     <span class="line"></span>
   </div>
-  <% if (state==="process" ) { %>
-  <h2 class="subtitle"> Accionables en Proceso <span class="meta"></span></h2>
-  <% } %>
-  <% if (state==="pending" ) { %>
-  <h2 class="subtitle"> Accionables Por Aprobar <span class="meta"></span></h2>
-  <% } %>
-  <% if (state==="completed" ) { %>
-  <h2 class="subtitle"> Accionables Completados <span class="meta"></span></h2>
-  <% } %>
+  <div class="banner align-flex-end mb-3">
+    <% if (state==="process" ) { %>
+      <h2 class="subtitle mb-2"> Accionables en Proceso <span class="meta"></span></h2>
+    <% } %>
+    <% if (state==="pending" ) { %>
+      <h2 class="subtitle mb-2"> Accionables Por Aprobar <span class="meta"></span></h2>
+    <% } %>
+    <% if (state==="completed" ) { %>
+      <h2 class="subtitle mb-2"> Accionables Completados <span class="meta"></span></h2>
+    <% } %>
+    <div class="toggle-buttons-container toggle-buttons-container--primary">
+      <a class="toggle-button <%= (state === "process") && "toggle-button--active" %>" href="/accionables/process">En
+        proceso </a>
+      <a class="toggle-button <%= (state === "pending") && "toggle-button--active" %>" href="/accionables/pending">Por
+        Aprobar</a>
+      <a class="toggle-button <%= (state === "completed") && "toggle-button--active" %>"
+        href="/accionables/completed">Completados</a>
+    </div>
+  </div>
   <% if (actionables.length==0) { %>
   <div class="centcontainer">
     <div class="vertical-center">
@@ -63,7 +71,10 @@
       </div>
       <% } %>
 
-      <ul class="items__list">
+      <p class="card__subtitle mt-3 mb-0">
+        Prioridad
+      </p>
+      <ul class="items__list mt-0">
         <li class="pills-container">
           <% if (actionables[i].priority==="Highest"){ %>
           <span class="pill pill--small-vhigh"></span>
@@ -80,7 +91,7 @@
           <% if (actionables[i].priority==="Lowest"){ %>
           <span class="pill pill--small-vlow"></span>
           <% } %>
-          <p>
+          <p class="meta">
             <%= actionables[i].priority %>
           </p>
         </li>
@@ -99,13 +110,6 @@
 
     </div>
     <% } %>
-  </div>
-  <% } %>
-  <% if(state==="pending" ) { %>
-  <div class="centcontainer_min">
-    <a class="button button--add-actionable icon" href="/accionables/nuevo">
-      <img src="/assets/icon/add.svg" alt="icono de agregar accionable">
-    </a>
   </div>
   <% } %>
 

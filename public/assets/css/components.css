@@ -1382,6 +1382,11 @@ a.toggle-button {
   padding-left: 5rem !important;
 }
 
+.align-flex-end {
+  display: flex;
+  align-items: flex-end;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
