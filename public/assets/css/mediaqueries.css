@@ -41,11 +41,17 @@
 
 /* TABLET BREAKPOINT */
 @media screen and (min-width: 768px) {
+  .pinterest-container,
   .cards-container {
     display: grid;
     grid-template-columns: repeat(2, 50%);
     max-width: 98%;
     gap: 2rem;
+  }
+
+  .pinterest-container {
+    grid-auto-rows: var(--row_increment);
+    row-gap: 0rem;
   }
 
   .card {
@@ -114,6 +120,7 @@
     padding: 3rem;
   }
 
+  .pinterest-container,
   .cards-container {
     grid-template-columns: repeat(3, 33%);
   }

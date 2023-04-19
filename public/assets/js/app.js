@@ -133,3 +133,17 @@
     deleteTokens();
   });
 })();
+
+(function pinterestCards() {
+  const pinterestContainers = document.querySelectorAll(".pinterest-container");
+  if (!pinterestContainers) return;
+
+  pinterestContainers.forEach((container) => {
+    const cards = container.querySelectorAll(".card");
+    if (!cards) return;
+    cards.forEach((card) => {
+      console.log(card.offsetHeight);
+      card.style.gridRowEnd = `span ${Math.ceil(card.offsetHeight / 10) + 2}`;
+    });
+  });
+})();
