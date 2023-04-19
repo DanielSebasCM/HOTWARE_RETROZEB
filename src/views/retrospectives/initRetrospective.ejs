@@ -25,7 +25,7 @@
     </div>
 
     <div class="banner__section">
-      <a class="button button--edit" href="<%=routes.questions %>">Crear pregunta</a>
+      <a class="button button--edit" href="<%=routes.questions + "/nueva" %>">Crear pregunta</a>
     </div>
     <span class="line"></span>
   </div>
@@ -84,12 +84,13 @@
       <div class="questions__resume-list"></div>
     </div>
 
-    <div class="banner mt-4">
-      <div class="buttons-container">
-        <button class="button button--primary" type="submit">Guardar</button>
-        <a class="button button--discard" href="<%=routes.retrospectives %>">Descartar</a>
+      <div class="banner mt-4">
+        <div class="buttons-container">
+          <button class="button button--primary" type="submit">Guardar</button>
+          <a class="button button--discard" href="<%=routes.retrospectives %>">Descartar</a>
+        </div>
+        <a class="button button--edit" href="<%=routes.questions + "/nueva" %>">Crear pregunta</a>
       </div>
-      <a class="button button--edit" href="<%=routes.questions %>">Crear pregunta</a>
     </div>
   </form>
   <%} %>
