@@ -10,17 +10,35 @@
         <span class="meta">(Editar)</span>
         <% } %>
       </h1>
-      <p class="description">Modificar rol del usuario</p>
+      <% if(user.uid===currentUser.uid) { %>
+        <p class="description">Configuración de mi cuenta</p>
+      <% } else { %>
+        <p class="description">Modificar roles de usuario</p>
+      <% } %>
     </div>
     <span class="line"></span>
   </div>
-  <form id="change_role" action="/usuarios/<%= user.uid %>/modificar" method="POST">
-    <p class="description-question">Selecciona los roles para el usuario</p>
+  <% if(user.uid===currentUser.uid) { %>
+    <p class="description-question">ID de usuario de JIRA</p>
+    <input type="text" class="input mb-3" required placeholder="Ingresa tu ID de usuario de JIRA">
+  <% }  %>
+  <form action="/usuarios/<%= user.uid %>/modificar" method="POST" id="change_role">
+    <p class="description-question">Seleccionar roles de usuario</p>
     <% for (let i=0; i<allroles.length; i++){ %>
     <div class="checkbox-container mb-1">
       <input type="checkbox" class="question-checkbox mr-1" id="accum" name="<%=allroles[i].id%>" <%=roles.map(role=>role.id).includes(allroles[i].id)?"checked":""%> />
       <label for="accum"> <%= allroles[i].name %></label>
     </div>
+    <% } %>
+    <% if(user.uid !== currentUser.uid) { %>
+      <p class="description-question mt-5">Activar cuenta de usuario</p>
+      <div class="checkbox-container mb-1">
+        <input type="checkbox" class="question-checkbox mr-1" id="" name=""
+          <%=user.active ? "checked" : ""%> />
+        <label for="">
+          Activo
+        </label>
+      </div>
     <% } %>
       <button class="button button--primary mt-5" type="submit">Guardar</button>
   </form>
