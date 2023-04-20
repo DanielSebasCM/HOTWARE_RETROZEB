@@ -1,5 +1,6 @@
 const Role = require("../models/role.model");
 const Privilege = require("../models/privilege.model");
+const { privileges } = require("../utils/constants");
 
 const renderRoles = async (req, res, next) => {
   try {
@@ -29,9 +30,14 @@ const renderNewRole = async (req, res, next) => {
 const postRole = async (req, res, next) => {
   try {
     const { name, privileges } = req.body;
+
+    if (!privileges) {
+      req.session.errorMessage = "Debe seleccionar al menos un privilegio";
+      res.redirect("/roles/nuevo");
+      return;
+    }
     const role = new Role({ name });
     await role.post();
-
     for (const privilege of privileges) {
       await role.addPrivilege({ id: privilege });
     }
@@ -72,12 +78,19 @@ const renderModifyRole = async (req, res, next) => {
 const modifyRole = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const { privileges } = req.body;
+    if (!privileges) {
+      req.session.errorMessage = "Debe seleccionar al menos un privilegio";
+      res.redirect("/roles");
+      return;
+    }
     const privilegesId = [];
     const currentRole = await Role.getById(id);
-    for (let id of req.body.privileges) {
+    for (let id of privileges) {
       privilegesId.push(await Privilege.getById(id));
     }
     await currentRole.setPrivileges(privilegesId);
+    req.session.successMessage = "Rol modificado con éxito";
     res.redirect("/roles");
   } catch (err) {
     next(err);

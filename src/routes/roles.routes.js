@@ -16,6 +16,6 @@ router.get("/:id/modificar", controller.renderModifyRole);
 router.patch("/:id/modificar", controller.modifyRole);
 
 // DELETING ROLES
-router.delete("/:id/modificar", controller.deleteRole);
+router.delete("/:id/eliminar", controller.deleteRole);
 
 module.exports = router;
