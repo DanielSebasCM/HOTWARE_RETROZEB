@@ -33,21 +33,17 @@ const loginAPI = async (req, res, next) => {
     try {
       user = await User.getByEmail(data.email);
     } catch {
-      return res
-        .status(500)
-        .json({
-          message:
-            "Ocurrió un error con el servidor. Por favor intenta más tarde.",
-        });
+      return res.status(500).json({
+        message:
+          "Ocurrió un error con el servidor. Por favor intenta más tarde.",
+      });
     }
 
     if (user && user.active === 0)
-      return res
-        .status(401)
-        .json({
-          message:
-            "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
-        });
+      return res.status(401).json({
+        message:
+          "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
+      });
 
     if (!user) {
       // GET ID JIRA
@@ -70,12 +66,10 @@ const loginAPI = async (req, res, next) => {
       // ADD USER ROLE
       await newUser.addRole({ id: 2 });
 
-      return res
-        .status(401)
-        .json({
-          message:
-            "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
-        });
+      return res.status(401).json({
+        message:
+          "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
+      });
     }
 
     const userData = {
@@ -114,6 +108,21 @@ const logoutAPI = (req, res) => {
   authUtil.deleteSession(req, res);
 };
 
+const addJiraId = async (req, res, next) => {
+  try {
+    const { id_jira } = req.body;
+    const user = new User(req.session.currentUser);
+
+    await user.addJiraId(id_jira);
+
+    req.session.currentUser.id_jira = id_jira;
+
+    res.status(200).redirect("/");
+  } catch (err) {
+    next(err);
+  }
+};
+
 const refreshTokenAPI = async (req, res, next) => {
   try {
     const { refreshToken } = req.body;
@@ -126,21 +135,17 @@ const refreshTokenAPI = async (req, res, next) => {
     try {
       user = await User.getByEmail(verified.email);
     } catch {
-      return res
-        .status(500)
-        .json({
-          message:
-            "Ocurrió un error con el servidor. Por favor intenta más tarde.",
-        });
+      return res.status(500).json({
+        message:
+          "Ocurrió un error con el servidor. Por favor intenta más tarde.",
+      });
     }
 
     if (!user || user.active === 0)
-      return res
-        .status(401)
-        .json({
-          message:
-            "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
-        });
+      return res.status(401).json({
+        message:
+          "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
+      });
 
     const userData = {
       uid: verified.uid,
@@ -178,4 +183,5 @@ module.exports = {
   loginAPI,
   logoutAPI,
   refreshTokenAPI,
+  addJiraId,
 };

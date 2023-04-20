@@ -35,7 +35,7 @@
       <div class="error-view">
         <%- body %>
       </div>
-    <% } else if (locals.currentUser) { %>
+    <% } else if (locals.currentUser && locals.currentUser.id_jira) { %>
       <!-- NAV -->
       <%- include('../partials/nav.ejs') %>
       <!-- SIDEBAR -->

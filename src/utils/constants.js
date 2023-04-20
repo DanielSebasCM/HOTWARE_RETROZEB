@@ -39,6 +39,7 @@ const constants = {
     roles: "/roles",
     users: "/usuarios",
     locals: "/locals",
+    jiraUserID: "/jira/user/id",
   },
   privileges: {
     actionables: {

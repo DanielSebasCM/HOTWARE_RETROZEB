@@ -16,8 +16,23 @@ const authMiddleware = {
       const user = await User.getById(auth.uid);
 
       if (!user || user.active === 0) return authUtil.deleteSession(req, res);
-      
+
       if (!req.session.currentUser) req.session.currentUser = auth;
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  verifyJiraUserId: async (req, res, next) => {
+    try {
+      const user = await User.getById(req.session.currentUser.uid);
+      if (!user.id_jira) {
+        return res.render("config/jiraUserId", {
+          title: "Jira User Id",
+          currentUser: user,
+        });
+      }
       next();
     } catch (error) {
       next(error);
