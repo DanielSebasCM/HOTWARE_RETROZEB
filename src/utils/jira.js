@@ -2,6 +2,7 @@ const Project = require("../models/project.model");
 const Sprint = require("../models/sprint.model");
 const Issue = require("../models/issue.model");
 const User = require("../models/user.model");
+const JiraError = require("../errors/JiraError");
 
 const {
   JIRA_USER_HOTWARE,
@@ -332,7 +333,12 @@ async function getAll(url, user, api_key, params, key = "values") {
     headers: {
       Authorization,
     },
-  }).then((res) => res.json());
+  }).then((res) => {
+    if (!res.ok) {
+      throw new JiraError("Error de jira", res.status);
+    }
+    return res.json();
+  });
   const data = res[key];
 
   while (true) {
