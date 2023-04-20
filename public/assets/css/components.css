@@ -203,7 +203,7 @@
   background-color: var(--color-white);
   border-radius: var(--border-radius);
   box-shadow: var(--box-shadow);
-  padding: 2rem;
+  padding-top: 1rem;
   margin-bottom: var(--component-mb);
 }
 
@@ -246,25 +246,21 @@
   margin-top: var(--text-mb);
 }
 
-
 .card__description__footer {
   font-size: 1.3rem;
   font-weight: 400;
   color: var(--color-font-secondary);
   margin-top: auto;
   margin-left: auto;
-
 }
 
-.act__description{
+.act__description {
   font-size: 1.3rem;
   font-weight: 400;
   color: var(--color-font-secondary);
   margin-top: 0.8rem;
   margin-bottom: 0;
 }
-
-
 
 .card .user__avatar {
   min-width: 3.2rem;
@@ -909,12 +905,14 @@ a.toggle-button {
   overflow-x: scroll;
 }
 
-.table {
+.table,
+.table-roles {
   border-collapse: collapse;
   width: 100%;
 }
 
-.table tr {
+.table tr,
+.table-roles tr {
   border-bottom: 1px solid var(--color-line);
   border-radius: var(--border-radius);
 }
@@ -924,21 +922,25 @@ a.toggle-button {
   background-color: var(--color-bg-inactive);
 }
 
-.table td {
+.table td,
+.table-roles td {
   padding: 1.5rem 1rem;
   text-align: left;
   font-size: 1.3rem;
 }
 
-.table td:first-of-type {
+.table td:first-of-type,
+.table-roles td:first-of-type {
   text-align: left;
 }
 
-.table tbody td {
+.table tbody td,
+.table-rows tbody td {
   color: var(--color-border-primary);
 }
 
-.table tbody td.table__title {
+.table tbody td.table__title,
+.table-rows tbody td.table__title {
   font-size: 1.4rem !important;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -1435,17 +1437,22 @@ a.toggle-button {
   grid-gap: 10px;
 }
 
-.table {
+.table-roles {
   border-collapse: collapse;
   width: 100%;
   font-size: 1.4rem;
 }
 
-.table td {
+.table-roles td {
   text-align: center;
   background-color: transparent;
 }
 
 .tr-header {
-  background-color: #DDE7FF;
+  background-color: #dde7ff;
+  font-weight: bold;
+}
+
+.table-roles th {
+  padding-bottom: 1rem;
 }
