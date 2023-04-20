@@ -10,29 +10,47 @@
 
   <!--CREATE ROLE-->
   <form action="/roles/nuevo" method="POST">
-    <div class="banner-question">
-      <div>
-        <p class="description-question">Nombre del rol</p>
-        <div class="input-container">
-          <input name="name" class="input" type="text" placeholder="Nombre del rol" id="role-input" required maxlength="255" />
-        </div>
-        <br>
-        <button class="button button--primary" type="submit">
-          Crear Rol
-        </button>
+    <div>
+      <p class="description-question">Nombre del rol</p>
+      <div class="input-container">
+        <input name="name" class="input" type="text" placeholder="Nombre del rol" id="role-input" required maxlength="255" />
       </div>
-      <div>
-        <p class="description-question">Descripción del rol</p>
-        <div class="filters-container grid">
-          <!--Checkbox inputs-->
-          <% for(let privilege of privileges) { %>
-          <div class="checkbox-container">
-            <input type="checkbox" class="question-checkbox mr-1" name="privileges" value="<%= privilege.id %>" />
-            <label for="read"><%= privilege.name %></label>
-          </div>
-          <% } %>
-        </div>
-      </div>
+      <br>
     </div>
+    <div>
+      <p class="description-question">Descripción del rol</p>
+      <div class="card-table">
+        <table class="table-roles">
+          <thead>
+            <tr>
+              <th>Privilegios</th>
+              <th>Seleccionar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% const privilegesByTag = {}; %>
+            <% for (let privilege of allPrivileges) { %>
+              <% if (!privilegesByTag[privilege.tag]) { privilegesByTag[privilege.tag] = []; } %>
+              <% privilegesByTag[privilege.tag].push(privilege); %>
+            <% } %>
+            <% for (let tag in privilegesByTag) { %>
+              <tr class="tr-header">
+                <td><%= tag %></td>
+                <td></td>
+              </tr>
+              <% for (let privilege of privilegesByTag[tag]) { %>
+                <tr>
+                  <td> <%= privilege.description %></td>
+                  <td><input type="checkbox" class="question-checkbox mr-1" name="privileges" value="<%= privilege.id %>" /></td>
+                </tr>
+              <% } %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>  
+    </div>
+    <button class="button button--primary" type="submit">
+      Guardar
+    </button>
   </form>
 </section>

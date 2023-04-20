@@ -61,7 +61,6 @@ const acceptActionable = async (req, res, next) => {
     const actionable = await Actionable.getById(id);
     //aquí ya está la instancia
     let res2 = await actionable.accept();
-    console.log("actionable", actionable);
     await postJiraActionable(actionable);
     actionable.state = "ACCEPTED";
     //req.session.successMessage =

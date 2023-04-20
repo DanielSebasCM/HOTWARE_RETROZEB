@@ -38,8 +38,8 @@ const deleteRole = async (req, res, next) => {
 
 const renderNewRole = async (req, res, next) => {
   try {
-    const privileges = await Privilege.getAll();
-    res.render("roles/new", { privileges, title: "Nuevo rol" });
+    const allPrivileges = await Privilege.getAll();
+    res.render("roles/new", { allPrivileges, title: "Nuevo rol" });
   } catch (err) {
     next(err);
   }
