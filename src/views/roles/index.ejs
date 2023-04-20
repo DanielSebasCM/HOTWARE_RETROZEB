@@ -1,16 +1,14 @@
 <!--MAIN-->
 <section class="dashboard">
   <div class="banner">
-    <div class="banner__section">
+    <div class="banner__section mb-1">
       <h1 class="title">
         Roles <span class="meta">(<%= roles.length %>)</span>
       </h1>
       <p class="description">Listado de roles creados y sus privilegios</p>
     </div>
     <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
-    <div class="banner__section">
       <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
-    </div>
     <% } %>
     <span class="line"></span>
   </div>
