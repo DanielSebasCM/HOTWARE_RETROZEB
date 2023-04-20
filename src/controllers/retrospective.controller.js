@@ -88,8 +88,8 @@ const postRetrospectiveAnswers = async (req, res, next) => {
       res.redirect(`/retrospectivas/${idRetrospective}`);
       return;
     }
-    const teamUsers = await retrospective.getTeamUsers();
-    if (!teamUsers.some((user) => user.uid === uid)) {
+    const teamUsers = await retrospective.getUsers();
+    if (!teamUsers.some((user) => user.uid == uid)) {
       req.session.errorMessage =
         "No estabas unido al equipo cuando se creó la retrospectiva";
       res.redirect(`/retrospectivas/${idRetrospective}`);
