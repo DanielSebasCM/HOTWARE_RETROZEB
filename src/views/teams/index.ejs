@@ -9,11 +9,15 @@
       </p>
     </div>
     <% if(currentPrivileges.includes(privileges.teams.canCreateTeams)) { %>
-      <div class="banner__section">
-        <a class="button button--primary" href="#">Crear Equipo</a>
-      </div>
-      <% } %>
-        <span class="line"></span>
+    <div class="banner__section">
+      <a class="button button--primary" class="dropdown-item" id="modal-button">
+        Crear Equipo
+      </a>
+      <div id="modal-container" class="cards-container"></div>
+    </div>
+    <% } %>
+
+    <span class="line"></span>
   </div>
 
 
@@ -55,10 +59,41 @@
               </div>
               <% } %>
           </div>
+          <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn" data-uid=<%=locals.currentUser.uid %> data-id_team=<%=userTeams[i].id %>>Abandonar</button>
+        </form>
 
+      </div>
+      <p class="card__subtitle">
+        Miembros <span class="meta"> (<%=userTeams[i].members.length %>) </span>
+      </p>
+      <div class="users__list">
+        <% for(let j=0; j < userTeams[i].members.length; j++) { %>
+        <div class="user__item">
+          <span class="user__avatar">
+            <%= userTeams[i].members[j].first_name[0] %>
+          </span>
+          <span class="user__name">
+            <%= userTeams[i].members[j].first_name%>
+            <%= userTeams[i].members[j].last_name%>
+          </span>
         </div>
         <% } %>
-          <% } %>
+      </div>
+      
+      <div class="charts-container">
+        <% if(currentPrivileges.includes(privileges.teams.canModifyTeams)) { %>
+        <a class="button button--sm button--edit" href="<%= routes.teams %>/<%= userTeams[i].id %>/modificar">Modificar</a>
+        <% } %>
+        <% if(currentPrivileges.includes(privileges.teams.canDeleteTeams)) { %>
+        <form method="POST" action="/equipos/eliminar" id="formE">
+          <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
+          <button class="button button--sm button--delete-alt" type="submit">Eliminar</button>
+        </form>
+        <% } %>
+      </div>    
+    </div>
+    <% } %>
+    <% } %>
 </section>
 <!-- <span class="line"></span> -->
 
@@ -116,5 +151,61 @@
           </div>
         </div>
         <% } %>
-          <% } %>
+        <br>
+        <div class="charts-container">
+          <a class="button button--sm button--edit" href="<%= routes.teams %>/<%= availableTeams[i].id %>/modificar">Modificar</a>
+          <form method="POST" action="/equipos/eliminar" id="formE">
+            <input type="hidden" name="id_team" value="<%=availableTeams[i].id %>">
+            <button class="button button--sm button--delete-alt" type="submit">Eliminar</button>
+          </form>
+        </div>  
+      </div>
+    </div>
+    <% } %>
+    <% } %>
 </section>
+
+<script>
+  //NUEVO EQUIPO
+  let modalButton = document.getElementById("modal-button");
+  let modalContainer = document.getElementById("modal-container");
+  
+  modalButton.addEventListener("click", function() {
+    modalContainer.style.display = "block";
+  });
+  
+  modalContainer.addEventListener("click", function(event) {
+    if (event.target === modalContainer) {
+      modalContainer.style.display = "none";
+    }
+  });
+  
+  let modalContent = document.createElement("div");
+  modalContent.setAttribute("id", "modal-content");
+  modalContent.innerHTML = `
+    <h2 class="title">Crea un equipo nuevo</h2>
+    <span class="line"></span>
+    
+    <form method="POST" action="/equipos/nuevo" id="form">
+    <div class="form-group">
+      <label for="name" class="description">Nombre del equipo:</label>
+      <input type="text" class="input" id="recipient-name" name="name">
+    </div>
+
+    <br>
+    
+    <div class="buttons-container">
+    <button class="button button--primary" type="submit">Guardar</button>
+    <a class="button button--discard" id="modal-close">Descartar</a>
+    </div>
+    </form>
+    `;
+  modalContainer.appendChild(modalContent);
+  
+  // Agrega un evento de clic al botón de cerrar para ocultar el modal
+  let modalClose = document.getElementById("modal-close");
+  modalClose.addEventListener("click", function() {
+    modalContainer.style.display = "none";
+  });
+  </script>
+ 
