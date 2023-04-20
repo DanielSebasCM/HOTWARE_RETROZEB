@@ -1435,4 +1435,17 @@ a.toggle-button {
   grid-gap: 10px;
 }
 
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 1.4rem;
+}
 
+.table td {
+  text-align: center;
+  background-color: transparent;
+}
+
+.tr-header {
+  background-color: #DDE7FF;
+}
