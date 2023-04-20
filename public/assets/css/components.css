@@ -236,25 +236,21 @@
   margin-top: var(--text-mb);
 }
 
-
 .card__description__footer {
   font-size: 1.3rem;
   font-weight: 400;
   color: var(--color-font-secondary);
   margin-top: auto;
   margin-left: auto;
-
 }
 
-.act__description{
+.act__description {
   font-size: 1.3rem;
   font-weight: 400;
   color: var(--color-font-secondary);
   margin-top: 0.8rem;
   margin-bottom: 0;
 }
-
-
 
 .card .user__avatar {
   min-width: 3.2rem;
@@ -1426,4 +1422,94 @@ a.toggle-button {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 10px;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1;
+  display: none;
+  padding: 0.5rem 0;
+  margin: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  border-radius: 0 0 5px 5px;
+}
+
+/* Leslie, borrar este comentario */
+.dropdown-menu a {
+  display: block;
+  padding: 0.5rem 1rem;
+  color: #333;
+  text-decoration: none;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+#modal-container {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+#modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 75%;
+  box-sizing: border-box;
+}
+
+#modal-container {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+
+#modal-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 75%;
+  box-sizing: border-box;
+}
+
+#modify-container {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+#modify-content {
+  background-color: #fff;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 75%;
+  box-sizing: border-box;
 }
