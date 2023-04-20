@@ -88,8 +88,8 @@ const postRetrospectiveAnswers = async (req, res, next) => {
       res.redirect(`/retrospectivas/${idRetrospective}`);
       return;
     }
-    const teamUsers = await retrospective.getTeamUsers();
-    if (!teamUsers.some((user) => user.id === uid)) {
+    const teamUsers = await retrospective.getUsers();
+    if (!teamUsers.some((user) => user.uid == uid)) {
       req.session.errorMessage =
         "No estabas unido al equipo cuando se creó la retrospectiva";
       res.redirect(`/retrospectivas/${idRetrospective}`);
@@ -192,7 +192,7 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
     let answered = answer.length ? true : false;
     const teamUsers = await retrospective.getUsers();
     let isMember = teamUsers.some(
-      (user) => user.id === req.session.currentUser.uid
+      (user) => user.uid === req.session.currentUser.uid
     );
     const labels = await retrospective.getLabels();
     res.render("retrospectives/dashboardMetrics", {
@@ -219,7 +219,7 @@ const renderRetrospectiveAnswer = async (req, res, next) => {
       return res.redirect(`/retrospectivas/${retrospectiveId}/preguntas`);
     }
     const teamUsers = await retrospective.getUsers();
-    if (!teamUsers.some((user) => user.id === req.session.currentUser.uid)) {
+    if (!teamUsers.some((user) => user.uid === req.session.currentUser.uid)) {
       req.session.errorMessage =
         "No eras miembro del equipo cuando se creó la retrospectiva";
       return res.redirect(`/retrospectivas/${retrospectiveId}/preguntas`);
