@@ -21,6 +21,7 @@ const initRoutes = (app) => {
 
   // MIDDLEWARES
   app.use(authMiddleware.validateTokenActive);
+  app.use(authMiddleware.verifyJiraUserId);
   app.use(setLocals);
 
   // PRIVATE ROUTES

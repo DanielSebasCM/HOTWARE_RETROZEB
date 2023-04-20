@@ -34,7 +34,7 @@
     <% } %>
 
     <!-- LOGIN CSS -->
-    <% if(!locals.currentUser) { %>
+    <% if(!locals.currentUser || !locals.currentUser.id_jira) { %>
     <link rel="stylesheet" href="/assets/css/login.css" />
     <% } %>
 
