@@ -1,0 +1,38 @@
+<!--MAIN-->
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">Crear rol</h1>
+      <p class="description">Crea un rol de usuario y selecciona sus privilegios</p>
+    </div>
+  </div>
+  <span class="line"></span>
+
+  <!--CREATE ROLE-->
+  <form action="/roles/nuevo" method="POST">
+    <div class="banner-question">
+      <div>
+        <p class="description-question">Nombre del rol</p>
+        <div class="input-container">
+          <input name="name" class="input" type="text" placeholder="Nombre del rol" id="role-input" required maxlength="255" />
+        </div>
+        <br>
+        <button class="button button--primary" type="submit">
+          Crear Rol
+        </button>
+      </div>
+      <div>
+        <p class="description-question">Descripción del rol</p>
+        <div class="filters-container grid">
+          <!--Checkbox inputs-->
+          <% for(let privilege of privileges) { %>
+          <div class="checkbox-container">
+            <input type="checkbox" class="question-checkbox mr-1" name="privileges" value="<%= privilege.id %>" />
+            <label for="read"><%= privilege.name %></label>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </form>
+</section>

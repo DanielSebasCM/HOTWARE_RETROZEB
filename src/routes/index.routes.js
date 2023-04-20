@@ -5,6 +5,7 @@ const retrospectiveRouter = require("./retrospective.routes");
 const questionRouter = require("./questions.routes");
 const rolesRouter = require("./roles.routes");
 const localsRouter = require("./locals.routes");
+const userRouter = require("./user.routes");
 const authMiddleware = require("../middlewares/auth");
 const { setLocals } = require("../middlewares/locals.middleware");
 const { routes } = require("../utils/constants");
@@ -29,6 +30,7 @@ const initRoutes = (app) => {
   app.use(`${routes.questions}`, questionRouter);
   app.use(`${routes.retrospectives}`, retrospectiveRouter);
   app.use(`${routes.roles}`, rolesRouter);
+  app.use(`${routes.users}`, userRouter);
 
   // Temporary routes for testing errors
   app.use("/default_error", (req, res, next) => {

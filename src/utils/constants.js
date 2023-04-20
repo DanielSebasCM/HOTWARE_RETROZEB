@@ -5,7 +5,13 @@ const constants = {
     issueStates: ["To Do", "En curso", "Pull request", "QA", "Blocked", "Done"],
     issueTypes: ["Story", "Task", "Sub-task", "Bug"],
     questionTypes: ["OPEN", "BOOLEAN", "SCALE", "SELECTION"],
-    actionableStates: ["PENDING", "ACCEPTED", "REJECTED"],
+    actionableStates: [
+      "PENDING",
+      "ACCEPTED",
+      "REJECTED",
+      "COMPLETED",
+      "PROCESS",
+    ],
   },
   limits: {
     answerMaxLength: 400,
@@ -31,6 +37,7 @@ const constants = {
     retrospectives: "/retrospectivas",
     questions: "/preguntas",
     roles: "/roles",
+    users: "/usuarios",
     locals: "/locals",
   },
   privileges: {
@@ -62,6 +69,11 @@ const constants = {
       canAnswerRetrospectives: "canAnswerRetrospectives",
       getMetrics: "getMetrics",
       canCompareRetrospectives: "canCompareRetrospectives",
+    },
+    users: {
+      getUsers: "getUsers",
+      deleteUsers: "deleteUsers",
+      canModifyUsers: "canModifyUsers",
     },
   },
 };

@@ -28,6 +28,11 @@ class Role {
     return roles.map((role) => new Role(role));
   }
 
+  static async getPrivileges() {
+    let [role_privileges, _] = await db.execute(`SELECT * FROM role_privilege`);
+    return role_privileges;
+  }
+
   //----------------VERIFIER----------------
 
   static verify(role) {
@@ -62,9 +67,7 @@ class Role {
   //----------------DELETE----------------
 
   async delete() {
-    let [res, _] = await db.execute(`UPDATE role SET active = 0 WHERE id = ?`, [
-      this.id,
-    ]);
+    let [res, _] = await db.execute(`DELETE FROM role WHERE id = ?`, [this.id]);
     this.active = 0;
     return res;
   }

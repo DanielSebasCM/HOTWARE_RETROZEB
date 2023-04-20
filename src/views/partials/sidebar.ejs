@@ -15,8 +15,6 @@
         <img src="/assets/icon/accionables.svg" alt="To do icon" class="sidebar__icon" />
         <span> Accionables </span></a>
     </li>
-    <!-- SUBSECTION -->
-    <li class="sidebar__nav-header">Admin</li>
     <li class="sidebar__nav-item">
       <a href="/preguntas" class="sidebar__link">
         <img src="/assets/icon/preguntas.svg" alt="Chat icon" class="sidebar__icon" />
@@ -28,16 +26,21 @@
         <span> Equipos </span></a>
     </li>
     <!-- SUBSECTION -->
-    <li class="sidebar__nav-header">Módulos</li>
+    <li class="sidebar__nav-header">Configuración</li>
     <li class="sidebar__nav-item">
-      <a href="#" class="sidebar__link">
-        <img src="/assets/icon/ajustes.svg" alt="Settings icon" class="sidebar__icon" />
-        <span> Ajustes </span></a>
+      <a href=<%=routes.users %> class="sidebar__link">
+        <img src="/assets/icon/user.svg" alt="Users icon" class="sidebar__icon" />
+        <span> Usuarios </span></a>
     </li>
     <li class="sidebar__nav-item">
-      <a href="/roles" class="sidebar__link">
-        <img src="/assets/icon/configuracion.svg" alt="Config icon" class="sidebar__icon" />
-        <span> Configuración </span></a>
+      <a href=<%=routes.roles %> class="sidebar__link">
+        <img src="/assets/icon/layers.svg" alt="Roles icon" class="sidebar__icon" />
+        <span> Roles </span></a>
+    </li>
+    <li class="sidebar__nav-item">
+      <a href="<%=routes.users %>/<%=currentUser.uid %>/modificar" class="sidebar__link">
+        <img src="/assets/icon/ajustes.svg" alt="Roles icon" class="sidebar__icon" />
+        <span> Ajustes </span></a>
     </li>
     <li class="sidebar__nav-item">
       <form action="<%= routes.logout %>" method="GET" id="logout-form">

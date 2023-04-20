@@ -10,7 +10,12 @@ async function handleLogin(response) {
       body: JSON.stringify({ token }),
     });
 
+   
     const res = await loginResponse.json();
+    
+    if(!loginResponse.ok) {
+      return setNotification(res.message);
+    }
 
     // Save tokens in httpOnly cookies
     document.cookie = `rzauthToken=${res.authToken}; path=/;`;
@@ -21,6 +26,7 @@ async function handleLogin(response) {
       location.href = "/";
     }
   } catch (error) {
+    console.log("error");
     console.log(error);
     location.reload();
   }

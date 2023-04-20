@@ -32,16 +32,16 @@
     </div>
   </div>
   <% if(questions && questions.length> 0) { %>
-  <div class="cards-container">
+  <div class="pinterest-container">
     <% for(let question of questions) { %>
-    <div class="card card--question">
+    <div class="card card--question card--pinterest">
       <div class="card__header">
         <p class="card__subtitle"><%= question.description %></p>
         <span class="label label--active"> <%= question.type %> </span>
       </div>
       <% if(question.type === 'SELECTION') { %>
       <span class="line"></span>
-      <p class="card__description"><%= question.options.join("/ ") %> </p>
+      <p class="card__description"><%= question.options.join(" / ") %> </p>
       <% } %>
       <% if(currentPrivileges.includes(privileges.questions.canDeleteQuestions)) { %>
       <form action="/preguntas?_method=DELETE" method="POST">
