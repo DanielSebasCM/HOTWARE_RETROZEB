@@ -1455,7 +1455,7 @@ a.toggle-button {
   display: block;
 }
 
-#modal-container {
+.modal-container {
   display: none;
   position: fixed;
   left: 0;
@@ -1466,50 +1466,12 @@ a.toggle-button {
   z-index: 9999;
 }
 
-#modal-content {
+.modal-content {
   background-color: #fff;
   margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 75%;
-  box-sizing: border-box;
-}
-
-#modal-container {
-  display: none;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
-}
-
-#modal-content {
-  background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 75%;
-  box-sizing: border-box;
-}
-
-#modify-container {
-  display: none;
-  position: fixed;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
-}
-#modify-content {
-  background-color: #fff;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
+  border-radius: var(--border-radius);
   width: 75%;
   box-sizing: border-box;
 }
