@@ -14,6 +14,8 @@ modalContainer.addEventListener("click", function (event) {
 
 const modalContent = document.createElement("div");
 modalContent.setAttribute("id", "modal-content");
+modalContent.setAttribute("class", "modal-content");
+
 modalContent.innerHTML = `
     <h2 class="title">Crea un equipo nuevo</h2>
     <span class="line"></span>

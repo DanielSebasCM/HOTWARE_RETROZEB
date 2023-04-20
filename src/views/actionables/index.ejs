@@ -13,21 +13,20 @@
   </div>
   <div class="banner align-flex-end mb-3">
     <% if (state==="process" ) { %>
-      <h2 class="subtitle mb-2"> Accionables en Proceso <span class="meta"></span></h2>
+    <h2 class="subtitle mb-2"> Accionables en Proceso <span class="meta"></span></h2>
     <% } %>
     <% if (state==="pending" ) { %>
-      <h2 class="subtitle mb-2"> Accionables Por Aprobar <span class="meta"></span></h2>
+    <h2 class="subtitle mb-2"> Accionables Por Aprobar <span class="meta"></span></h2>
     <% } %>
     <% if (state==="completed" ) { %>
-      <h2 class="subtitle mb-2"> Accionables Completados <span class="meta"></span></h2>
+    <h2 class="subtitle mb-2"> Accionables Completados <span class="meta"></span></h2>
     <% } %>
     <div class="toggle-buttons-container toggle-buttons-container--primary">
       <a class="toggle-button <%= (state === "process") && "toggle-button--active" %>" href="/accionables/process">En
         proceso </a>
       <a class="toggle-button <%= (state === "pending") && "toggle-button--active" %>" href="/accionables/pending">Por
         Aprobar</a>
-      <a class="toggle-button <%= (state === "completed") && "toggle-button--active" %>"
-        href="/accionables/completed">Completados</a>
+      <a class="toggle-button <%= (state === "completed") && "toggle-button--active" %>" href="/accionables/completed">Completados</a>
     </div>
   </div>
   <% if (actionables.length==0) { %>
@@ -74,10 +73,10 @@
 
       <!--PRIORIDADES-->
 
-      <p class="card__subtitle mt-3 mb-0">
+      <p class="card__subtitle">
         Prioridad
       </p>
-      
+
       <div class="horizontal-container">
         <div class="pills-container">
           <% if (actionables[i].priority==="Highest"){ %>

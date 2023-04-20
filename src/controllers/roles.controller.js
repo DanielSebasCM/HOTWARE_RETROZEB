@@ -4,12 +4,12 @@ const Privilege = require("../models/privilege.model");
 const renderRoles = async (req, res, next) => {
   try {
     const roles = await Role.getAllActive();
-    const privileges_db = await Privilege.getAll();
-    const role_privileges = await Role.getPrivileges();
+    const allPrivileges = await Privilege.getAll();
+    const rolesPrivileges = await Role.getPrivileges();
     res.render("roles", {
       roles,
-      privileges_db,
-      role_privileges,
+      allPrivileges,
+      rolesPrivileges,
       title: "Roles",
     });
   } catch (err) {
