@@ -23,11 +23,10 @@
     </span>
   </h2>
   <% if(userTeams && userTeams.length> 0) { %>
-    <div class="cards-container">
-      <% for(let i=0; i < userTeams.length; i++) { %>
-        <div class="card card--team <%= userTeams[i].members.length >= 10 ? `card--tall` : `card--short`%>">
-          <div class="card__header">
-
+  <div class="pinterest-container">
+    <% for(let i=0; i < userTeams.length; i++) { %>
+    <div class="card card--team card--pinterest">
+      <div class="card__header">
             <h3 class="card__title">
               <%= userTeams[i].name %>
             </h3>

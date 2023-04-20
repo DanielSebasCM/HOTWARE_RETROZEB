@@ -149,6 +149,7 @@
 
 /* CARDS */
 .cards-container,
+.pinterest-container,
 .charts-container {
   display: flex;
   flex-direction: column;
@@ -161,10 +162,12 @@
   gap: 2rem;
 }
 
+.pinterest-container,
 .cards-container {
   margin-bottom: 8rem;
 }
 
+.pinterest-container .card,
 .cards-container .card {
   margin-bottom: 0;
 }
@@ -283,6 +286,9 @@
   gap: 1rem;
 }
 
+.card--pinterest {
+  height: fit-content;
+}
 .card--question * {
   margin: 0;
 }

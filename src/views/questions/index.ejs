@@ -32,9 +32,9 @@
     </div>
   </div>
   <% if(questions && questions.length> 0) { %>
-  <div class="cards-container">
+  <div class="pinterest-container">
     <% for(let question of questions) { %>
-    <div class="card card--question">
+    <div class="card card--question card--pinterest">
       <div class="card__header">
         <p class="card__subtitle"><%= question.description %></p>
         <span class="label label--active"> <%= question.type %> </span>
