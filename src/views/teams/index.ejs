@@ -9,11 +9,11 @@
       </p>
     </div>
     <% if(currentPrivileges.includes(privileges.teams.canCreateTeams)) { %>
-    <div class="banner__section">
-      <a class="button button--primary" href="#">Crear Equipo</a>
-    </div>
-    <% } %>
-    <span class="line"></span>
+      <div class="banner__section">
+        <a class="button button--primary" href="#">Crear Equipo</a>
+      </div>
+      <% } %>
+        <span class="line"></span>
   </div>
 
 
@@ -27,38 +27,38 @@
     <% for(let i=0; i < userTeams.length; i++) { %>
     <div class="card card--team card--pinterest">
       <div class="card__header">
+            <h3 class="card__title">
+              <%= userTeams[i].name %>
+            </h3>
 
-        <h3 class="card__title">
-          <%= userTeams[i].name %>
-        </h3>
+            <form action="/equipos/eliminar/usuario?_method=PATCH" method="POST">
+              <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
+              <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
 
-        <form action="/equipos/eliminar/usuario?_method=PATCH" method="POST">
-          <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
-          <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
+              <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn"
+                data-uid=<%=locals.currentUser.uid %> data-id_team=<%=userTeams[i].id %>>Abandonar</button>
+            </form>
+          </div>
+          <p class="card__subtitle">
+            Miembros <span class="meta"> (<%=userTeams[i].members.length %>) </span>
+          </p>
+          <div class="users__list">
+            <% for(let j=0; j < userTeams[i].members.length; j++) { %>
+              <div class="user__item">
+                <span class="user__avatar">
+                  <%= userTeams[i].members[j].first_name[0] %>
+                </span>
+                <span class="user__name">
+                  <%= userTeams[i].members[j].first_name%>
+                    <%= userTeams[i].members[j].last_name%>
+                </span>
+              </div>
+              <% } %>
+          </div>
 
-          <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn" data-uid=<%=locals.currentUser.uid %> data-id_team=<%=userTeams[i].id %>>Abandonar</button>
-        </form>
-      </div>
-      <p class="card__subtitle">
-        Miembros <span class="meta"> (<%=userTeams[i].members.length %>) </span>
-      </p>
-      <div class="users__list">
-        <% for(let j=0; j < userTeams[i].members.length; j++) { %>
-        <div class="user__item">
-          <span class="user__avatar">
-            <%= userTeams[i].members[j].first_name[0] %>
-          </span>
-          <span class="user__name">
-            <%= userTeams[i].members[j].first_name%>
-            <%= userTeams[i].members[j].last_name%>
-          </span>
         </div>
         <% } %>
-      </div>
-
-    </div>
-    <% } %>
-    <% } %>
+          <% } %>
 </section>
 <!-- <span class="line"></span> -->
 
@@ -73,47 +73,48 @@
   </div>
   <!-- TEAMS LIST -->
   <% if(availableTeams && availableTeams.length> 0) { %>
-  <div class="cards-container">
-    <% for(let i=0; i < availableTeams.length; i++) { %>
-    <div class="card card--team">
-      <div class="card__header">
+    <div class="cards-container">
+      <% for(let i=0; i < availableTeams.length; i++) { %>
+        <div class="card card--team <%= availableTeams[i].members.length >= 10 ? `card--tall` : `card--short`%>">
+          <div class="card__header">
 
-        <h3 class="card__title">
-          <%= availableTeams[i].name %>
-        </h3>
-      </div>
+            <h3 class="card__title">
+              <%= availableTeams[i].name %>
+            </h3>
+          </div>
 
-      <p class="card__subtitle">
-        Miembros <span class="meta"> (<%=availableTeams[i].members.length %>) </span>
-      </p>
-      <div class="users__list">
-        <% for(let j=0; j < availableTeams[i].members.length; j++) { %>
-        <div class="user__item">
-          <span class="user__avatar">
-            <%= availableTeams[i].members[j].first_name[0] %>
-          </span>
-          <span class="user__name">
-            <%= availableTeams[i].members[j].first_name%>
-            <%= availableTeams[i].members[j].last_name%>
-          </span>
+          <p class="card__subtitle">
+            Miembros <span class="meta"> (<%=availableTeams[i].members.length %>) </span>
+          </p>
+          <div class="users__list">
+            <% for(let j=0; j < availableTeams[i].members.length; j++) { %>
+              <div class="user__item">
+                <span class="user__avatar">
+                  <%= availableTeams[i].members[j].first_name[0] %>
+                </span>
+                <span class="user__name">
+                  <%= availableTeams[i].members[j].first_name%>
+                    <%= availableTeams[i].members[j].last_name%>
+                </span>
+              </div>
+              <% } %>
+
+          </div>
+          <div class="card__footer">
+
+            <% if(currentPrivileges.includes(privileges.teams.canJoinTeams)) { %>
+              <form action="/equipos/nuevo/usuario" method="POST">
+                <input type="hidden" name="id_team" value="<%=availableTeams[i].id %>">
+                <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
+
+                <button class="button button--primary add-team-user-btn" data-uid=<%=locals.currentUser.uid %>
+                  data-id_team=<%=availableTeams[i].id %>>
+                    Unirme
+                </button>
+              </form>
+              <% } %>
+          </div>
         </div>
         <% } %>
-
-      </div>
-      <div class="card__footer">
-
-        <% if(currentPrivileges.includes(privileges.teams.canJoinTeams)) { %>
-        <form action="/equipos/nuevo/usuario" method="POST">
-          <input type="hidden" name="id_team" value="<%=availableTeams[i].id %>">
-          <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
-
-          <button class="button button--primary add-team-user-btn" data-uid=<%=locals.currentUser.uid %> data-id_team=<%=availableTeams[i].id %>>
-            Unirme
-          </button>
-        </form>
-        <% } %>
-      </div>
-    </div>
-    <% } %>
-    <% } %>
+          <% } %>
 </section>

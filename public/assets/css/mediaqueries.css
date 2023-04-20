@@ -8,6 +8,15 @@
 */
 
 /* MOBILE BREAKPOINT */
+@media screen and (min-width: 320px) {
+  .mobile {
+    display: block;
+  }
+  .desktop {
+    display: none;
+  }
+}
+
 @media screen and (min-width: 380px) {
   .nav__logo img {
     display: block;
@@ -37,10 +46,27 @@
   .card--question {
     justify-content: space-between;
   }
+
+  .card--question-checkbox .question {
+    width: 90%;
+    min-width: 90%;
+  }
 }
 
 /* TABLET BREAKPOINT */
 @media screen and (min-width: 768px) {
+  .mobile {
+    display: none;
+  }
+
+  .desktop {
+    display: block;
+  }
+
+  .button {
+    width: 20rem;
+  }
+
   .pinterest-container,
   .cards-container {
     display: grid;
@@ -78,9 +104,14 @@
   .banner-question :nth-child(2) {
     flex: 65%;
   }
+
+  .card--question-checkbox .question {
+    width: 100%;
+    min-width: 100%;
+  }
 }
 
-/* DESKTOP BREAKPOIN */
+/* DESKTOP BREAKPOINT */
 @media screen and (min-width: 992px) {
   .notification-container {
     right: calc((100% - 550px) / 2);
@@ -112,6 +143,10 @@
 
   .card--question-checkbox {
     overflow-x: hidden;
+  }
+
+  .error-view--500 {
+    background-image: url("/assets/img/zeb500.svg");
   }
 }
 

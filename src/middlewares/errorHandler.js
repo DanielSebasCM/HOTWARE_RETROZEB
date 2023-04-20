@@ -37,14 +37,19 @@ const errorHandler = (err, req, res, next) => {
 
 function validationErrorHandler(err, req, res) {
   const message = `${err.type}, ${err.atribute}, ${err.message}`;
+  req.session.errorMessage =
+    "Ocurrió un error inesperado, por favor intente de nuevo";
+  res.locals.errorView = true;
   res.status(400).render("errors/404", { title: "Error 404", message });
 }
 
 function defaultErrorHandler(err, req, res, next) {
-  setLocals(req, res, next);
+  req.session.errorMessage =
+    "Ocurrió un error inesperado, por favor intente de nuevo";
+  res.locals.errorView = true;
   res
     .status(500)
-    .render("errors/500", { title: "Error 500", message: err.message });
+    .render("errors/500", { title: "Error Inesperado", message: err.message });
 }
 
 // jasonwebtoken error messages
@@ -92,10 +97,12 @@ const sqlStates = {
   "404Error": ["23000"],
 };
 function dbErrorHandler(err, req, res, next) {
-  // TODO: ADD BETTER ERROR MESSAGES
   if (sqlStates["404Error"].includes(err.sqlState)) {
     req.session.errorMessage =
       "Ocurrió un error inesperado, por favor intente de nuevo";
+    
+    res.locals.errorView = true;
+
     res.status(404).render("errors/404", {
       title: "Error 404",
       message: err.sqlMessage,
@@ -103,9 +110,14 @@ function dbErrorHandler(err, req, res, next) {
   } else {
     req.session.errorMessage =
       "Ocurrió un error inesperado, por favor intente de nuevo";
+    setLocals(req, res, next);
+
+    res.locals.errorView = true;
+
     res.status(500).render("errors/500", {
       title: "Error 500",
-      message: "Ocurrió un error con el servidor. Por favor contacte al administrador"
+      message:
+        "Ocurrió un error con el servidor. Por favor contacte al administrador",
     });
   }
 }

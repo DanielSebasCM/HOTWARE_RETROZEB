@@ -30,7 +30,7 @@
           <tbody>
 
             <% for(let i=0; i < users.length; i++) { %>
-              <tr>
+              <tr onclick="window.location ='<%= routes.users %>/<%= users[i].uid %>/modificar'">
                 <td class="table__title">
                   <%= users[i].first_name %>
                     <%= users[i].last_name %>
