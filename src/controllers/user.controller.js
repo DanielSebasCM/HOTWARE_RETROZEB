@@ -55,4 +55,35 @@ const modifyUserPost = async (req, res, next) => {
   }
 };
 
-module.exports = { renderUsers, deleteUser, modifyUser, modifyUserPost };
+const addJiraId = async (req, res, next) => {
+  try {
+    const { id_jira } = req.body;
+    const user = new User(req.session.currentUser);
+
+    await user.addJiraId(id_jira);
+
+    req.session.currentUser.id_jira = id_jira;
+
+    res.status(200).redirect("/");
+  } catch (err) {
+    next(err);
+  }
+};
+
+const noJiraIDSession = async (req, res, next) => {
+  try {
+    req.session.currentUser.id_jira = "no_id";
+    res.redirect("/");
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = {
+  renderUsers,
+  deleteUser,
+  modifyUser,
+  modifyUserPost,
+  addJiraId,
+  noJiraIDSession
+};

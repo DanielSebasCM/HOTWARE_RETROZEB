@@ -40,6 +40,7 @@ const constants = {
     users: "/usuarios",
     locals: "/locals",
     jiraUserID: "/jira/user/id",
+    noJiraUserID: "/jira/user/no-id",
   },
   privileges: {
     actionables: {

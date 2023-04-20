@@ -61,6 +61,7 @@ app.use(errorHandler);
 
 // LOCALS
 app.locals.routes = routes;
+app.locals.layout = true;
 app.locals.privileges = privileges;
 
 // SERVER

@@ -46,13 +46,9 @@ const loginAPI = async (req, res, next) => {
       });
 
     if (!user) {
-      // GET ID JIRA
-      id_jira = Math.random().toString(36);
-
       // CREATE USER
       const newUser = new User({
         id_google_auth: data.sub,
-        id_jira: id_jira,
         email: data.email,
         first_name: data.given_name,
         last_name: data.family_name,
@@ -106,21 +102,6 @@ const loginAPI = async (req, res, next) => {
 
 const logoutAPI = (req, res) => {
   authUtil.deleteSession(req, res);
-};
-
-const addJiraId = async (req, res, next) => {
-  try {
-    const { id_jira } = req.body;
-    const user = new User(req.session.currentUser);
-
-    await user.addJiraId(id_jira);
-
-    req.session.currentUser.id_jira = id_jira;
-
-    res.status(200).redirect("/");
-  } catch (err) {
-    next(err);
-  }
 };
 
 const refreshTokenAPI = async (req, res, next) => {
@@ -183,5 +164,4 @@ module.exports = {
   loginAPI,
   logoutAPI,
   refreshTokenAPI,
-  addJiraId,
 };

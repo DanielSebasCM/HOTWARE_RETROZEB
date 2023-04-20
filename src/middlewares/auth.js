@@ -25,8 +25,9 @@ const authMiddleware = {
   },
 
   verifyJiraUserId: async (req, res, next) => {
+    const user = req.session.currentUser;
+
     try {
-      const user = await User.getById(req.session.currentUser.uid);
       if (!user.id_jira) {
         return res.render("config/jiraUserId", {
           title: "Jira User Id",

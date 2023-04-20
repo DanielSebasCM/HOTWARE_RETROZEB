@@ -20,7 +20,7 @@
   </div>
   <% if(user.uid===currentUser.uid) { %>
     <p class="description description--blue">ID de usuario de JIRA</p>
-    <input type="text" class="input mb-3" value="<%= currentUser.id_jira %>" readonly>
+    <input type="text" class="input mb-3" value="<%= currentUser.id_jira == "no_id" ? "" : currentUser.id_jira %>">
   <% }  %>
   <form action="/usuarios/<%= user.uid %>/modificar" method="POST" id="change_role">
     <p class="description description--blue">Seleccionar roles de usuario</p>
