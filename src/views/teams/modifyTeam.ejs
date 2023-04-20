@@ -1,57 +1,94 @@
 <section class="dashboard">
   <div class="banner">
     <div class="banner__section">
-      <h1 class="title">Modificar equipo - <%= team.name %> </h1>
+      <h1 class="title"><%= team.name %></h1>
+      <p class="description">Modificar Equipo</p>
     </div>
 
     <span class="line"></span>
   </div>
 
-  <h2 class="subtitle">Miembros del equipo: </h2>
+  <h2 class="subtitle subtitle--blue">Miembros del equipo <span class="meta">(<%= members.length%>)</span></h2>
 
-  <div class="cards-container">
-    <% for(let i = 0; i < members.length; i++) { %>
-    <div class="card card--team">
-      <div class="card__header">
-        <span class="user__avatar">
-          <%= members[i].first_name[0] %>
-        </span>
-        <span class="user__name">
-          <%= members[i].first_name%>
-          <%= members[i].last_name%>
-        </span>
-        <form method="POST" action="/equipos/modificar/eliminar" id="form">
-          <input type="hidden" name="id_team" value="<%= team.id %>">
-          <input type="hidden" name="uid" value="<%= members[i].uid %>">
-          <button type="submit" class="button button--sm button--delete-alt">Eliminar</button>
-        </form>
-      </div>
+  <div class="banner--nomargin">
+    <div class="table-container">
+      <table class="table" id="retrospectivasSearch">
+        <thead>
+          <tr class="subtitle">
+            <td>Nombre</td>
+            <td>Email</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let i=0; i < members.length; i++) { %>
+          <tr class="retrospective">
+            <td class="table__title">
+              <%= members[i].first_name %> <%= members[i].last_name %>
+            </td>
+            <td class="description"><%= members[i].email %></td>
+            <td class="table__team" data-idTeam="<%= members[i].uid %>">
+              <form method="POST" action="/equipos/modificar/eliminar" id="form" class="form-action-button">
+                <input type="hidden" name="id_team" value="<%= team.id %>" />
+                <input type="hidden" name="uid" value="<%= members[i].uid %>" />
+                <button type="submit" class="button button--sm button--delete-alt">
+                  Eliminar
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
     </div>
-    <% } %>
-  </div>
-  <span class="line"></span>
-
-  <h2 class="subtitle">Personas: </h2>
-  <div class="cards-container">
-    <% for(let i = 0; i < usersNotInTeam.length; i++) { %>
-    <div class="card card--team">
-      <div class="card__header">
-        <span class="user__avatar">
-          <%= usersNotInTeam[i].first_name[0] %>
-        </span>
-        <span class="user__name">
-          <%= usersNotInTeam[i].first_name%>
-          <%= usersNotInTeam[i].last_name%>
-        </span>
-        <form method="POST" action="/equipos/modificar/anadir" id="form">
-          <input type="hidden" name="id_team" value="<%= team.id %>">
-          <input type="hidden" name="uid" value="<%= usersNotInTeam[i].uid %>">
-          <button type="submit" class="button button--sm button--edit">Añadir</button>
-        </form>
-      </div>
-    </div>
-    <% } %>
   </div>
 
+  <h2 class="subtitle subtitle--blue mt-4">Personas</h2>
+  <h2 class="meta mt-0 mb-3">Selecciona usuarios para añadir</h2>
+  <div class="input search-bar">
+    <span class="icon search-bar__icon"></span>
+    <input type="text" placeholder="Buscar por título" id="buscar" />
+  </div>
+  <div class="banner--nomargin mt-3">
+    <div class="table-container">
+      <table class="table" id="retrospectivasSearch">
+        <thead>
+          <tr class="subtitle">
+            <td>Nombre</td>
+            <td>Email</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let i=0; i < usersNotInTeam.length; i++) { %>
+          <tr class="retrospective">
+            <td class="table__title">
+              <%= usersNotInTeam[i].first_name %> <%= usersNotInTeam[i].last_name %>
+            </td>
+            <td class="description"><%= usersNotInTeam[i].email %></td>
+            <td class="table__team" data-idTeam="<%= usersNotInTeam[i].uid %>">
+              <form method="POST" action="/equipos/modificar/anadir" id="form" class="form-action-button">
+                <input type="hidden" name="id_team" value="<%= team.id %>" />
+                <input type="hidden" name="uid" value="<%= usersNotInTeam[i].uid %>" />
+                <button type="submit" class="button button--sm button--edit">
+                  Añadir
+                </button>
+              </form>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <% if(currentPrivileges.includes(privileges.teams.canDeleteTeams)) { %>
+  <p class="subtitle mt-5">Zona de peligro</p>
+  <span class="meta mb-3">Eliminar equipo <%=team.name %></span>
+  <form method="POST" action="/equipos/eliminar" id="formE">
+    <input type="hidden" name="id_team" value="<%=team.id %>">
+    <button class="button button--delete-alt" type="submit">Eliminar Equipo</button>
+  </form>
+  <% } %>
 
 </section>

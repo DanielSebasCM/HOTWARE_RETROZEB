@@ -7,10 +7,14 @@
 }
 
 .subtitle {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   font-weight: 600;
   color: var(--color-font-primary);
   margin-bottom: var(--text-mb);
+}
+
+.subtitle--blue {
+  color: var(--color-font-active);
 }
 
 .description {
@@ -143,6 +147,11 @@
 .jira-user-id-form .button,
 .jira-user-id-form .input {
   width: 28rem;
+}
+
+.form-action-button {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .centcontainer {
@@ -437,6 +446,19 @@
   grid-template-columns: repeat(1, 1fr);
   gap: 2rem 3rem;
   margin-bottom: var(--container-mb);
+}
+
+.users__avatar-group {
+  display: flex;
+}
+
+.users__avatar-group .user__avatar {
+  width: 2.6rem;
+  height: 2.6rem;
+  font-size: 1.2rem;
+}
+.users__avatar-group .user__avatar:not(:first-child) {
+  margin-left: -1rem !important;
 }
 
 .user__item {
