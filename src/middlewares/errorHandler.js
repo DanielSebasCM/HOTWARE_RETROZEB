@@ -22,6 +22,9 @@ const errorHandler = (err, req, res, next) => {
     case "NotBeforeError":
       jwtNotBeforeErrorHandler(err, req, res);
       break;
+    case "JiraError":
+      jiraErrorHandler(err, req, res, next);
+      break;
     case "Error":
       if (err.code && err.errno) {
         console.log("DB Error");
@@ -40,16 +43,16 @@ function validationErrorHandler(err, req, res) {
   req.session.errorMessage =
     "Ocurrió un error inesperado, por favor intente de nuevo";
   res.locals.errorView = true;
-  res.status(400).render("errors/404", { title: "Error 404", message });
+  res.status(400).render("errors/404", { title: "Error 404" });
 }
 
 function defaultErrorHandler(err, req, res, next) {
   req.session.errorMessage =
     "Ocurrió un error inesperado, por favor intente de nuevo";
+  setLocals(req, res, next);
+
   res.locals.errorView = true;
-  res
-    .status(500)
-    .render("errors/500", { title: "Error Inesperado", message: err.message });
+  res.status(500).render("errors/500", { title: "Error Inesperado" });
 }
 
 // jasonwebtoken error messages
@@ -100,12 +103,11 @@ function dbErrorHandler(err, req, res, next) {
   if (sqlStates["404Error"].includes(err.sqlState)) {
     req.session.errorMessage =
       "Ocurrió un error inesperado, por favor intente de nuevo";
-    
+
     res.locals.errorView = true;
 
     res.status(404).render("errors/404", {
       title: "Error 404",
-      message: err.sqlMessage,
     });
   } else {
     req.session.errorMessage =
@@ -116,10 +118,17 @@ function dbErrorHandler(err, req, res, next) {
 
     res.status(500).render("errors/500", {
       title: "Error 500",
-      message:
-        "Ocurrió un error con el servidor. Por favor contacte al administrador",
     });
   }
 }
 
+function jiraErrorHandler(err, req, res, next) {
+  req.session.errorMessage = `Ocurrió un error al conectarse con Jira, por favor contacta un administrador (Status: ${err.status})`;
+  setLocals(req, res, next);
+
+  res.locals.errorView = true;
+  res.status(500).render("errors/500", {
+    title: "Error 500",
+  });
+}
 module.exports = errorHandler;
