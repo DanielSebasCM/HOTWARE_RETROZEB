@@ -10,7 +10,9 @@
     <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
     <div class="banner__section">
       <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
-      <a class="button button--primary" href="roles/modificar">Modificar Rol</a>
+      <% if (roles.length > 0) { %>
+      <a class="button button--primary" href="<%=`roles/${roles[0].id}/modificar`%>">Modificar Rol</a>
+      <% } %>
     </div>
     <% } %>
     <span class="line"></span>
