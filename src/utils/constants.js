@@ -50,8 +50,6 @@ const constants = {
       getTeams: "getTeams",
       canJoinTeams: "canJoinTeams",
       canCreateTeams: "canCreateTeams",
-      canModifyTeams: "canModifyTeams",
-      canDeleteTeams: "canDeleteTeams",
     },
     questions: {
       getQuestions: "getQuestions",
