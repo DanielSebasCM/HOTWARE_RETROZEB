@@ -4,12 +4,36 @@ const Role = require("../models/role.model");
 const renderUsers = async (req, res, next) => {
   try {
     const users = await User.getAllActive();
-    res.render("user/index", { title: "Usuarios", users });
+
+    for (let user of users) {
+      user.roles = await user.getRoles(user.uid);
+    }
+
+    for (let user of users) {
+      if (user.active == 1) user.active = "Activo";
+      else user.active = "Inactivo";
+    }
+
+    res.render("user/index", {
+      title: "Usuarios",
+      users,
+    });
   } catch (err) {
     next(err);
   }
 };
 
+const renderInactiveUsers = async (req, res, next) => {
+  try {
+    const users = await User.getAllInactive();
+    res.render("user/inactivos", {
+      title: "Usuarios Inactivos",
+      users,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 const deleteUser = async (req, res, next) => {
   try {
     const { uid } = req.params;
@@ -55,4 +79,10 @@ const modifyUserPost = async (req, res, next) => {
   }
 };
 
-module.exports = { renderUsers, deleteUser, modifyUser, modifyUserPost };
+module.exports = {
+  renderUsers,
+  deleteUser,
+  modifyUser,
+  modifyUserPost,
+  renderInactiveUsers,
+};

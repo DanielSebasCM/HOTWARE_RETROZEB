@@ -1,0 +1,55 @@
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">
+        Usuarios <span class="meta"> (<%=users.length %>)</span>
+      </h1>
+      <p class="description">Usuarios inactivos actuales</p>
+    </div>
+    <span class="line"></span>
+  </div>
+  <div class="filters-container">
+    <div class="input search-bar">
+      <span class="icon search-bar__icon"></span>
+      <input type="text" placeholder="Buscar" />
+    </div>
+  </div>
+
+  <% if(users && users.length> 0) { %>
+  <div class="banner--nomargin">
+    <div class="table-container">
+      <table class="table" id="userSearch">
+        <thead>
+          <tr class="subtitle">
+            <td>Nombre</td>
+            <td>E-mail</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let i=0; i < users.length; i++) { %>
+          <td class="table__title">
+            <%= users[i].first_name %>
+            <%= users[i].last_name %>
+            <% if(currentUser.uid===users[i].uid) { %> <span class="meta">(Tú)</span>
+            <% } %>
+          </td>
+          <td>
+            <%= users[i].email %>
+          </td>
+          <td>
+            <button class="button button--edit button--sm" onclick="window.location ='<%= routes.users %>/<%= users[i].uid %>/activar'">
+              Activar
+            </button>
+          </td>
+
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <% } else { %>
+  <p class="no-results">No hay usuarios inactivos</p>
+  <% } %>
+  <p class="no-results hide"></p>
+</section>

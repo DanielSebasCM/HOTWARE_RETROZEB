@@ -24,4 +24,6 @@ router.post(
   controller.modifyUserPost
 );
 
+router.get("/inactivos", controller.renderInactiveUsers);
+
 module.exports = router;

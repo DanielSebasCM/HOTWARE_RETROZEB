@@ -919,6 +919,13 @@ a.toggle-button {
   font-size: 1.3rem;
 }
 
+.table__td__double_column {
+  padding: 1.5rem 1rem;
+  text-align: left;
+  font-size: 1.3rem;
+  min-width: 2rem;
+}
+
 .table td:first-of-type {
   text-align: left;
 }

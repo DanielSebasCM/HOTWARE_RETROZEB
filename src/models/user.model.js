@@ -98,6 +98,11 @@ class User {
     return users.map((user) => new User(user));
   }
 
+  static async getAllInactive() {
+    let [users, _] = await db.execute(`SELECT * FROM user WHERE active = 0`);
+    return users.map((user) => new User(user));
+  }
+
   //----------------------------VERIFY--------------------------------
   static verify(user) {
     if (user.uid && !Number.isInteger(Number(user.uid)))
