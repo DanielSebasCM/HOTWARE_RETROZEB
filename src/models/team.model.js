@@ -107,17 +107,6 @@ class Team {
     return res;
   }
 
-  async removeTeam(id) {
-    const [res, _] = await db.execute(
-      `UPDATE team 
-      SET active='0' 
-      WHERE id = ?;
-      `,
-      [id]
-    );
-    return res;
-  }
-
   async getActiveRetrospective() {
     const Retrospective = require("./retrospective.model");
 
