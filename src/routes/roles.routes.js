@@ -11,7 +11,11 @@ router.get("/", authorize([privileges.getRoles]) ,controller.renderRoles);
 router.get("/nuevo", controller.renderNewRole);
 router.post("/nuevo", controller.postRole);
 
+// MODIFYING ROLES
+router.get("/:id/modificar", controller.renderModifyRole);
+router.patch("/:id/modificar", controller.modifyRole);
+
 // DELETING ROLES
-router.delete("/", controller.deleteRole);
+router.delete("/:id/eliminar", controller.deleteRole);
 
 module.exports = router;

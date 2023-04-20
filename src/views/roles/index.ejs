@@ -8,7 +8,12 @@
       <p class="description">Listado de roles creados y sus privilegios</p>
     </div>
     <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
-    <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
+    <div class="banner__section">
+      <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
+      <% if (roles.length > 0) { %>
+      <a class="button button--primary" href="<%=`roles/${roles[0].id}/modificar`%>">Modificar Rol</a>
+      <% } %>
+    </div>
     <% } %>
     <span class="line"></span>
   </div>
