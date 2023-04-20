@@ -3,72 +3,72 @@
   <div class="banner">
     <div class="banner__section mb-1">
       <h1 class="title">
-        Roles <span class="meta">(<%= roles.length %>)</span>
+        Roles
       </h1>
       <p class="description">Listado de roles creados y sus privilegios</p>
     </div>
     <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
-      <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
+    <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
     <% } %>
     <span class="line"></span>
   </div>
 
   <!--ROLES-->
   <% if (roles.length > 0) { %>
-    <div class="card-table">
-      <table class="table-roles">
-        <thead>
-          <tr>
-            <th>Privilegios</th>
-            <% for (let role of roles) { %>
-              <th><%= role.name %></th>
-            <% } %>
-          </tr>
-        </thead>
-        <tbody>
-          <% const privilegesByTag = {}; %>
-          <% for (let privilege of allPrivileges) { %>
-            <% if (!privilegesByTag[privilege.tag]) { privilegesByTag[privilege.tag] = []; } %>
-            <% privilegesByTag[privilege.tag].push(privilege); %>
+  <div class="card-table">
+    <table class="table-roles">
+      <thead>
+        <tr>
+          <th>Privilegios</th>
+          <% for (let role of roles) { %>
+          <th><%= role.name %></th>
           <% } %>
-          <% for (let tag in privilegesByTag) { %>
-            <tr class="tr-header">
-              <td><%= tag %></td>
-              <% for (let role of roles) { %>
-                <td></td>
-              <% } %>
-            </tr>
-            <% for (let privilege of privilegesByTag[tag]) { %>
-              <tr>
-                <td> <%= privilege.description %></td>
-                <% for (let role of roles) { %>
-                  <% let hasPrivilege = false; %>
-                  <% for (let rolesP of rolesPrivileges) { %>
-                    <% if (rolesP.id_privilege == privilege.id && rolesP.id_role == role.id) { %>
-                      <% hasPrivilege = true; %>
-                    <% } %>
-                  <% } %>
-                  <td>
-                    <% if (hasPrivilege) { %>
-                      <div>
-                        <img src="/assets/icon/check_circle.svg" alt="checkbox">
-                      </div>
-                    <% } else { %>
-                      <div>
-                        <p>-</p>
-                      </div>
-                    <% } %>
-                  </td>
-                <% } %>
-              </tr>
-            <% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% const privilegesByTag = {}; %>
+        <% for (let privilege of allPrivileges) { %>
+        <% if (!privilegesByTag[privilege.tag]) { privilegesByTag[privilege.tag] = []; } %>
+        <% privilegesByTag[privilege.tag].push(privilege); %>
+        <% } %>
+        <% for (let tag in privilegesByTag) { %>
+        <tr class="tr-header">
+          <td><%= tag %></td>
+          <% for (let role of roles) { %>
+          <td></td>
           <% } %>
-        </tbody>
-      </table>
-    </div>  
+        </tr>
+        <% for (let privilege of privilegesByTag[tag]) { %>
+        <tr>
+          <td> <%= privilege.description %></td>
+          <% for (let role of roles) { %>
+          <% let hasPrivilege = false; %>
+          <% for (let rolesP of rolesPrivileges) { %>
+          <% if (rolesP.id_privilege == privilege.id && rolesP.id_role == role.id) { %>
+          <% hasPrivilege = true; %>
+          <% } %>
+          <% } %>
+          <td>
+            <% if (hasPrivilege) { %>
+            <div>
+              <img src="/assets/icon/check_circle.svg" alt="checkbox">
+            </div>
+            <% } else { %>
+            <div>
+              <p>-</p>
+            </div>
+            <% } %>
+          </td>
+          <% } %>
+        </tr>
+        <% } %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
   <% } else { %>
-    <div class="card">
-      <p class="description">No hay roles creados</p>
-    </div>
+  <div class="card">
+    <p class="description">No hay roles creados</p>
+  </div>
   <% } %>
 </section>
