@@ -20,7 +20,7 @@ router.post(
   authorize([privileges.canJoinTeams]),
   controller.addUser
 );
-router.post("/nuevo", authorize([privileges.canCreateTeams]), controller.nuevo);
+router.post("/nuevo", authorize([privileges.canCreateTeams]), controller.addTeam);
 router.post(
   "/eliminar",
   authorize([privileges.canDeleteTeams]),

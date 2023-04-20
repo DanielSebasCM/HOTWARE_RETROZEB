@@ -19,11 +19,11 @@
     <span class="line"></span>
   </div>
   <% if(user.uid===currentUser.uid) { %>
-    <p class="description-question">ID de usuario de JIRA</p>
-    <input type="text" class="input mb-3" required placeholder="Ingresa tu ID de usuario de JIRA">
+    <p class="description description--blue">ID de usuario de JIRA</p>
+    <input type="text" class="input mb-3" value="<%= currentUser.id_jira == "no_id" ? "" : currentUser.id_jira %>">
   <% }  %>
   <form action="/usuarios/<%= user.uid %>/modificar" method="POST" id="change_role">
-    <p class="description-question">Seleccionar roles de usuario</p>
+    <p class="description description--blue">Seleccionar roles de usuario</p>
     <% for (let i=0; i<allroles.length; i++){ %>
     <div class="checkbox-container mb-1">
       <input type="checkbox" class="question-checkbox mr-1" id="accum" name="<%=allroles[i].id%>" <%=roles.map(role=>role.id).includes(allroles[i].id)?"checked":""%> />
@@ -31,7 +31,7 @@
     </div>
     <% } %>
     <% if(user.uid !== currentUser.uid) { %>
-      <p class="description-question mt-5">Activar cuenta de usuario</p>
+      <p class="description description--blue mt-5">Activar cuenta de usuario</p>
       <div class="checkbox-container mb-1">
         <input type="checkbox" class="question-checkbox mr-1" id="" name=""
           <%=user.active ? "checked" : ""%> />

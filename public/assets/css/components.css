@@ -7,10 +7,14 @@
 }
 
 .subtitle {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   font-weight: 600;
   color: var(--color-font-primary);
   margin-bottom: var(--text-mb);
+}
+
+.subtitle--blue {
+  color: var(--color-font-active);
 }
 
 .description {
@@ -18,6 +22,11 @@
   font-weight: 400;
   color: var(--color-font-secondary);
   margin-bottom: var(--text-mb);
+}
+
+.description--blue {
+  color: var(--color-font-active);
+  font-weight: 500;
 }
 
 .line {
@@ -123,6 +132,26 @@
 
 .notification--error .notification__icon .icon {
   background-image: url("/assets/icon/error.svg");
+}
+
+.jira-user-id-form {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.jira-user-id-form .button,
+.jira-user-id-form .input {
+  width: 28rem;
+}
+
+.form-action-button {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .centcontainer {
@@ -419,6 +448,19 @@
   margin-bottom: var(--container-mb);
 }
 
+.users__avatar-group {
+  display: flex;
+}
+
+.users__avatar-group .user__avatar {
+  width: 2.6rem;
+  height: 2.6rem;
+  font-size: 1.2rem;
+}
+.users__avatar-group .user__avatar:not(:first-child) {
+  margin-left: -1rem !important;
+}
+
 .user__item {
   display: flex;
   align-items: center;
@@ -573,9 +615,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--button-width);
+  width: 100%;
+  max-width: var(--button-width);
   height: var(--input-height);
-  margin-right: var(--component-mr);
+  /* margin-right: var(--component-mr); */
   margin-bottom: var(--component-mb);
   font-weight: 600;
   font-family: "Poppins", sans-serif;
@@ -777,6 +820,19 @@ a.toggle-button {
   font-family: "Poppins", sans-serif;
 }
 
+.input {
+  max-width: 500px;
+}
+
+.input:read-only {
+  color: var(--color-font-edit);
+  opacity: 0.8;
+}
+
+.search-bar {
+  max-width: 100%;
+}
+
 .input--md {
   width: 100rem;
   margin-top: 1rem;
@@ -788,7 +844,7 @@ a.toggle-button {
 }
 
 .select-container {
-  max-width: 40rem;
+  max-width: 20rem;
 }
 
 .multi-select-container {

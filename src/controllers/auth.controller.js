@@ -33,30 +33,22 @@ const loginAPI = async (req, res, next) => {
     try {
       user = await User.getByEmail(data.email);
     } catch {
-      return res
-        .status(500)
-        .json({
-          message:
-            "Ocurrió un error con el servidor. Por favor intenta más tarde.",
-        });
+      return res.status(500).json({
+        message:
+          "Ocurrió un error con el servidor. Por favor intenta más tarde.",
+      });
     }
 
     if (user && user.active === 0)
-      return res
-        .status(401)
-        .json({
-          message:
-            "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
-        });
+      return res.status(401).json({
+        message:
+          "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
+      });
 
     if (!user) {
-      // GET ID JIRA
-      id_jira = Math.random().toString(36);
-
       // CREATE USER
       const newUser = new User({
         id_google_auth: data.sub,
-        id_jira: id_jira,
         email: data.email,
         first_name: data.given_name,
         last_name: data.family_name,
@@ -70,12 +62,10 @@ const loginAPI = async (req, res, next) => {
       // ADD USER ROLE
       await newUser.addRole({ id: 2 });
 
-      return res
-        .status(401)
-        .json({
-          message:
-            "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
-        });
+      return res.status(401).json({
+        message:
+          "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
+      });
     }
 
     const userData = {
@@ -126,21 +116,17 @@ const refreshTokenAPI = async (req, res, next) => {
     try {
       user = await User.getByEmail(verified.email);
     } catch {
-      return res
-        .status(500)
-        .json({
-          message:
-            "Ocurrió un error con el servidor. Por favor intenta más tarde.",
-        });
+      return res.status(500).json({
+        message:
+          "Ocurrió un error con el servidor. Por favor intenta más tarde.",
+      });
     }
 
     if (!user || user.active === 0)
-      return res
-        .status(401)
-        .json({
-          message:
-            "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
-        });
+      return res.status(401).json({
+        message:
+          "Tu usuario está inactivo. Por favor pide a un administrador que active tu cuenta.",
+      });
 
     const userData = {
       uid: verified.uid,
