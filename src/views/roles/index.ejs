@@ -31,11 +31,6 @@
         </tr>
       </thead>
       <tbody>
-        <% const privilegesByTag = {}; %>
-        <% for (let privilege of allPrivileges) { %>
-        <% if (!privilegesByTag[privilege.tag]) { privilegesByTag[privilege.tag] = []; } %>
-        <% privilegesByTag[privilege.tag].push(privilege); %>
-        <% } %>
         <% for (let tag in privilegesByTag) { %>
         <tr class="tr-header">
           <td><%= tag %></td>
