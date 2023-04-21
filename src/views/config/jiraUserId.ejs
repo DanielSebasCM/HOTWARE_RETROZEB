@@ -9,6 +9,12 @@
   <p class="description description--blue">
     Por favor ingresa tu ID de usuario de JIRA
   </p>
+  <p class="description mt-3">
+    1. Accede a tu perfil en JIRA
+  </p>
+  <p class="description">
+    2. Copia tu ID de usuario de la URL en tu perfil
+  </p>
 
   <form action="<%= routes.jiraUserID %>" method="POST" id="jira-user-id" class="jira-user-id-form mt-3">
     <input type="hidden" name="uid" value="<%= currentUser.uid %>">
@@ -22,7 +28,5 @@
 
 <!-- FOOTER -->
 <footer class="login__footer">
-  <span class="line"></span>
   <img src="/assets/img/zebrands-logo.svg" alt="Zebrands Logo" />
-  <span class="line"></span>
 </footer>
