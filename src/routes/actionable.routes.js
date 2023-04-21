@@ -5,6 +5,7 @@ const authorize = require("../middlewares/privilege");
 const privileges = require("../utils/constants").privileges.actionables;
 
 // RENDERING ROUTES
+router.get("/nuevo", controller.renderNewActionable);
 router.get("/", authorize([privileges.getActionables]), (req, res) =>
   res.redirect(req.originalUrl + "/pending")
 );
@@ -17,6 +18,7 @@ router.get(
 // API ROUTES
 
 // POST
+router.post("/nuevo", controller.postActionable);
 // rutas para cambiar el estado del accionable
 router.post(
   "/:id/accept",

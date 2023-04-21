@@ -6,7 +6,9 @@
       <p class="description">Crea una pregunta para la retrospectiva</p>
     </div>
     <div class="banner__section">
-      <a href="/preguntas" class="button button--discard">Descartar</a>
+      <button class="button button--primary desktop" type="submit" form="addQuestion">
+        Crear Pregunta
+      </button>
     </div>
     <span class="line"></span>
   </div>
@@ -14,7 +16,7 @@
   <!-- CREATE QUESTIONS -->
   <form id="addQuestion" method="POST" action="/preguntas/nueva">
     <div class="banner-question">
-      <div>
+      <div class="banner__section">
         <p class="description-question">Selecciona el tipo de pregunta</p>
         <div class="select-container">
           <select class="select" id="select-question-type" name="type">
@@ -25,7 +27,7 @@
           </select>
         </div>
       </div>
-      <div>
+      <div class="banner__section">
         <!--ALIGN FLEX START-->
         <p class="description-question">Valor de la pregunta</p>
 
@@ -36,7 +38,7 @@
         </div>
 
         <div class="hide" id="selection-form">
-          <p class="description-question">Opciones:</p>
+          <p class="description-question mt-3">Opciones:</p>
           <div class="options-container" id="answers">
             <div class="option-container">
               <input class="input" type="text" name="option" placeholder="Opción 1" maxlength="25" />
@@ -49,12 +51,11 @@
             </div>
           </div>
           <br>
-          <button class="button button--edit" id="add-answers">
+          <button class="button button--edit mt-2" id="add-answers">
             Añadir opción
           </button>
         </div>
-        <br>
-        <button class="button button--primary" type="submit">
+        <button class="button button--primary mt-3 mobile" type="submit" form="addQuestion">
           Crear Pregunta
         </button>
       </div>

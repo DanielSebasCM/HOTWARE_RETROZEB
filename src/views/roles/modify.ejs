@@ -1,0 +1,79 @@
+<!--MAIN-->
+<section>
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">Modificar rol</h1>
+      <p class="description">Modificar un rol de usuario o elimina un rol existente</p>
+    </div>
+  </div>
+  <span class="line"></span>
+
+  <!--MODIFY ROLE-->
+  <form action="/roles/<%= role.id %>/modificar?_method=PATCH" method="POST">
+    <div class="banner">
+      <div class="banner__section">
+        <p class="description-question">Nombre del rol</p>
+        <div class="select-container">
+          <select class="select" id="select-roles">
+            <% for (r of roles) { %>
+            <% if (r.id == role.id) { %>
+            <option value="<%= r.id %>" selected><%= r.name %></option>
+            <% } else { %>
+            <option value="<%= r.id %>"><%= r.name %></option>
+            <% } %>
+            <% } %>
+          </select>
+        </div>
+        <br>
+      </div>
+      <div class="banner__section">
+        <button class="button button--primary mt-4" type="submit">
+          Guardar
+        </button>
+      </div>
+    </div>
+    <div>
+      <p class="description-question">Descripción del rol</p>
+      <div class="card-table">
+        <table class="table-roles">
+          <thead>
+            <tr>
+              <th>Privilegios</th>
+              <th>Seleccionar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% for (let tag in privilegesByTag) { %>
+            <tr class="tr-header">
+              <td><%= tag %></td>
+              <td></td>
+            </tr>
+            <% for (let privilege of privilegesByTag[tag]) { %>
+            <tr>
+              <td> <%= privilege.description %></td>
+              <% if(role.privileges.some(p => p.id_privilege == privilege.id) ) { %>
+              <td><input type="checkbox" checked class="question-checkbox mr-1" name="privileges" value="<%= privilege.id %>" /></td>
+              <% } else { %>
+              <td><input type="checkbox" class="question-checkbox mr-1" name="privileges" value="<%= privilege.id %>" /></td>
+              <% } %>
+            </tr>
+            <% } %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <button class="button button--primary" type="submit">
+      Guardar
+    </button>
+  </form>
+  <span class="line"></span>
+  <p class="subtitle">Zona de peligro</p>
+  <span class="meta">Eliminar rol <b><%=role.name %></b></span>
+  <form method="POST" action="/roles/<%= role.id %>/eliminar?_method=DELETE">
+    <input type="hidden" name="id" value="<%=role.id %>">
+    <button class="button button--delete-alt" type="submit">Eliminar Rol</button>
+  </form>
+</section>
+
+<script type="module" src="/assets/js/roles.js"></script>

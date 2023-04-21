@@ -53,7 +53,7 @@ const deleteSession = (req, res) => {
   res.clearCookie(this.cookie, { path: "/" });
 
   // REDIRECT
-  res.status(301).redirect(`/login?error=1`);
+  res.status(301).redirect(`/login`);
 };
 
 module.exports = {

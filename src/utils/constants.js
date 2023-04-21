@@ -5,7 +5,13 @@ const constants = {
     issueStates: ["To Do", "En curso", "Pull request", "QA", "Blocked", "Done"],
     issueTypes: ["Story", "Task", "Sub-task", "Bug"],
     questionTypes: ["OPEN", "BOOLEAN", "SCALE", "SELECTION"],
-    actionableStates: ["PENDING", "ACCEPTED", "REJECTED"],
+    actionableStates: [
+      "PENDING",
+      "ACCEPTED",
+      "REJECTED",
+      "COMPLETED",
+      "PROCESS",
+    ],
   },
   limits: {
     answerMaxLength: 400,
@@ -31,7 +37,10 @@ const constants = {
     retrospectives: "/retrospectivas",
     questions: "/preguntas",
     roles: "/roles",
+    users: "/usuarios",
     locals: "/locals",
+    jiraUserID: "/jira/user/id",
+    noJiraUserID: "/jira/user/no-id",
   },
   privileges: {
     actionables: {
@@ -43,6 +52,8 @@ const constants = {
       getTeams: "getTeams",
       canJoinTeams: "canJoinTeams",
       canCreateTeams: "canCreateTeams",
+      canModifyTeams: "canModifyTeams",
+      canDeleteTeams: "canDeleteTeams",
     },
     questions: {
       getQuestions: "getQuestions",
@@ -61,6 +72,11 @@ const constants = {
       getMetrics: "getMetrics",
       canCompareRetrospectives: "canCompareRetrospectives",
       canCloseRetrospectives: "canCloseRetrospectives",
+    },
+    users: {
+      getUsers: "getUsers",
+      deleteUsers: "deleteUsers",
+      canModifyUsers: "canModifyUsers",
     },
   },
 };

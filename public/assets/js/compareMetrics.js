@@ -10,12 +10,12 @@ const tokens = getTokens();
 const pruneEmpty = false;
 const usersUids = {};
 const statesColors = [
-  { state: "To Do", color: "rgba(255, 99, 132, 0.6)" },
-  { state: "En curso", color: "rgba(54, 162, 235, 0.6)" },
-  { state: "Pull request", color: "rgba(255, 206, 86, 0.6)" },
-  { state: "QA", color: "rgba(75, 192, 192, 0.6)" },
-  { state: "Blocked", color: "rgba(153, 102, 255, 0.6)" },
-  { state: "Done", color: "rgba(255, 159, 64, 0.6)" },
+  { state: "To Do", color: "rgba(255, 140, 165, 1)" },
+  { state: "En curso", color: "rgba(105, 195, 255, 1)" },
+  { state: "Pull request", color: "rgba(255, 226, 154, 1)" },
+  { state: "QA", color: "rgba(147, 217, 217, 1)" },
+  { state: "Blocked", color: "rgba(194, 163, 255, 1)" },
+  { state: "Done", color: "rgba(255, 197, 140, 1)" },
 ];
 
 let selectedTeamId = teamOptions.value;
@@ -51,8 +51,8 @@ nRetrospectivesInput.addEventListener("change", async (e) => {
   let n = parseInt(e.target.value);
   if (n > 10) {
     n = 10;
-  } else if (n < 1) {
-    n = 1;
+  } else if (n < 2) {
+    n = 2;
   }
   window.location.href = `/retrospectivas/comparar/${n}`;
 });
@@ -190,6 +190,21 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
 
   labels = labels.map((l) => l || "N/A");
 
+  let tooltip = undefined;
+
+  if (!accum) {
+    tooltip = {
+      callbacks: {
+        afterLabel: function (context) {
+          return `${(
+            (context.parsed[secundaryAxis] / totals[context.label]) *
+            100
+          ).toFixed(2)}%`;
+        },
+      },
+    };
+  }
+
   return new Chart(canvas, {
     type: accum && stacked ? "line" : "bar",
     data: {
@@ -211,16 +226,7 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
             usePointStyle: true,
           },
         },
-        tooltip: {
-          callbacks: {
-            afterLabel: function (context) {
-              return `${(
-                (context.parsed[secundaryAxis] / totals[context.label]) *
-                100
-              ).toFixed(2)}%`;
-            },
-          },
-        },
+        tooltip,
       },
       scales: {
         [mainAxis]: {

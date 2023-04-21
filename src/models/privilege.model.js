@@ -8,6 +8,8 @@ class Privilege {
     Privilege.verify(privilege);
     this.id = privilege.id || null;
     this.name = privilege.name;
+    this.description = privilege.description;
+    this.tag = privilege.tag;
   }
 
   static async getAll() {
