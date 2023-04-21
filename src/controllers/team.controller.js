@@ -146,7 +146,7 @@ const renderModifyTeam = async (req, res, next) => {
     const users = await User.getAll();
 
     // sort team members by alphabetical order
-    users.sort((a, b) => {
+    members.sort((a, b) => {
       if (a.first_name < b.first_name) {
         return -1;
       }
