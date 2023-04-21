@@ -1,4 +1,3 @@
-<!--MAIN-->
 <section class="dashboard">
   <div class="banner">
     <div class="banner__section mb-1">
@@ -24,7 +23,7 @@
     <table class="table-roles">
       <thead>
         <tr>
-          <th class="pl-1 pt-2 pb-2" style="text-align: left;">Privilegios</th>
+          <th class="pl-1 pt-2 pb-2 text-center">Privilegios</th>
           <% for (let role of roles) { %>
           <th class="pt-2 pb-2"><%= role.name %></th>
           <% } %>
@@ -32,36 +31,26 @@
       </thead>
       <tbody>
         <% for (let tag in privilegesByTag) { %>
-        <tr class="tr-header">
-          <td><%= tag %></td>
-          <% for (let role of roles) { %>
-          <td></td>
-          <% } %>
-        </tr>
-        <% for (let privilege of privilegesByTag[tag]) { %>
-        <tr>
-          <td> <%= privilege.description %></td>
-          <% for (let role of roles) { %>
-          <% let hasPrivilege = false; %>
-          <% for (let rolesP of rolesPrivileges) { %>
-          <% if (rolesP.id_privilege == privilege.id && rolesP.id_role == role.id) { %>
-          <% hasPrivilege = true; %>
-          <% } %>
-          <% } %>
-          <td>
-            <% if (hasPrivilege) { %>
-            <div>
-              <img src="/assets/icon/check_circle.svg" alt="checkbox">
-            </div>
-            <% } else { %>
-            <div>
-              <p>-</p>
-            </div>
+          <tr class="tr-header">
+            <td><%= tag %></td>
+            <% for (let role of roles) { %>
+            <td></td>
             <% } %>
-          </td>
+          </tr>
+          <% for (let privilege of privilegesByTag[tag]) { %>
+          <tr>
+            <td class="text-left"><%= privilege.description %></td>
+            <% for (let role of roles) { %>
+              <td>
+                <% if(role.privileges.some(p => p.id_privilege == privilege.id) ) { %>
+                  <div><img src="/assets/icon/check_circle.svg" alt="checkbox"></div>
+                <% } else { %>
+                  <p>-</p>
+                <% } %>
+              </td>
+            <% } %>
+          </tr>
           <% } %>
-        </tr>
-        <% } %>
         <% } %>
       </tbody>
     </table>
