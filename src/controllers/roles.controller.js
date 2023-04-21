@@ -6,11 +6,23 @@ const renderRoles = async (req, res, next) => {
   try {
     const roles = await Role.getAllActive();
     const allPrivileges = await Privilege.getAll();
-    const rolesPrivileges = await Role.getPrivileges();
+
+    for (let role of roles) {
+      role.privileges = await role.getPrivilegesIds(); 
+    }
+
+    const privilegesByTag = {};
+    for (let privilege of allPrivileges) {
+      if (!privilegesByTag[privilege.tag]) {
+        privilegesByTag[privilege.tag] = [];
+      }
+      privilegesByTag[privilege.tag].push(privilege);
+    }
+
     res.render("roles", {
       roles,
       allPrivileges,
-      rolesPrivileges,
+      privilegesByTag,
       title: "Roles",
     });
   } catch (err) {
