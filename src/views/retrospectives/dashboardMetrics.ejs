@@ -16,6 +16,9 @@
         <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
       </div>
       <% } %>
+      <div>
+        <button class="button button--primary" id="print--button">Print page</button>
+      </div>
     </div>
 
     <span class="line"></span>
@@ -43,7 +46,7 @@
   </div>
 
   <!-- CHARTS -->
-  <div class="chart-container">
+  <div class="chart-container" id="printable">
     <canvas id="general-chart"></canvas>
   </div>
 
@@ -66,3 +69,4 @@
 </section>
 
 <script type="module" src="/assets/js/dashboardMetrics.js"></script>
+<script type="module" src="/assets/js/report.js"></script>
