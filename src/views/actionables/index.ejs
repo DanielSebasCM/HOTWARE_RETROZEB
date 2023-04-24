@@ -5,9 +5,11 @@
       <p class="description">Visualiza tus accionables</p>
     </div>
     <div class="banner__section">
-      <a class="button button--primary" href="/accionables/nuevo">
-        Añadir Accionable
-      </a>
+      <% if(currentPrivileges.includes(privileges.actionables.canCreateActionables)) { %>
+        <a class="button button--primary" href="/accionables/nuevo">
+          Añadir Accionable
+        </a>
+      <% } %>
     </div>
     <span class="line"></span>
   </div>
@@ -124,12 +126,16 @@
       <!--BOTONES-->
       <% if(state==="pending" ) { %>
       <div class="buttons-container card__footer mt-2">
-        <form action="<%= actionables[i].id %>/accept" method="POST">
-          <button class="button button--primary" type="submit">Aprobar</button>
-        </form>
+        <% if(currentPrivileges.includes(privileges.actionables.canAcceptActionables)) { %>
+          <form action="<%= actionables[i].id %>/accept" method="POST">
+            <button class="button button--primary" type="submit">Aprobar</button>
+          </form>
+        <% } %>
+        <% if(currentPrivileges.includes(privileges.actionables.canRejectActionables)) { %>
         <form action="<%= actionables[i].id %>/reject" method="POST">
           <button class="button button--discard" type="submit">Rechazar</button>
         </form>
+        <% } %>
       </div>
       <% } %>
 

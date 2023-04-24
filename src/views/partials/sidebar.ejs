@@ -6,39 +6,28 @@
         <span> Dashboard </span></a>
     </li>
     <%
-    const retrospectivePrivileges = Object.values(privileges.retrospectives);
-    if(currentPrivileges.some(privilege => retrospectivePrivileges.includes(privilege))) { 
-    %>
+    if(currentPrivileges.includes(privileges.retrospectives.getRetrospectives)) { %>
     <li class="sidebar__nav-item">
       <a href="<%=routes.retrospectives %>" class="sidebar__link">
         <img src="/assets/icon/retrospectivas.svg" alt="Retrospectives icon" class="sidebar__icon" />
         <span> Retrospectivas </span></a>
     </li>
-    <%
-    }
-    const actionablesPrivileges = Object.values(privileges.actionables);
-    if(currentPrivileges.some(privilege => actionablesPrivileges.includes(privilege))) {
-    %>
+    <% } %>
+    <% if(currentPrivileges.includes(privileges.actionables.getActionables)) { %>
     <li class="sidebar__nav-item">
       <a href="<%= routes.actionables %>" class="sidebar__link">
         <img src="/assets/icon/accionables.svg" alt="To do icon" class="sidebar__icon" />
         <span> Accionables </span></a>
     </li>
-    <%
-    }
-    const questionPrivileges = Object.values(privileges.questions);
-    if(currentPrivileges.some(privilege => questionPrivileges.includes(privilege))) {
-    %>
+    <% } %>
+    <%if(currentPrivileges.includes(privileges.questions.getQuestions)) { %>
     <li class="sidebar__nav-item">
       <a href="/preguntas" class="sidebar__link">
         <img src="/assets/icon/preguntas.svg" alt="Chat icon" class="sidebar__icon" />
         <span> Preguntas </span></a>
     </li>
-    <%
-    }
-    const teamsPrivileges = Object.values(privileges.teams);
-    if(currentPrivileges.some(privilege => teamsPrivileges.includes(privilege))) {
-    %>
+    <% } %>
+    <% if(currentPrivileges.includes(privileges.teams.getTeams)) { %>
     <li class="sidebar__nav-item">
       <a href="<%=routes.teams %>" class="sidebar__link">
         <img src="/assets/icon/equipos.svg" alt="Team icon" class="sidebar__icon" />
@@ -46,21 +35,15 @@
     </li>
     <% } %>
     <li class="sidebar__nav-header">Configuración</li>
-    <%
-    const userPrivileges = Object.values(privileges.users);
-    if(currentPrivileges.some(privilege => userPrivileges.includes(privilege))) { 
-    %>
+    <% if(currentPrivileges.includes(privileges.users.getUsers)) { %>
     <!-- SUBSECTION --->
     <li class="sidebar__nav-item">
       <a href="<%=routes.users %>" class="sidebar__link">
         <img src="/assets/icon/user.svg" alt="Users icon" class="sidebar__icon" />
         <span> Usuarios </span></a>
     </li>
-    <%
-    }
-    const rolePrivileges = Object.values(privileges.roles);
-    if(currentPrivileges.some(privilege => rolePrivileges.includes(privilege))) {
-    %>
+    <% } %>
+    <% if(currentPrivileges.includes(privileges.roles.getRoles)) { %>
     <li class="sidebar__nav-item">
       <a href="<%=routes.roles %>" class="sidebar__link">
         <img src="/assets/icon/layers.svg" alt="Roles icon" class="sidebar__icon" />
@@ -70,7 +53,7 @@
     <li class="sidebar__nav-item">
       <a href="<%=routes.users %>/<%=currentUser.uid %>/modificar" class="sidebar__link">
         <img src="/assets/icon/ajustes.svg" alt="Roles icon" class="sidebar__icon" />
-        <span> Ajustes </span></a>
+        <span> Perfil </span></a>
     </li>
     <li class="sidebar__nav-item">
       <form action="<%= routes.logout %>" method="GET" id="logout-form">

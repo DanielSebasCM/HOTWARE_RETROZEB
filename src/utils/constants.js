@@ -46,6 +46,7 @@ const constants = {
     actionables: {
       getActionables: "getActionables",
       canAcceptActionables: "canAcceptActionables",
+      canCreateActionables: "canCreateActionables",
       canRejectActionables: "canRejectActionables",
     },
     teams: {
