@@ -13,6 +13,8 @@ const authorize = (privileges) => {
 
     for (privilege of privileges) {
       if (!userPrivileges.includes(privilege)) {
+        res.locals.errorView = true;
+
         return res.render("errors/404", {
           title: "Retro Zeb - Error 404",
           message: "No encontramos lo que buscabas :(",

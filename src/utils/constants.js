@@ -71,6 +71,7 @@ const constants = {
       canAnswerRetrospectives: "canAnswerRetrospectives",
       getMetrics: "getMetrics",
       canCompareRetrospectives: "canCompareRetrospectives",
+      canCloseRetrospectives: "canCloseRetrospectives",
     },
     users: {
       getUsers: "getUsers",

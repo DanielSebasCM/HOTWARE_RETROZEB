@@ -230,6 +230,15 @@ class Retrospective {
     return res;
   }
 
+  async close() {
+    const [res, _] = await db.execute(
+      "UPDATE retrospective SET state = 'CLOSED', end_date = ? WHERE id = ?",
+      [new Date(), this.id]
+    );
+
+    return res;
+  }
+
   async delete() {
     const [res, _] = await db.execute(
       `DELETE FROM retrospective WHERE id = ?`,
