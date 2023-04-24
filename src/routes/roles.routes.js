@@ -8,14 +8,14 @@ const privileges = require("../utils/constants").privileges.roles;
 router.get("/", authorize([privileges.getRoles]) ,controller.renderRoles);
 
 // POSTING ROLES
-router.get("/nuevo", controller.renderNewRole);
-router.post("/nuevo", controller.postRole);
+router.get("/nuevo", authorize([privileges.canCreateRoles]) ,controller.renderNewRole);
+router.post("/nuevo", authorize([privileges.canCreateRoles]) ,controller.postRole);
 
 // MODIFYING ROLES
-router.get("/:id/modificar", controller.renderModifyRole);
-router.patch("/:id/modificar", controller.modifyRole);
+router.get("/:id/modificar", authorize([privileges.canModifyRoles]) ,controller.renderModifyRole);
+router.patch("/:id/modificar", authorize([privileges.canModifyRoles]), controller.modifyRole);
 
 // DELETING ROLES
-router.delete("/:id/eliminar", controller.deleteRole);
+router.delete("/:id/eliminar", authorize([privileges.canDeleteRoles]) ,controller.deleteRole);
 
 module.exports = router;

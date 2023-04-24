@@ -63,6 +63,7 @@ const constants = {
     roles: {
       getRoles: "getRoles",
       canCreateRoles: "canCreateRoles",
+      canModifyRoles: "canModifyRoles",
       canDeleteRoles: "canDeleteRoles",
     },
     retrospectives: {
