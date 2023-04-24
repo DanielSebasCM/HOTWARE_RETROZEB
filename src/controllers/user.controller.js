@@ -43,11 +43,18 @@ const modifyUserPost = async (req, res, next) => {
   try {
     const { uid } = req.params;
     const roles = [];
+    let newJiraId;
     for (let key in req.body) {
-      roles.push(await Role.getById(key));
+      if (key !== "id_jira") {
+        roles.push(await Role.getById(key));
+      } else {
+        newJiraId = req.body.id_jira;
+      }
     }
     const user = await User.getById(uid);
+    if (newJiraId) await user.addJiraId(newJiraId);
     await user.setRoles(roles);
+    req.session.currentUser.id_jira = newJiraId;
     req.session.successMessage = "Usuario modificado correctamente";
     res.redirect("/usuarios");
   } catch (err) {
@@ -85,5 +92,5 @@ module.exports = {
   modifyUser,
   modifyUserPost,
   addJiraId,
-  noJiraIDSession
+  noJiraIDSession,
 };
