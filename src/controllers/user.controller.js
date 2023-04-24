@@ -52,9 +52,11 @@ const modifyUserPost = async (req, res, next) => {
       }
     }
     const user = await User.getById(uid);
-    if (newJiraId) await user.addJiraId(newJiraId);
+    if (newJiraId) {
+      await user.addJiraId(newJiraId);
+      req.session.currentUser.id_jira = newJiraId;
+    }
     await user.setRoles(roles);
-    req.session.currentUser.id_jira = newJiraId;
     req.session.successMessage = "Usuario modificado correctamente";
     res.redirect("/usuarios");
   } catch (err) {
