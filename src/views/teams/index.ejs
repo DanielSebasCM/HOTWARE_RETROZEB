@@ -57,11 +57,13 @@
               </div>
             </td>
             <td class="table__team" data-idTeam="<%= userTeams[i].id_team %>">
-              <form action="/equipos/eliminar/usuario?_method=PATCH" method="POST" class="form-action-button">
-                <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
-                <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
-                <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn" data-uid='<%=locals.currentUser.uid %>' data-id_team=' <%=userTeams[i].id %>'>Abandonar</button>
-              </form>
+              <% if (currentPrivileges.includes(privileges.teams.canJoinTeams)) { %>
+                <form action="/equipos/eliminar/usuario?_method=PATCH" method="POST" class="form-action-button">
+                  <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
+                  <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
+                  <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn" data-uid='<%=locals.currentUser.uid %>' data-id_team=' <%=userTeams[i].id %>'>Abandonar</button>
+                </form>
+              <% } %>
             </td>
           </tr>
           <% } %>
