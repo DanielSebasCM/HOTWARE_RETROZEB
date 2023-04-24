@@ -317,3 +317,17 @@ async function getUsers() {
     console.log(error);
   }
 }
+
+document
+  .getElementById("print--button")
+  .addEventListener("click", async function () {
+    const previousBody = document.body.cloneNode(true);
+    const printable = document.getElementsByClassName("dashboard")[0];
+    const newBody = document.createElement("body");
+    newBody.appendChild(printable);
+    document.body = newBody;
+    await new Promise((r) => setTimeout(r, 500));
+    window.print();
+    document.body = previousBody;
+    location.reload();
+  });

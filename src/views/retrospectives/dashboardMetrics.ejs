@@ -8,6 +8,38 @@
     </div>
 
     <div class="banner__section">
+      <div>
+        <button class="button button--primary" id="print--button">Generar Reporte</button>
+      </div>
+    </div>
+
+    <span class="line"></span>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="banner mb-3">
+    <div class="banner__section">
+      <h3 class="subtitle">Filtros</h3>
+      <div class="filters-container">
+        <div class="select-container">
+          <select class="select" id="label-options">
+            <option value="All">Todos los Labels</option>
+            <% for (let i=0; i < labels.length; i++) { %>
+            <option value="<%= labels[i] %>"><%= labels[i] %></option>
+            <% } %>
+            <option value="None">Sin Label</option>
+          </select>
+        </div>
+        <div class="select-container align-flex-end">
+          <select class="select" id="issues-options">
+            <option value="All">Todos los Issues</option>
+            <option value="Team" selected>Issues <%= retrospective.team_name %></option>
+            <option value="Personal">Issues personales</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="banner__section align-flex-center">
       <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives) && retrospective.state !== "CLOSED" && isMember) { %>
       <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
       <% } else {%>
@@ -23,32 +55,6 @@
         </form>
       </div>
       <% } %>
-      <div>
-        <button class="button button--primary" id="print--button">Print page</button>
-      </div>
-    </div>
-
-    <span class="line"></span>
-  </div>
-
-  <!-- FILTERS -->
-  <h3 class="subtitle">Filtros</h3>
-  <div class="filters-container">
-    <div class="select-container">
-      <select class="select" id="label-options">
-        <option value="All">Todos los Labels</option>
-        <% for (let i=0; i < labels.length; i++) { %>
-        <option value="<%= labels[i] %>"><%= labels[i] %></option>
-        <% } %>
-        <option value="None">Sin Label</option>
-      </select>
-    </div>
-    <div class="select-container">
-      <select class="select" id="issues-options">
-        <option value="All">Todos los Issues</option>
-        <option value="Team" selected>Issues <%= retrospective.team_name %></option>
-        <option value="Personal">Issues personales</option>
-      </select>
     </div>
   </div>
 
