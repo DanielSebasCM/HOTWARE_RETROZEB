@@ -84,20 +84,24 @@ const modifyUserPost = async (req, res, next) => {
         newJiraId = req.body.id_jira;
       }
     }
-
+    const currentUser = req.session.currentUser;
     const user = await User.getById(uid);
     if (newJiraId) {
       await user.addJiraId(newJiraId);
       req.session.currentUser.id_jira = newJiraId;
     }
     await user.setRoles(roles);
-    if (req.body?.active == undefined) {
-      user.delete();
-      user.active = 0;
-    } else {
-      user.activate();
-      user.active = 1;
+
+    if (user.uid !== currentUser.uid) {
+      if (req.body?.active === undefined) {
+        user.delete();
+        user.active = 0;
+      } else {
+        user.activate();
+        user.active = 1;
+      }
     }
+
     req.session.successMessage = "Usuario modificado correctamente";
     res.redirect("/usuarios");
   } catch (err) {
