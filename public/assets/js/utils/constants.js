@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = "https://padawan-1.laing.mx";
 const routes = {
   home: `${BASE_URL}/`,
   login: `${BASE_URL}/login`,
