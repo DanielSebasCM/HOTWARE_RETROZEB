@@ -319,12 +319,85 @@ async function getUsers() {
 }
 
 document
-  .getElementById("print--button")
+  .querySelector("#print--button")
   .addEventListener("click", async function () {
     const previousBody = document.body.cloneNode(true);
-    const printable = document.getElementsByClassName("dashboard")[0];
+    const printable = document.querySelectorAll("canvas");
     const newBody = document.createElement("body");
-    newBody.appendChild(printable);
+    const retroName = document.querySelector(".title").textContent;
+
+    const url = window.location.href.split("/");
+    url[url.length - 1] = "sprint";
+    const sprint = await fetch(url.join("/")).then((res) => res.json());
+
+    const teamName = document
+      .querySelector("#issues-options option:nth-child(2)")
+      .textContent.split(" ");
+    teamName.shift();
+
+    newBody.appendChild(document.createElement("div")).style.display = "flex";
+    const newDiv = newBody.querySelector("div");
+    newDiv.style.alignItems = "center";
+    newDiv.style.justifyContent = "center";
+    newDiv.style.flexDirection = "column";
+    newDiv.style.width = "100%";
+
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Retrospectiva: <span>${retroName}</span>`;
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Sprint: <span>${sprint.name}</span>`;
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Equipo: <span>${teamName.join(" ")}</span>`;
+    newDiv.appendChild(document.createElement("div")).style.textAlign =
+      "center";
+    newDiv.appendChild(
+      document.createElement("h2")
+    ).innerHTML = `Labels: <span>${
+      selectedLabel === "All" ? "Todos" : selectedLabel
+    }</span>`;
+    newDiv.appendChild(
+      document.createElement("h2")
+    ).innerHTML = `Issues: <span>${
+      selectedIssues === "All"
+        ? "Todos"
+        : selectedIssues === "Personal"
+        ? "Personales"
+        : "De equipo"
+    }</span>`;
+    let chart1 = Chart.getChart("general-chart");
+
+    const data = chart1.data.datasets;
+    let sp = "";
+    data.forEach((obj) => {
+      sp += `${obj.label}: <span>${obj.data[0] ? obj.data[0] : 0} sp /</span> `;
+    });
+    sp = sp.slice(0, -2);
+    newDiv.appendChild(document.createElement("h2")).innerHTML = sp;
+
+    newDiv.querySelectorAll("span").forEach((span) => {
+      span.style.fontWeight = "normal";
+    });
+    newDiv
+      .querySelectorAll("h2")
+      .forEach((h2) => (h2.style.alignSelf = "flex-start"));
+    newBody.appendChild(document.createElement("br"));
+    newBody.appendChild(document.createElement("hr"));
+    newBody.appendChild(document.createElement("br"));
+
+    for (let node of printable) {
+      newBody.appendChild(node);
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("hr"));
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("br"));
+    }
     document.body = newBody;
     await new Promise((r) => setTimeout(r, 500));
     window.print();
