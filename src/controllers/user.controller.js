@@ -4,12 +4,45 @@ const Role = require("../models/role.model");
 const renderUsers = async (req, res, next) => {
   try {
     const users = await User.getAllActive();
-    res.render("user/index", { title: "Usuarios", users });
+    const roles = await Role.getAll();
+
+    for (let user of users) {
+      user.roles = await user.getRoles(user.uid);
+    }
+
+    for (let user of users) {
+      if (user.active == 1) user.active = "Activo";
+      else user.active = "Inactivo";
+    }
+
+    res.render("user/index", {
+      title: "Usuarios",
+      users,
+      roles,
+    });
   } catch (err) {
     next(err);
   }
 };
 
+const renderInactiveUsers = async (req, res, next) => {
+  try {
+    const users = await User.getAllInactive();
+    const active = 0;
+    for (let user of users) {
+      user.roles = await user.getRoles(user.uid);
+    }
+    const roles = await Role.getAll();
+    res.render("user/inactivos", {
+      title: "Usuarios Inactivos",
+      users,
+      roles,
+      active,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 const deleteUser = async (req, res, next) => {
   try {
     const { uid } = req.params;
@@ -45,18 +78,26 @@ const modifyUserPost = async (req, res, next) => {
     const roles = [];
     let newJiraId;
     for (let key in req.body) {
-      if (key !== "id_jira") {
+      if (key !== "id_jira" && key !== "active") {
         roles.push(await Role.getById(key));
       } else {
         newJiraId = req.body.id_jira;
       }
     }
+
     const user = await User.getById(uid);
     if (newJiraId) {
       await user.addJiraId(newJiraId);
       req.session.currentUser.id_jira = newJiraId;
     }
     await user.setRoles(roles);
+    if (req.body?.active == undefined) {
+      user.delete();
+      user.active = 0;
+    } else {
+      user.activate();
+      user.active = 1;
+    }
     req.session.successMessage = "Usuario modificado correctamente";
     res.redirect("/usuarios");
   } catch (err) {
@@ -90,6 +131,7 @@ const noJiraIDSession = async (req, res, next) => {
 
 module.exports = {
   renderUsers,
+  renderInactiveUsers,
   deleteUser,
   modifyUser,
   modifyUserPost,

@@ -25,7 +25,9 @@ function filterCards() {
     const cardType = card
       .querySelector(".label--active")
       .textContent.toLowerCase()
-      .trim();
+      .trim()
+      .normalize("NFD")
+      .replace(/[\r\n\u0300-\u036f]/gm, "");
     const cardText = card
       .querySelector(".card__subtitle")
       .textContent.toLowerCase()

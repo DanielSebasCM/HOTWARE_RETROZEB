@@ -26,15 +26,15 @@
     <p class="description description--blue">Seleccionar roles de usuario</p>
     <% for (let i=0; i<allroles.length; i++){ %>
     <div class="checkbox-container mb-1">
-      <input type="checkbox" class="question-checkbox mr-1" id="accum" name="<%=allroles[i].id%>" <%=roles.map(role=>role.id).includes(allroles[i].id)?"checked":""%> />
-      <label for="accum"> <%= allroles[i].name %></label>
+      <input type="checkbox" class="question-checkbox mr-1" id="<%=allroles[i].id%>" name="<%=allroles[i].id%>" <%=roles.map(role=>role.id).includes(allroles[i].id)?"checked":""%> />
+      <label for="<%=allroles[i].id%>"> <%= allroles[i].name %></label>
     </div>
     <% } %>
     <% if(user.uid !== currentUser.uid) { %>
-    <p class="description description--blue mt-5">Activar cuenta de usuario</p>
+    <p class="description-question mt-5">Activar cuenta de usuario</p>
     <div class="checkbox-container mb-1">
-      <input type="checkbox" class="question-checkbox mr-1" id="" name="" <%=user.active ? "checked" : ""%> />
-      <label for="">
+      <input type="checkbox" class="question-checkbox mr-1" id="activate" name="active" <%=user.active ? "checked" : ""%> />
+      <label for="activate">
         Activo
       </label>
     </div>
