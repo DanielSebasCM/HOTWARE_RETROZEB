@@ -4,6 +4,7 @@ const Role = require("../models/role.model");
 const renderUsers = async (req, res, next) => {
   try {
     const users = await User.getAllActive();
+    const roles = await Role.getAll();
 
     for (let user of users) {
       user.roles = await user.getRoles(user.uid);
@@ -17,6 +18,7 @@ const renderUsers = async (req, res, next) => {
     res.render("user/index", {
       title: "Usuarios",
       users,
+      roles,
     });
   } catch (err) {
     next(err);
@@ -26,9 +28,16 @@ const renderUsers = async (req, res, next) => {
 const renderInactiveUsers = async (req, res, next) => {
   try {
     const users = await User.getAllInactive();
+    const active = 0;
+    for (let user of users) {
+      user.roles = await user.getRoles(user.uid);
+    }
+    const roles = await Role.getAll();
     res.render("user/inactivos", {
       title: "Usuarios Inactivos",
       users,
+      roles,
+      active,
     });
   } catch (err) {
     next(err);
@@ -68,10 +77,18 @@ const modifyUserPost = async (req, res, next) => {
     const { uid } = req.params;
     const roles = [];
     for (let key in req.body) {
-      roles.push(await Role.getById(key));
+      if (key !== "active") roles.push(await Role.getById(key));
     }
+
     const user = await User.getById(uid);
     await user.setRoles(roles);
+    if (req.body?.active == undefined) {
+      user.delete();
+      user.active = 0;
+    } else {
+      user.activate();
+      user.active = 1;
+    }
     req.session.successMessage = "Usuario modificado correctamente";
     res.redirect("/usuarios");
   } catch (err) {

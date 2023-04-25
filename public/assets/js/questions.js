@@ -14,16 +14,24 @@ searchInput.addEventListener("input", () => {
 });
 
 function filterCards() {
-  const searchText = searchInput.value.trim().toLowerCase();
+  const searchText = searchInput.value
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\r\n\u0300-\u036f]/gm, "");
   cards.forEach((card) => {
     const cardType = card
       .querySelector(".label--active")
       .textContent.toLowerCase()
-      .trim();
+      .trim()
+      .normalize("NFD")
+      .replace(/[\r\n\u0300-\u036f]/gm, "");
     const cardText = card
       .querySelector(".card__subtitle")
       .textContent.toLowerCase()
-      .trim();
+      .trim()
+      .normalize("NFD")
+      .replace(/[\r\n\u0300-\u036f]/gm, "");
     if (
       (!selectedQuestionType || cardType === selectedQuestionType) &&
       cardText.includes(searchText)

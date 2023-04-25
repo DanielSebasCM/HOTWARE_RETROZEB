@@ -6,15 +6,25 @@
       </h1>
       <p class="description">Usuarios inactivos actuales</p>
     </div>
+    <div class="banner__section">
+      <a class="button button--primary" href="/usuarios">
+        Usuarios Activos
+      </a>
+    </div>
     <span class="line"></span>
   </div>
   <div class="filters-container">
     <div class="input search-bar">
       <span class="icon search-bar__icon"></span>
-      <input type="text" placeholder="Buscar" />
+      <input type="text" placeholder="Buscar" id="buscar" />
+    </div>
+    <div class="select-container">
+      <select class="select" id="orderAlphabetic">
+        <option value="asc">A-Z</option>
+        <option value="desc">Z-A</option>
+      </select>
     </div>
   </div>
-
   <% if(users && users.length> 0) { %>
   <div class="banner--nomargin">
     <div class="table-container">
@@ -27,20 +37,16 @@
         </thead>
         <tbody>
           <% for(let i=0; i < users.length; i++) { %>
-          <td class="table__title">
-            <%= users[i].first_name %>
-            <%= users[i].last_name %>
-            <% if(currentUser.uid===users[i].uid) { %> <span class="meta">(Tú)</span>
-            <% } %>
-          </td>
-          <td>
-            <%= users[i].email %>
-          </td>
-          <td>
-            <button class="button button--edit button--sm" onclick="window.location ='<%= routes.users %>/<%= users[i].uid %>/activar'">
-              Activar
-            </button>
-          </td>
+          <tr onclick="window.location ='<%= routes.users %>/<%= users[i].uid %>/modificar'">
+            <td class="table__title">
+              <%= users[i].first_name %>
+              <%= users[i].last_name %>
+              <% if(currentUser.uid===users[i].uid) { %> <span class="meta">(Tú)</span>
+              <% } %>
+            </td>
+            <td>
+              <%= users[i].email %>
+            </td>
 
           </tr>
           <% } %>
@@ -48,8 +54,11 @@
       </table>
     </div>
   </div>
-  <% } else { %>
-  <p class="no-results">No hay usuarios inactivos</p>
   <% } %>
-  <p class="no-results hide"></p>
+  <p class="hide"><%=active%></p>
+  <p class="no-results hide">No hay resultados</p>
+
+
+  <script src="/assets/js/users.js"></script>
+
 </section>

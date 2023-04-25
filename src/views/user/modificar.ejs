@@ -2,45 +2,44 @@
   <div class="banner">
     <div class="banner__section">
       <h1 class="title">
-        <%= user.first_name %> 
+        <%= user.first_name %>
         <%= user.last_name %>
         <% if(user.uid === currentUser.uid) { %>
         <span class="meta">(Tú)</span>
-        <% } else { %>  
+        <% } else { %>
         <span class="meta">(Editar)</span>
         <% } %>
       </h1>
       <% if(user.uid===currentUser.uid) { %>
-        <p class="description">Configuración de mi cuenta</p>
+      <p class="description">Configuración de mi cuenta</p>
       <% } else { %>
-        <p class="description">Modificar roles de usuario</p>
+      <p class="description">Modificar roles de usuario</p>
       <% } %>
     </div>
     <span class="line"></span>
   </div>
   <% if(user.uid===currentUser.uid) { %>
-    <p class="description-question">ID de usuario de JIRA</p>
-    <input type="text" class="input mb-3" required placeholder="Ingresa tu ID de usuario de JIRA">
+  <p class="description-question">ID de usuario de JIRA</p>
+  <input type="text" class="input mb-3" required placeholder="Ingresa tu ID de usuario de JIRA">
   <% }  %>
   <form action="/usuarios/<%= user.uid %>/modificar" method="POST" id="change_role">
     <p class="description-question">Seleccionar roles de usuario</p>
     <% for (let i=0; i<allroles.length; i++){ %>
     <div class="checkbox-container mb-1">
-      <input type="checkbox" class="question-checkbox mr-1" id="accum" name="<%=allroles[i].id%>" <%=roles.map(role=>role.id).includes(allroles[i].id)?"checked":""%> />
-      <label for="accum"> <%= allroles[i].name %></label>
+      <input type="checkbox" class="question-checkbox mr-1" id="<%=allroles[i].id%>" name="<%=allroles[i].id%>" <%=roles.map(role=>role.id).includes(allroles[i].id)?"checked":""%> />
+      <label for="<%=allroles[i].id%>"> <%= allroles[i].name %></label>
     </div>
     <% } %>
     <% if(user.uid !== currentUser.uid) { %>
-      <p class="description-question mt-5">Activar cuenta de usuario</p>
-      <div class="checkbox-container mb-1">
-        <input type="checkbox" class="question-checkbox mr-1" id="" name=""
-          <%=user.active ? "checked" : ""%> />
-        <label for="">
-          Activo
-        </label>
-      </div>
+    <p class="description-question mt-5">Activar cuenta de usuario</p>
+    <div class="checkbox-container mb-1">
+      <input type="checkbox" class="question-checkbox mr-1" id="activate" name="active" <%=user.active ? "checked" : ""%> />
+      <label for="activate">
+        Activo
+      </label>
+    </div>
     <% } %>
-      <button class="button button--primary mt-5" type="submit">Guardar</button>
+    <button class="button button--primary mt-5" type="submit">Guardar</button>
   </form>
 
 </section>

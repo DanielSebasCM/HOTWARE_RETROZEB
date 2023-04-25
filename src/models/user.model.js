@@ -148,7 +148,17 @@ class User {
       `UPDATE user SET active = 0 WHERE uid = ?`,
       [this.uid]
     );
+    await db.execute(`DELETE FROM users_roles WHERE uid = ?`, [this.uid]);
     this.active = 0;
+    return res;
+  }
+
+  async activate() {
+    let [res, _] = await db.execute(
+      `UPDATE user SET active = 1 WHERE uid = ?`,
+      [this.uid]
+    );
+    this.active = 1;
     return res;
   }
 
