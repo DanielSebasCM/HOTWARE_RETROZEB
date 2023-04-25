@@ -3,6 +3,8 @@ const router = express.Router();
 const controller = require("../controllers/team.controller");
 const authorize = require("../middlewares/privilege");
 const privileges = require("../utils/constants").privileges.teams;
+const retrospectivePrivileges =
+  require("../utils/constants").privileges.retrospectives;
 
 // RENDERING ROUTES
 router.get("/", authorize([privileges.getTeams]), controller.renderTeams);
@@ -15,7 +17,7 @@ router.get(
 // API ROUTES
 router.get(
   "/:id/retrospectivas/:n",
-  authorize([privileges.canCompareRetrospectives]),
+  authorize([retrospectivePrivileges.canCompareRetrospectives]),
   controller.getNClosedRetrospectives
 );
 
