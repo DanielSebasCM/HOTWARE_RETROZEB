@@ -92,6 +92,26 @@ class Sprint {
     return sprint.map((sprint) => new Sprint(sprint));
   }
 
+  static async syncJira() {
+    const {
+      fetchProjectJiraLatestSprint,
+      fetchSprintIssues,
+    } = require("../utils/jira");
+    const jiraSprint = await fetchProjectJiraLatestSprint(
+      process.env.ZECOMMERCE_PROJECT_ID,
+      "closed"
+    );
+    if (!jiraSprint || jiraSprint.id) return;
+
+    jiraSprint.post();
+
+    const issues = await fetchSprintIssues(jiraSprint.id_jira);
+
+    issues.forEach((issue) => {
+      issue.post();
+    });
+  }
+
   static verify(sprint) {
     // id
     if (sprint.id && !Number.isInteger(Number(sprint.id)))
