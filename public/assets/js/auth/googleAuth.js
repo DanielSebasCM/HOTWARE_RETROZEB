@@ -28,6 +28,6 @@ async function handleLogin(response) {
   } catch (error) {
     console.log("error");
     console.log(error);
-    location.reload();
+    // location.reload();
   }
 }
