@@ -131,6 +131,7 @@ const noJiraIDSession = async (req, res, next) => {
 
 module.exports = {
   renderUsers,
+  renderInactiveUsers,
   deleteUser,
   modifyUser,
   modifyUserPost,
