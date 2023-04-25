@@ -405,7 +405,7 @@
   grid-template-columns: repeat(2, 50%);
   width: 100%;
   gap: 0;
-  margin-top: 3rem;
+  margin-top: auto;
   margin-bottom: 0;
 }
 

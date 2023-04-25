@@ -30,6 +30,7 @@
     <p class="description-question mt-3">Seleciona un responsable de accionable</p>
     <div class="select-container">
       <select class="select" name="id_user_author">
+        <option value="<%= null %>">Ninguno</option>
         <% for(unit of Users) {%>
         <option value="<%= unit.uid %>">
           <%= unit.first_name %>
