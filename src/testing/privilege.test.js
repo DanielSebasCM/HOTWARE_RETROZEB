@@ -1,5 +1,5 @@
 const Privilege = require("../models/privilege.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const privilegeMaxLength =
   require("../utils/constants").limits.privilegeMaxLength;
