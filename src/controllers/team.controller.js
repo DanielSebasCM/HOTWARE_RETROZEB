@@ -8,6 +8,18 @@ const renderTeams = async (req, res, next) => {
     for (let team of teams) {
       team.members = await team.getMembers();
     }
+    // Sort team members by alphabetical order
+    teams.forEach((team) => {
+      team.members.sort((a, b) => {
+        if (a.first_name < b.first_name) {
+          return -1;
+        }
+        if (a.first_name > b.first_name) {
+          return 1;
+        }
+        return 0;
+      });
+    });
 
     const userTeams = teams.filter((team) =>
       team.members.find(
@@ -92,7 +104,8 @@ const getNClosedRetrospectives = async (req, res, next) => {
     next(err);
   }
 };
-const nuevo = async (request, response, next) => {
+
+const addTeam = async (request, response, next) => {
   try {
     let name = request.body.name;
     if (!name) {
@@ -132,13 +145,24 @@ const renderModifyTeam = async (req, res, next) => {
     const members = await team.getMembers();
     const users = await User.getAll();
 
+    // sort team members by alphabetical order
+    members.sort((a, b) => {
+      if (a.first_name < b.first_name) {
+        return -1;
+      }
+      if (a.first_name > b.first_name) {
+        return 1;
+      }
+      return 0;
+    });
+
     const userIdsInTeam = members.map((member) => member.uid);
     const usersNotInTeam = users.filter(
       (user) => !userIdsInTeam.includes(user.uid)
     );
 
     res.render("teams/modifyTeam", {
-      title: "Equipos",
+      title: `Modificar Equipo ${team.name}`,
       team,
       members,
       users,
@@ -181,7 +205,7 @@ module.exports = {
   addUser,
   removeUser,
   getNClosedRetrospectives,
-  nuevo,
+  addTeam,
   removeTeam,
   renderModifyTeam,
   removeUserTeam,

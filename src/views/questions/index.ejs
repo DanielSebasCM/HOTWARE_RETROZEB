@@ -3,7 +3,7 @@
   <div class="banner">
     <div class="banner__section">
       <h1 class="title">
-        Preguntas <span class="meta">(<%= questions.length %>)</span>
+        Preguntas
       </h1>
       <p class="description">Listado de preguntas creadas</p>
     </div>
@@ -23,7 +23,7 @@
     </div>
     <div class="select-container">
       <select class="select" id="select-question-type">
-        <option value="">TIPO</option>
+        <option value="">TODAS</option>
         <option value="SELECTION">SELECTION</option>
         <option value="OPEN">OPEN</option>
         <option value="BOOLEAN">BOOLEAN</option>
@@ -32,9 +32,9 @@
     </div>
   </div>
   <% if(questions && questions.length> 0) { %>
-  <div class="pinterest-container">
+  <div class="cards-container">
     <% for(let question of questions) { %>
-    <div class="card card--question card--pinterest">
+    <div class="card card--question">
       <div class="card__header">
         <p class="card__subtitle"><%= question.description %></p>
         <span class="label label--active"> <%= question.type %> </span>

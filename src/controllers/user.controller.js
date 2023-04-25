@@ -76,11 +76,20 @@ const modifyUserPost = async (req, res, next) => {
   try {
     const { uid } = req.params;
     const roles = [];
+    let newJiraId;
     for (let key in req.body) {
-      if (key !== "active") roles.push(await Role.getById(key));
+      if (key !== "id_jira" && key !== "active") {
+        roles.push(await Role.getById(key));
+      } else {
+        newJiraId = req.body.id_jira;
+      }
     }
 
     const user = await User.getById(uid);
+    if (newJiraId) {
+      await user.addJiraId(newJiraId);
+      req.session.currentUser.id_jira = newJiraId;
+    }
     await user.setRoles(roles);
     if (req.body?.active == undefined) {
       user.delete();
@@ -96,10 +105,35 @@ const modifyUserPost = async (req, res, next) => {
   }
 };
 
+const addJiraId = async (req, res, next) => {
+  try {
+    const { id_jira } = req.body;
+    const user = new User(req.session.currentUser);
+
+    await user.addJiraId(id_jira);
+
+    req.session.currentUser.id_jira = id_jira;
+
+    res.status(200).redirect("/");
+  } catch (err) {
+    next(err);
+  }
+};
+
+const noJiraIDSession = async (req, res, next) => {
+  try {
+    req.session.currentUser.id_jira = "no_id";
+    res.redirect("/");
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
   renderUsers,
   deleteUser,
   modifyUser,
   modifyUserPost,
-  renderInactiveUsers,
+  addJiraId,
+  noJiraIDSession,
 };

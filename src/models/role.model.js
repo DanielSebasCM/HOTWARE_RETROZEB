@@ -2,6 +2,7 @@ const db = require("../utils/db");
 const ValidationError = require("../errors/ValidationError");
 const validationMessages = require("../utils/messages").validation;
 const roleMaxLength = require("../utils/constants").limits.roleMaxLength;
+const Privilege = require("./privilege.model");
 class Role {
   constructor(role) {
     Role.verify(role);
@@ -28,10 +29,6 @@ class Role {
     return roles.map((role) => new Role(role));
   }
 
-  static async getPrivileges() {
-    let [role_privileges, _] = await db.execute(`SELECT * FROM role_privilege`);
-    return role_privileges;
-  }
 
   //----------------VERIFIER----------------
 
@@ -72,11 +69,26 @@ class Role {
     return res;
   }
 
-  addPrivilege(privilege) {
+  async addPrivilege(privilege) {
     return db.execute(
       `INSERT INTO role_privilege (id_role, id_privilege) VALUES (?, ?)`,
       [this.id, privilege.id]
     );
+  }
+
+  async getPrivilegesIds() {
+    let [privilegesIds, _] = await db.execute(
+      `SELECT * FROM role_privilege WHERE id_role = ?`,
+      [this.id]
+    );
+    return privilegesIds;
+  }
+
+  async setPrivileges(privileges) {
+    await db.execute(`DELETE FROM role_privilege WHERE id_role = ?`, [this.id]);
+    for (const privilege of privileges) {
+      await this.addPrivilege(privilege);
+    }
   }
 }
 

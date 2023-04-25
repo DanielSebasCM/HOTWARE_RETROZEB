@@ -174,6 +174,13 @@ class User {
       await this.addRole(role);
     }
   }
+
+  async addJiraId(id_jira) {
+    return db.execute(`UPDATE user SET id_jira = ? WHERE uid = ?`, [
+      id_jira,
+      this.uid,
+    ]);
+  }
 }
 
 module.exports = User;

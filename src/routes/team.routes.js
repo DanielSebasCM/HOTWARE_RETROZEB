@@ -13,22 +13,44 @@ router.get(
 );
 
 // API ROUTES
-router.get("/:id/retrospectivas/:n", controller.getNClosedRetrospectives);
+router.get(
+  "/:id/retrospectivas/:n",
+  authorize([privileges.canCompareRetrospectives]),
+  controller.getNClosedRetrospectives
+);
+
 // POST
 router.post(
   "/nuevo/usuario",
   authorize([privileges.canJoinTeams]),
   controller.addUser
 );
-router.post("/nuevo", authorize([privileges.canCreateTeams]), controller.nuevo);
+router.post(
+  "/nuevo",
+  authorize([privileges.canCreateTeams]),
+  controller.addTeam
+);
 router.post(
   "/eliminar",
   authorize([privileges.canDeleteTeams]),
   controller.removeTeam
 );
-router.post("/modificar/eliminar", controller.removeUserTeam);
-router.post("/modificar/anadir", controller.addUserTeam);
+router.post(
+  "/modificar/eliminar",
+  authorize([privileges.canDeleteTeams]),
+  controller.removeUserTeam
+);
+router.post(
+  "/modificar/anadir",
+  authorize([privileges.canCreateTeams]),
+  controller.addUserTeam
+);
+
 // DELETE
-router.patch("/eliminar/usuario", controller.removeUser);
+router.patch(
+  "/eliminar/usuario",
+  authorize([privileges.canModifyTeams]),
+  controller.removeUser
+);
 
 module.exports = router;

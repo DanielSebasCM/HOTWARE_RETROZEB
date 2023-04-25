@@ -39,11 +39,14 @@ const constants = {
     roles: "/roles",
     users: "/usuarios",
     locals: "/locals",
+    jiraUserID: "/jira/user/id",
+    noJiraUserID: "/jira/user/no-id",
   },
   privileges: {
     actionables: {
       getActionables: "getActionables",
       canAcceptActionables: "canAcceptActionables",
+      canCreateActionables: "canCreateActionables",
       canRejectActionables: "canRejectActionables",
     },
     teams: {
@@ -61,6 +64,7 @@ const constants = {
     roles: {
       getRoles: "getRoles",
       canCreateRoles: "canCreateRoles",
+      canModifyRoles: "canModifyRoles",
       canDeleteRoles: "canDeleteRoles",
     },
     retrospectives: {
@@ -69,6 +73,7 @@ const constants = {
       canAnswerRetrospectives: "canAnswerRetrospectives",
       getMetrics: "getMetrics",
       canCompareRetrospectives: "canCompareRetrospectives",
+      canCloseRetrospectives: "canCloseRetrospectives",
     },
     users: {
       getUsers: "getUsers",

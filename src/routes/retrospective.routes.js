@@ -70,4 +70,11 @@ router.post(
   controller.postRetrospectiveAnswers
 );
 
+// PATCH
+router.patch(
+  "/:id/cerrar",
+  authorize([privileges.canCloseRetrospectives]),
+  controller.patchRetrospectiveState
+);
+
 module.exports = router;

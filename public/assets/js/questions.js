@@ -14,11 +14,13 @@ searchInput.addEventListener("input", () => {
 });
 
 function filterCards() {
-  const searchText = searchInput.value
-    .trim()
+  const value = searchInput.value.trim().toLowerCase();
+  const searchText = value
     .toLowerCase()
+    .trim()
     .normalize("NFD")
     .replace(/[\r\n\u0300-\u036f]/gm, "");
+
   cards.forEach((card) => {
     const cardType = card
       .querySelector(".label--active")

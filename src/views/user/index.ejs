@@ -2,7 +2,7 @@
   <div class="banner">
     <div class="banner__section">
       <h1 class="title">
-        Usuarios <span class="meta"> (<%=users.length %>)</span>
+        Usuarios
       </h1>
       <p class="description">Usuarios activos actuales</p>
     </div>
@@ -25,54 +25,46 @@
         <option value="desc">Z-A</option>
       </select>
     </div>
-    <div class="select-container">
-      <select class="select" id="selectRole">
-        <option value="all">Todos</option>
-        <%for (let i = 0; i < roles.length; i++) {%>
-        <option value="<%=roles[i].name%>"><%=roles[i].name%></option>
-        <%}%>
-      </select>
-    </div>
-  </div>
-  <% if(users && users.length> 0) { %>
-        <div class="banner--nomargin">
-          <div class="table-container">
-            <table class="table" id="userSearch">
-              <thead>
-                <tr class="subtitle">
-                  <td>Nombre</td>
-                  <td>E-mail</td>
-                  <td>Roles</td>
-                </tr>
-              </thead>
-              <tbody>
-                <% for(let i=0; i < users.length; i++) { %>
-                <tr onclick="window.location ='<%= routes.users %>/<%= users[i].uid %>/modificar'">
-                  <td class="table__title">
-                    <%= users[i].first_name %>
-                    <%= users[i].last_name %>
-                    <% if(currentUser.uid===users[i].uid) { %> <span class="meta">(Tú)</span>
-                    <% } %>
-                  </td>
-                  <td>
-                    <%= users[i].email %>
-                  </td>
-                  <td>
-                    <span class="horizontal-container table__role">
-                      <% for (let j=0; j<users[i].roles.length; j++){ %>
-                      <span class="label label--active" style="max-width:fit-content" data-idRole="<%= users[i].roles[j].name %>"> <%= users[i].roles[j].name %> </span>
-                      <% } %>
-                    </span>
-                  </td>
-                </tr>
-                <% } %>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <% } %>
-        <p class="no-results hide">No hay resultados</p>
 
-        <script src="/assets/js/users.js"></script>
+    <% if(users && users.length> 0) { %>
+    <div class="banner--nomargin">
+      <div class="table-container">
+        <table class="table" id="userSearch">
+          <thead>
+            <tr class="subtitle">
+              <td>Nombre</td>
+              <td>E-mail</td>
+              <td>Roles</td>
+            </tr>
+          </thead>
+          <tbody>
+            <% for(let i=0; i < users.length; i++) { %>
+            <tr onclick="window.location ='<%= routes.users %>/<%= users[i].uid %>/modificar'">
+              <td class="table__title">
+                <%= users[i].first_name %>
+                <%= users[i].last_name %>
+                <% if(currentUser.uid===users[i].uid) { %> <span class="meta">(Tú)</span>
+                <% } %>
+              </td>
+              <td>
+                <%= users[i].email %>
+              </td>
+              <td>
+                <span class="horizontal-container table__role">
+                  <% for (let j=0; j<users[i].roles.length; j++){ %>
+                  <span class="label label--active" style="max-width:fit-content" data-idRole="<%= users[i].roles[j].name %>"> <%= users[i].roles[j].name %> </span>
+                  <% } %>
+                </span>
+              </td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <% } %>
+    <p class="no-results hide">No hay resultados</p>
+
+    <script src="/assets/js/users.js"></script>
 
 </section>
