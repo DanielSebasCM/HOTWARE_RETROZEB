@@ -4,23 +4,22 @@
   <div class="banner">
     <div class="banner__section">
       <h1 class="title"><%= retrospective.name %></h1>
-      <p class="description">Resumen del desempeño en la retrospectiva</p>
+      <p class="description mb-4">Resumen del desempeño en la retrospectiva</p>
     </div>
 
-    <div class="banner__section">
+    <div class="banner__section buttons-container">
       <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives) && retrospective.state !== "CLOSED" && isMember) { %>
       <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
-      <% } else {%>
+      <% } %>
+      <% if(currentPrivileges.includes(privileges.retrospectives.canCloseRetrospectives) && (retrospective.state !== "CLOSED")) { %>
+      <form action="<%= routes.retrospectives %>/<%= retrospective.id %>/cerrar?_method=PATCH" method="POST">
+        <button class="button button--delete-alt" style="min-width: 200px;">Cerrar Retrospectiva</button>
+      </form>
+      <% } %>
+      <% if(answered ||  retrospective.state === "CLOSED") { %>
       <div class="toggle-buttons-container toggle-buttons-container--primary">
         <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
         <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
-      </div>
-      <% } %>
-      <% if(currentPrivileges.includes(privileges.retrospectives.canCloseRetrospectives) && (retrospective.state !== "CLOSED") && isMember) { %>
-      <div>
-        <form action="<%= routes.retrospectives %>/<%= retrospective.id %>/cerrar?_method=PATCH" method="POST">
-          <button class="button button--alert mt-2">Cerrar Retrospectiva</button>
-        </form>
       </div>
       <% } %>
     </div>

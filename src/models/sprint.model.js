@@ -33,21 +33,14 @@ class Sprint {
     return new Sprint(sprint[0]);
   }
 
-  static async getLastWithoutRetroByTeamId(id_team) {
+  static async getLast() {
     let [sprint, _] = await db.execute(
       `
     SELECT *
     FROM sprint
-    WHERE id NOT IN (
-      SELECT r.id_sprint
-      FROM retrospective as r
-      WHERE r.id_team = ?
-    )
-    AND end_date IS NOT NULL
     ORDER BY end_date DESC
     LIMIT 1
-    `,
-      [id_team]
+    `
     );
 
     if (sprint.length == 0) return null;

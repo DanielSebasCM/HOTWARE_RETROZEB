@@ -38,23 +38,30 @@ const renderInitRetrospective = async (req, res, next) => {
       return res.redirect(".");
     }
 
+    await Sprint.syncJira()
+
     const team = await Team.getById(req.session.selectedTeam.id);
     let questions = [];
-    let sprint;
-
-    const retrospective = await team.getActiveRetrospective();
-
-    if (retrospective) {
+    const retrospective = await team.getLastRetrospective();
+      
+    if (retrospective && retrospective.state == "IN_PROGRESS") {
       req.session.errorMessage =
-        "Ya existe una retrospectiva para el último sprint del equipo " +
-        team.name;
+        "Ya hay una retrospectiva activa para el equipo " +
+        team.name + ". Ciérrala para empezar una nueva."
       return res.redirect(".");
     }
+    
+    let sprint = await Sprint.getLast();
 
+    if(retrospective && retrospective.id_sprint == sprint.id) {
+      req.session.errorMessage =
+        "El equipo " + team.name + " ya tiene una retrospectiva creada para el último sprint."
+      return res.redirect(".");
+
+    }
+    
     questions = await Question.getAll();
-    sprint = await Sprint.getLastWithoutRetroByTeamId(
-      req.session.selectedTeam.id
-    );
+
     const activeSprint = await Sprint.getLastWithRetroByTeamId(
       req.session.selectedTeam.id
     );
@@ -114,18 +121,18 @@ const postRetrospectiveAnswers = async (req, res, next) => {
   }
 };
 
-const post = async (request, response, next) => {
+const post = async (req, res, next) => {
   try {
-    let { name, checked, required, anonymous, id_sprint } = request.body;
+    let { name, checked, required, anonymous, id_sprint } = req.body;
     if (!checked) {
-      request.session.errorMessage =
+      req.session.errorMessage =
         "No puedes crear una retrospectiva sin preguntas";
-      return response.redirect("/retrospectivas/iniciar");
+      return res.redirect("/retrospectivas/iniciar");
     }
 
     const newRetrospective = new Retrospective({
       name,
-      id_team: request.session.selectedTeam.id,
+      id_team: req.session.selectedTeam.id,
       id_sprint: id_sprint,
     });
     const retrospective = await newRetrospective.post();
@@ -150,8 +157,8 @@ const post = async (request, response, next) => {
       }
       await newRetrospective.addQuestion(question);
     });
-    request.session.successMessage = "Retrospectiva creada con éxito";
-    response.status(201).redirect("/retrospectivas");
+    req.session.successMessage = "Retrospectiva creada con éxito";
+    res.status(201).redirect("/retrospectivas");
   } catch (err) {
     next(err);
   }

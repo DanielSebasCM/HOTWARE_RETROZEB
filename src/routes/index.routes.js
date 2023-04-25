@@ -10,11 +10,6 @@ const authMiddleware = require("../middlewares/auth");
 const { setLocals } = require("../middlewares/locals.middleware");
 const { routes } = require("../utils/constants");
 
-// Temporary imports for testing errors
-const ValidationError = require("../errors/ValidationError");
-const jwt = require("jsonwebtoken");
-const db = require("../utils/db");
-
 const initRoutes = (app) => {
   // PUBLIC ROUTES
   app.use("/", authRouter);
@@ -32,29 +27,6 @@ const initRoutes = (app) => {
   app.use(`${routes.retrospectives}`, retrospectiveRouter);
   app.use(`${routes.roles}`, rolesRouter);
   app.use(`${routes.users}`, userRouter);
-
-  // Temporary routes for testing errors
-  app.use("/default_error", (req, res, next) => {
-    next(new Error("Error de prueba"));
-  });
-
-  app.use("/validation_error", (req, res, next) => {
-    next(new ValidationError("Atributo de prueba", "Mensaje de prueba"));
-  });
-
-  app.use("/jwt_error", (req, res, next) => {
-    next(new jwt.TokenExpiredError("jwt expired", new Date()));
-  });
-
-  app.use("/db_error", async (req, res, next) => {
-    try {
-      await db.query(
-        "INSERT INTO team_users (id_team, uid) VALUES (1, 'test')"
-      );
-    } catch (err) {
-      next(err);
-    }
-  });
 };
 
 module.exports = initRoutes;
