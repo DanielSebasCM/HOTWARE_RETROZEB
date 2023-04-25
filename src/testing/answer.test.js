@@ -1,5 +1,5 @@
 const Answer = require("../models/answer.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const answerMaxLength = require("../utils/constants").limits.answerMaxLength;
 

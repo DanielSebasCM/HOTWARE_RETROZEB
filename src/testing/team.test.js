@@ -1,5 +1,5 @@
 const Team = require("../models/team.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const teamNameMaxLength =
   require("../utils/constants").limits.teamNameMaxLength;

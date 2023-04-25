@@ -1,5 +1,5 @@
 const Project = require("../models/project.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 
 // name

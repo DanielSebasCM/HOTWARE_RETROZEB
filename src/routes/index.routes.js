@@ -11,7 +11,7 @@ const { setLocals } = require("../middlewares/locals.middleware");
 const { routes } = require("../utils/constants");
 
 // Temporary imports for testing errors
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const jwt = require("jsonwebtoken");
 const db = require("../utils/db");
 

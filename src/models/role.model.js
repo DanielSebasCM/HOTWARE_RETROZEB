@@ -1,5 +1,5 @@
 const db = require("../utils/db");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const roleMaxLength = require("../utils/constants").limits.roleMaxLength;
 const Privilege = require("./privilege.model");
@@ -28,7 +28,6 @@ class Role {
     let [roles, _] = await db.execute(`SELECT * FROM role WHERE active = 1`);
     return roles.map((role) => new Role(role));
   }
-
 
   //----------------VERIFIER----------------
 

@@ -4,7 +4,7 @@ const Question = require("./question.model");
 const Answer = require("./answer.model");
 const Issue = require("./issue.model");
 const User = require("./user.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
   require("../utils/constants").enums.retrospectiveStates;
