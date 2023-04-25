@@ -1,19 +1,21 @@
 <section class="dashboard">
   <div class="banner">
-    <div class="banner__section mb-1">
+    <div class="banner__section">
       <h1 class="title">
         Roles
       </h1>
       <p class="description">Listado de roles creados y sus privilegios</p>
     </div>
-    <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
-    <div class="banner__section">
-      <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
-      <% if (roles.length > 0) { %>
-      <a class="button button--primary" href="<%=`roles/${roles[0].id}/modificar`%>">Modificar Rol</a>
+    <div class="banner__section buttons-container">
+      <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
+        <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
+      <% } %>
+      <% if(currentPrivileges.includes(privileges.roles.canModifyRoles)) { %>
+        <% if (roles.length > 0) { %>
+          <a class="button button--edit" href="<%=`roles/${roles[0].id}/modificar`%>">Modificar Rol</a>
+        <% } %>
       <% } %>
     </div>
-    <% } %>
     <span class="line"></span>
   </div>
 

@@ -67,13 +67,15 @@
       Guardar
     </button>
   </form>
-  <span class="line"></span>
-  <p class="subtitle">Zona de peligro</p>
-  <span class="meta">Eliminar rol <b><%=role.name %></b></span>
-  <form method="POST" action="/roles/<%= role.id %>/eliminar?_method=DELETE">
-    <input type="hidden" name="id" value="<%=role.id %>">
-    <button class="button button--delete-alt" type="submit">Eliminar Rol</button>
-  </form>
+  <% if(currentPrivileges.includes(privileges.roles.canDeleteRoles)) { %>
+    <span class="line"></span>
+    <p class="subtitle">Zona de peligro</p>
+    <span class="meta">Eliminar rol <b><%=role.name %></b></span>
+    <form method="POST" action="/roles/<%= role.id %>/eliminar?_method=DELETE">
+      <input type="hidden" name="id" value="<%=role.id %>">
+      <button class="button button--delete-alt" type="submit">Eliminar Rol</button>
+    </form>
+  <% } %>
 </section>
 
 <script type="module" src="/assets/js/roles.js"></script>

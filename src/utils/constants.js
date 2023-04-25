@@ -46,6 +46,7 @@ const constants = {
     actionables: {
       getActionables: "getActionables",
       canAcceptActionables: "canAcceptActionables",
+      canCreateActionables: "canCreateActionables",
       canRejectActionables: "canRejectActionables",
     },
     teams: {
@@ -63,6 +64,7 @@ const constants = {
     roles: {
       getRoles: "getRoles",
       canCreateRoles: "canCreateRoles",
+      canModifyRoles: "canModifyRoles",
       canDeleteRoles: "canDeleteRoles",
     },
     retrospectives: {
