@@ -22,8 +22,9 @@ app.set("layout", "layouts/layout");
 // MIDDLEWARES
 app.use(
   cors({
-    origin: "https://padawan-1.laing.mx",
-    optionsSuccessStatus: 200,
+    origin: ["https://padawan-1.laing.mx", "http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 app.use(express.static("public"));
