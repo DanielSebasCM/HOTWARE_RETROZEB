@@ -1,7 +1,4 @@
-if (process.env.NODE_ENV !== "production") {
-  require("dotenv").config();
-}
-
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -10,7 +7,8 @@ const session = require("express-session");
 const methodOverride = require("method-override");
 const cookieParser = require("cookie-parser");
 const expressLayouts = require("express-ejs-layouts");
-const schedule = require('node-schedule');
+const cors = require("cors");
+const schedule = require("node-schedule");
 const initRoutes = require("./src/routes/index.routes");
 const { routes } = require("./src/utils/constants");
 const { privileges } = require("./src/utils/constants");
@@ -22,6 +20,12 @@ app.set("views", path.join(__dirname, "/src/views/"));
 app.set("layout", "layouts/layout");
 
 // MIDDLEWARES
+app.use(
+  cors({
+    origin: "https://padawan-1.laing.mx",
+    optionsSuccessStatus: 200,
+  })
+);
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -52,9 +56,10 @@ app.get("/", (req, res) => {
 // 404
 app.use((req, res) => {
   res.locals.errorView = true;
-  res
-    .status(404)
-    .render("errors/404", {title: "Error 404", message: `Página no encontrada: ${req.url}` });
+  res.status(404).render("errors/404", {
+    title: "Error 404",
+    message: `Página no encontrada: ${req.url}`,
+  });
 });
 
 // ERROR HANDLER
@@ -66,10 +71,10 @@ app.locals.layout = true;
 app.locals.privileges = privileges;
 
 // NODE SCHEDULE
-const Sprint = require("./src/models/sprint.model")
-schedule.scheduleJob('0 * * * *', async () => {
-  console.log('Sync Jira');
-  await Sprint.syncJira()
+const Sprint = require("./src/models/sprint.model");
+schedule.scheduleJob("0 * * * *", async () => {
+  console.log("Sync Jira");
+  await Sprint.syncJira();
 });
 
 // SERVER
