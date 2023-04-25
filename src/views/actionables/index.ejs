@@ -6,9 +6,9 @@
     </div>
     <div class="banner__section">
       <% if(currentPrivileges.includes(privileges.actionables.canCreateActionables)) { %>
-        <a class="button button--primary" href="/accionables/nuevo">
-          Añadir Accionable
-        </a>
+      <a class="button button--primary" href="/accionables/nuevo">
+        Añadir Accionable
+      </a>
       <% } %>
     </div>
     <span class="line"></span>
@@ -125,11 +125,11 @@
       <% } %>
       <!--BOTONES-->
       <% if(state==="pending" ) { %>
-      <div class="buttons-container card__footer mt-2">
+      <div class="buttons-container card__footer <%= arrUsers[i]? "mt-2":"" %>">
         <% if(currentPrivileges.includes(privileges.actionables.canAcceptActionables)) { %>
-          <form action="<%= actionables[i].id %>/accept" method="POST">
-            <button class="button button--primary" type="submit">Aprobar</button>
-          </form>
+        <form action="<%= actionables[i].id %>/accept" method="POST">
+          <button class="button button--primary" type="submit">Aprobar</button>
+        </form>
         <% } %>
         <% if(currentPrivileges.includes(privileges.actionables.canRejectActionables)) { %>
         <form action="<%= actionables[i].id %>/reject" method="POST">
