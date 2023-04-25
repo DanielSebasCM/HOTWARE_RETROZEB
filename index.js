@@ -10,6 +10,7 @@ const session = require("express-session");
 const methodOverride = require("method-override");
 const cookieParser = require("cookie-parser");
 const expressLayouts = require("express-ejs-layouts");
+const schedule = require('node-schedule');
 const initRoutes = require("./src/routes/index.routes");
 const { routes } = require("./src/utils/constants");
 const { privileges } = require("./src/utils/constants");
@@ -43,7 +44,7 @@ app.use(
 // ROUTER
 initRoutes(app);
 
-// TODO - DELETE THIS
+// TODO - ADD DASHBOARD
 app.get("/", (req, res) => {
   res.redirect("/retrospectivas");
 });
@@ -63,6 +64,13 @@ app.use(errorHandler);
 app.locals.routes = routes;
 app.locals.layout = true;
 app.locals.privileges = privileges;
+
+// NODE SCHEDULE
+const Sprint = require("./src/models/sprint.model")
+schedule.scheduleJob('0 * * * *', async () => {
+  console.log('Sync Jira');
+  await Sprint.syncJira()
+});
 
 // SERVER
 app.listen(PORT, () => {
