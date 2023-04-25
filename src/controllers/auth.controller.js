@@ -86,6 +86,7 @@ const loginAPI = async (req, res, next) => {
     const authToken = authUtil.createTokenLogin(userData);
     const refreshToken = authUtil.createRefreshToken(userData);
 
+    res.header("Access-Control-Allow-Origin", "*");  
     res.status(200).json({ authToken, refreshToken });
   } catch (error) {
     const errorMessage = error.message.split(" ");
