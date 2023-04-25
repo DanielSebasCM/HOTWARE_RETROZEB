@@ -22,12 +22,12 @@ async function handleLogin(response) {
     document.cookie = `rzrefreshToken=${res.refreshToken}; path=/;`;
 
     // Redirect to dashboard
-    // if (loginResponse.ok) {
-    //   location.href = "/";
-    // }
+    if (loginResponse.ok) {
+      location.href = "/";
+    }
   } catch (error) {
     console.log("error");
     console.log(error);
-    // location.reload();
+    location.reload();
   }
 }
