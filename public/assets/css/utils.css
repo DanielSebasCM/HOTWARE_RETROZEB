@@ -125,8 +125,3 @@ a {
 input[type="checkbox"] {
   cursor: pointer;
 }
-
-@page {
-  size: auto;
-  margin: 1rem;
-}

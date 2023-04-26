@@ -350,17 +350,6 @@ const getRetrospectiveUsers = async (req, res, next) => {
   }
 };
 
-const getSprint = async (req, res, next) => {
-  try {
-    const id_retrospective = req.params.id;
-    const retrospective = await Retrospective.getById(id_retrospective);
-    const sprint = await Sprint.getById(retrospective.id_sprint);
-    res.json(sprint);
-  } catch (err) {
-    next(err);
-  }
-};
-
 module.exports = {
   renderRetrospectives,
   renderInitRetrospective,
@@ -371,7 +360,6 @@ module.exports = {
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
   getRetrospectiveUsers,
-  getSprint,
   post,
   postRetrospectiveAnswers,
   patchRetrospectiveState,
