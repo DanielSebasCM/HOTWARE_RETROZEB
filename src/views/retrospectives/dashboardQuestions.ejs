@@ -30,6 +30,7 @@
           <%= question.required ? "OBLIGATORIA" : "OPCIONAL" %>
         </span>
       </div>
+      <p class="card__description">Respuesta de la pregunta tipo <i><%= question.type %></i></p>
       <% if(question.type === 'OPEN') { %>
       <% if(!question.answers.length) { %>
       <h2 class="description">No hay respuestas aún</h2>
