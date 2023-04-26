@@ -32,6 +32,17 @@
     ".multi-select-container"
   );
   if (!multiSelectContainers) return;
+
+  const dropdowns = [];
+
+  window.addEventListener("click", function (e) {
+    for (let container of multiSelectContainers) {
+      if (!container.contains(e.target)) {
+        container.querySelector(".multi-select-dropdown").classList.add("hide");
+      }
+    }
+  });
+
   multiSelectContainers.forEach((container) => {
     const button = container.querySelector(".multi-select-button");
 
@@ -39,6 +50,7 @@
     display.originalText = display.innerText;
 
     const dropdown = container.querySelector(".multi-select-dropdown");
+    dropdowns.push(dropdown);
     dropdown.classList.add("hide");
 
     button.addEventListener("click", () => {
