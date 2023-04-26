@@ -277,7 +277,7 @@ const renderCompareRetroMetrics = async (req, res, next) => {
   try {
     if (!req.session.selectedTeam) {
       req.session.errorMessage =
-        "Únete o selecciona un equipo para poder iniciar una retrospectiva";
+        "Únete o selecciona un equipo para poder comparar retrospectivas";
       return res.redirect("..");
     }
 
