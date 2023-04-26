@@ -319,3 +319,141 @@ async function getUsers() {
     console.log(error);
   }
 }
+
+document
+  .querySelector("#print--button")
+  .addEventListener("click", async function () {
+    // Clone the body and create a new one; Get Charts
+    const previousBody = document.body.cloneNode(true);
+    const canvas = document.querySelectorAll("canvas");
+    const newBody = document.createElement("body");
+
+    // Get the name of the retro, sprint and team
+    const retroName = document.querySelector(".title").textContent;
+
+    const url = window.location.href.split("/");
+    url[url.length - 1] = "sprint";
+    const sprint = await fetch(url.join("/")).then((res) => res.json());
+
+    const teamName = document
+      .querySelector("#issues-options option:nth-child(2)")
+      .textContent.split(" ");
+    teamName.shift();
+
+    // Create div for headers
+    newBody.appendChild(document.createElement("div")).style.display = "flex";
+    const newDiv = newBody.querySelector("div");
+    newDiv.style.alignItems = "center";
+    newDiv.style.justifyContent = "center";
+    newDiv.style.flexDirection = "column";
+    newDiv.style.width = "100%";
+
+    // Create headers
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Retrospectiva: <span>${retroName}</span>`;
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Sprint: <span>${sprint.name}</span>`;
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Equipo: <span>${teamName.join(" ")}</span>`;
+    newDiv.appendChild(document.createElement("div")).style.textAlign =
+      "center";
+    newDiv.appendChild(
+      document.createElement("h2")
+    ).innerHTML = `Labels: <span>${
+      selectedLabel === "All" ? "Todos" : selectedLabel
+    }</span>`;
+    newDiv.appendChild(
+      document.createElement("h2")
+    ).innerHTML = `Issues: <span>${
+      selectedIssues === "All"
+        ? "Todos"
+        : selectedIssues === "Personal"
+        ? "Personales"
+        : "De equipo"
+    }</span>`;
+
+    let chart1 = Chart.getChart("general-chart");
+
+    const data = chart1.data.datasets;
+    let sp = "";
+    data.forEach((obj, i, arr) => {
+      if (i !== arr.length - 1)
+        sp += `${obj.label}: <span>${
+          obj.data[0] ? obj.data[0] : 0
+        } sp /</span> `;
+      else
+        sp += `${obj.label}: <span>${obj.data[0] ? obj.data[0] : 0} sp</span> `;
+    });
+    newDiv.appendChild(document.createElement("h2")).innerHTML = sp;
+
+    newDiv.querySelectorAll("span").forEach((span) => {
+      span.style.fontWeight = "normal";
+    });
+    newDiv
+      .querySelectorAll("h2")
+      .forEach((h2) => (h2.style.alignSelf = "flex-start"));
+    newBody.appendChild(document.createElement("br"));
+    newBody.appendChild(document.createElement("hr"));
+    newBody.appendChild(document.createElement("br"));
+
+    for (let node of canvas) {
+      newBody.appendChild(node);
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("hr"));
+
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("br"));
+    }
+    document.body = newBody;
+    await new Promise((r) => setTimeout(r, 500));
+    window.print();
+    document.body = previousBody;
+    location.reload();
+  });
+
+function chartToCSV(chartId) {
+  const chart = Chart.getChart(chartId);
+  const { datasets, labels } = chart.data;
+  const res = {};
+  res.label = labels;
+  datasets.forEach((dataset) => {
+    res[dataset.label] = dataset.data;
+  });
+  console.log(res);
+
+  return ConvertToCSV(res);
+}
+
+function ConvertToCSV(data) {
+  const headers = Object.keys(data);
+  const rows = Object.values(data);
+
+  let csv = headers.join(",") + "\n";
+
+  for (let i = 0; i < rows[0].length; i++) {
+    let row = "";
+    for (let j = 0; j < rows.length; j++) {
+      if (j === rows.length - 1) row += rows[j][i];
+      else row += rows[j][i] + ",";
+    }
+    csv += row + "\n";
+  }
+
+  return csv;
+}
+
+function download(chartId) {
+  const data = chartToCSV(chartId);
+  const blob = new Blob([data], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.setAttribute("href", url);
+  a.setAttribute("download", "download.csv");
+  a.click();
+}

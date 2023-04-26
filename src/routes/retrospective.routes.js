@@ -40,6 +40,7 @@ router.get(
 );
 
 // API ROUTES
+router.get("/:id/sprint", controller.getSprint);
 
 // GET
 router.get(
