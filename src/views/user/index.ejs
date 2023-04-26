@@ -40,7 +40,13 @@
         </thead>
         <tbody>
           <% for(let i=0; i < users.length; i++) { %>
-          <tr onclick="window.location ='<%= routes.users %>/<%= users[i].uid %>/modificar'">
+
+          <% if(currentPrivileges.includes(privileges.users.canModifyUsers)) {%>
+          <tr onclick="window.location ='<%= routes.users %>/<%= users[i].uid %>/modificar'" id="retrospectives-list" class="retrospective">
+            <% } else { %>
+          <tr id="retrospectives-list" class="retrospective no-pointer">
+            <% } %>
+
             <td class="table__title">
               <%= users[i].first_name %>
               <%= users[i].last_name %>
