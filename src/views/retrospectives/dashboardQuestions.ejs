@@ -41,9 +41,14 @@
         <% index++ %>
         <% } %>
       </ol>
-      <% }} else { %>
+      <% 
+      }} else { 
+      if(!question.answers.length){  
+      %>
+      <h2 class="description">No hay respuestas aún</h2>
+      <% } else { %>
       <canvas id="chart-<%= question.id %>"></canvas>
-      <% } %>
+      <% }} %>
     </article>
     <% } %>
   </section>
