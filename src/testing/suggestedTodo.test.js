@@ -1,5 +1,5 @@
 const SuggestedTodo = require("../models/suggestedTodo.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const actionableStates = require("../utils/constants").enums.actionableStates;
 const { toDoTitleMaxLength, toDoDescriptionMaxLength } =

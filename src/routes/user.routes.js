@@ -25,4 +25,6 @@ router.delete(
   controller.deleteUser
 );
 
+router.get("/inactivos", controller.renderInactiveUsers);
+
 module.exports = router;

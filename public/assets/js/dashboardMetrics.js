@@ -95,7 +95,7 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
 
   const totals = {};
   labels.forEach((l) => {
-    totals[l] = statesColors.reduce((acc, { state }) => {
+    totals[l || "N/A"] = statesColors.reduce((acc, { state }) => {
       const data = statesData[state];
       if (data) return acc + (data[l] || 0);
       return acc;
@@ -255,14 +255,16 @@ function updateChart(canvasId, statesData, labels) {
   }
 
   const totals = {};
+  console.log(labels);
   labels.forEach((l) => {
-    totals[l] = statesColors.reduce((acc, { state }) => {
+    totals[l || "N/A"] = statesColors.reduce((acc, { state }) => {
       const data = statesData[state];
       if (data) return acc + (data[l] || 0);
       return acc;
     }, 0);
   });
 
+  console.log(totals);
   labels = labels.map((l) => l || "N/A");
 
   chart.data.labels = labels;

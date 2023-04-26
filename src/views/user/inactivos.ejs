@@ -2,18 +2,17 @@
   <div class="banner">
     <div class="banner__section">
       <h1 class="title">
-        Usuarios
+        Usuarios <span class="meta"> (<%=users.length %>)</span>
       </h1>
-      <p class="description">Usuarios activos actuales</p>
+      <p class="description">Usuarios inactivos actuales</p>
     </div>
     <div class="banner__section">
-      <a class="button button--primary" href="/usuarios/inactivos">
-        Activar Usuarios
+      <a class="button button--primary" href="/usuarios">
+        Usuarios Activos
       </a>
     </div>
     <span class="line"></span>
   </div>
-
   <div class="filters-container">
     <div class="input search-bar">
       <span class="icon search-bar__icon"></span>
@@ -26,7 +25,6 @@
       </select>
     </div>
   </div>
-
   <% if(users && users.length> 0) { %>
   <div class="banner--nomargin">
     <div class="table-container">
@@ -35,7 +33,6 @@
           <tr class="subtitle">
             <td>Nombre</td>
             <td>E-mail</td>
-            <td>Roles</td>
           </tr>
         </thead>
         <tbody>
@@ -50,13 +47,7 @@
             <td>
               <%= users[i].email %>
             </td>
-            <td>
-              <span class="horizontal-container table__role">
-                <% for (let j=0; j<users[i].roles.length; j++){ %>
-                <span class="label label--active" style="max-width:fit-content" data-idRole="<%= users[i].roles[j].name %>"> <%= users[i].roles[j].name %> </span>
-                <% } %>
-              </span>
-            </td>
+
           </tr>
           <% } %>
         </tbody>
@@ -64,7 +55,9 @@
     </div>
   </div>
   <% } %>
+  <p class="hide"><%=active%></p>
   <p class="no-results hide">No hay resultados</p>
+
 
   <script src="/assets/js/users.js"></script>
 

@@ -1,19 +1,21 @@
 <section class="dashboard">
   <div class="banner">
-    <div class="banner__section mb-1">
+    <div class="banner__section">
       <h1 class="title">
         Roles
       </h1>
       <p class="description">Listado de roles creados y sus privilegios</p>
     </div>
-    <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
-    <div class="banner__section">
+    <div class="banner__section buttons-container">
+      <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
       <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
+      <% } %>
+      <% if(currentPrivileges.includes(privileges.roles.canModifyRoles)) { %>
       <% if (roles.length > 0) { %>
-      <a class="button button--primary" href="<%=`roles/${roles[0].id}/modificar`%>">Modificar Rol</a>
+      <a class="button button--edit" href="<%=`roles/${roles[0].id}/modificar`%>">Modificar Rol</a>
+      <% } %>
       <% } %>
     </div>
-    <% } %>
     <span class="line"></span>
   </div>
 
@@ -23,7 +25,7 @@
     <table class="table-roles">
       <thead>
         <tr>
-          <th class="pl-1 pt-2 pb-2 text-center">Privilegios</th>
+          <th class="pl-1 pt-2 pb-2" style="text-align: left;">Privilegios</th>
           <% for (let role of roles) { %>
           <th class="pt-2 pb-2"><%= role.name %></th>
           <% } %>
@@ -31,26 +33,26 @@
       </thead>
       <tbody>
         <% for (let tag in privilegesByTag) { %>
-          <tr class="tr-header">
-            <td><%= tag %></td>
-            <% for (let role of roles) { %>
-            <td></td>
-            <% } %>
-          </tr>
-          <% for (let privilege of privilegesByTag[tag]) { %>
-          <tr>
-            <td class="text-left"><%= privilege.description %></td>
-            <% for (let role of roles) { %>
-              <td>
-                <% if(role.privileges.some(p => p.id_privilege == privilege.id) ) { %>
-                  <div><img src="/assets/icon/check_circle.svg" alt="checkbox"></div>
-                <% } else { %>
-                  <p>-</p>
-                <% } %>
-              </td>
-            <% } %>
-          </tr>
+        <tr class="tr-header">
+          <td><%= tag %></td>
+          <% for (let role of roles) { %>
+          <td></td>
           <% } %>
+        </tr>
+        <% for (let privilege of privilegesByTag[tag]) { %>
+        <tr>
+          <td class="text-left"><%= privilege.description %></td>
+          <% for (let role of roles) { %>
+          <td>
+            <% if(role.privileges.some(p => p.id_privilege == privilege.id) ) { %>
+            <div><img src="/assets/icon/check_circle.svg" alt="checkbox"></div>
+            <% } else { %>
+            <p>-</p>
+            <% } %>
+          </td>
+          <% } %>
+        </tr>
+        <% } %>
         <% } %>
       </tbody>
     </table>

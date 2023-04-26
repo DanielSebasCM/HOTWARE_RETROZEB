@@ -405,7 +405,7 @@
   grid-template-columns: repeat(2, 50%);
   width: 100%;
   gap: 0;
-  margin-top: 3rem;
+  margin-top: auto;
   margin-bottom: 0;
 }
 
@@ -978,6 +978,10 @@ a.toggle-button {
   width: 100%;
 }
 
+.table-roles thead th {
+  padding: 2rem 0;
+}
+
 .table tr,
 .table-roles tr {
   border-bottom: 1px solid var(--color-line);
@@ -994,6 +998,13 @@ a.toggle-button {
   padding: 2rem 1rem;
   text-align: left;
   font-size: 1.3rem;
+}
+
+.table__td__double_column {
+  padding: 1.5rem 1rem;
+  text-align: left;
+  font-size: 1.3rem;
+  min-width: 2rem;
 }
 
 .table td:first-of-type,

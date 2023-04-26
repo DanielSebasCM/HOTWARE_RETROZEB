@@ -371,5 +371,6 @@ module.exports = {
   fetchProjectJiraLatestSprint,
   fetchBoardSprints,
   fetchProjectBoards,
+  fetchSprintIssues,
   postJiraActionable,
 };

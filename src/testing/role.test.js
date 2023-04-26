@@ -1,5 +1,5 @@
 const Role = require("../models/role.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const roleMaxLength = require("../utils/constants").limits.roleMaxLength;
 

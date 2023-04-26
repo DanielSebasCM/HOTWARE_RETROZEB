@@ -1,5 +1,5 @@
 const db = require("../utils/db");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const teamNameMaxLength =
   require("../utils/constants").limits.teamNameMaxLength;
@@ -99,7 +99,6 @@ class Team {
   }
 
   async removeUser(uid) {
-    // TODO - TEST THIS
     const [res, _] = await db.execute(
       `DELETE FROM team_users WHERE id_team = ? AND uid = ?`,
       [this.id, uid]
@@ -107,18 +106,17 @@ class Team {
     return res;
   }
 
-  async getActiveRetrospective() {
+  async getLastRetrospective() {
     const Retrospective = require("./retrospective.model");
 
-    // TODO - TEST THIS
     const [retros, _] = await db.execute(
       `
     SELECT r.* 
-    FROM retrospective as r, team as t, sprint as s
+    FROM retrospective as r, team as t
     WHERE r.id_team = t.id
-    AND r.id_sprint = s.id
     AND t.id = ?
-    AND (r.end_date IS NULL or r.state = "PENDING" or r.state = "IN_PROGRESS")
+    ORDER BY start_date DESC
+    LIMIT 1
       `,
       [this.id]
     );

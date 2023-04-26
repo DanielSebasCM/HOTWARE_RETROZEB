@@ -1,5 +1,5 @@
 const db = require("../utils/db");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const Team = require("./team.model");
 const Privilege = require("./privilege.model");
@@ -98,6 +98,11 @@ class User {
     return users.map((user) => new User(user));
   }
 
+  static async getAllInactive() {
+    let [users, _] = await db.execute(`SELECT * FROM user WHERE active = 0`);
+    return users.map((user) => new User(user));
+  }
+
   //----------------------------VERIFY--------------------------------
   static verify(user) {
     if (user.uid && !Number.isInteger(Number(user.uid)))
@@ -143,7 +148,17 @@ class User {
       `UPDATE user SET active = 0 WHERE uid = ?`,
       [this.uid]
     );
+    await db.execute(`DELETE FROM users_roles WHERE uid = ?`, [this.uid]);
     this.active = 0;
+    return res;
+  }
+
+  async activate() {
+    let [res, _] = await db.execute(
+      `UPDATE user SET active = 1 WHERE uid = ?`,
+      [this.uid]
+    );
+    this.active = 1;
     return res;
   }
 
