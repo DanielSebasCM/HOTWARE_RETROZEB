@@ -176,6 +176,15 @@ class User {
   }
 
   async addJiraId(id_jira) {
+    const userJira = await User.getByJiraId(id_jira);
+    if (userJira) {
+      // throw new ValidationError("id_jira", "Jira id already exists");
+      return db.execute(`UPDATE user SET id_jira = ? WHERE uid = ?`, [
+        null,
+        userJira.uid,
+      ]);
+    }
+
     return db.execute(`UPDATE user SET id_jira = ? WHERE uid = ?`, [
       id_jira,
       this.uid,
