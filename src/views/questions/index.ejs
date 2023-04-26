@@ -24,10 +24,10 @@
     <div class="select-container">
       <select class="select" id="select-question-type">
         <option value="">TODAS</option>
-        <option value="SELECTION">Pregunta Opción Múltiple</option>
-        <option value="OPEN">Pregunta Abierta</option>
-        <option value="BOOLEAN">Pregunta Si/No</option>
-        <option value="SCALE">Pregunta Escalar</option>
+        <option value="OP. MULTIPLE">Pregunta Opción Múltiple</option>
+        <option value="ABIERTA">Pregunta Abierta</option>
+        <option value="SI/NO">Pregunta Si/No</option>
+        <option value="ESCALAR">Pregunta Escalar</option>
       </select>
     </div>
   </div>
@@ -37,7 +37,12 @@
     <div class="card card--question">
       <div class="card__header">
         <p class="card__subtitle"><%= question.description %></p>
-        <span class="label label--active"> <%= question.type %> </span>
+        <span class="label label--active">
+          <%= question.type === 'SELECTION' ? 'OP. MULTIPLE' : 
+              question.type === 'OPEN' ? 'ABIERTA' :
+              question.type === 'BOOLEAN' ? 'SI/NO' : 
+              question.type === 'SCALE' ? 'ESCALAR' : '' %>
+        </span>        
       </div>
       <% if(question.type === 'SELECTION') { %>
       <span class="line"></span>
