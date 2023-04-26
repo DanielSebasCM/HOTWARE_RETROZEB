@@ -38,6 +38,8 @@ const renderInitRetrospective = async (req, res, next) => {
       return res.redirect(".");
     }
 
+    await Sprint.syncJira();
+
     const team = await Team.getById(req.session.selectedTeam.id);
     let questions = [];
     const retrospective = await team.getLastRetrospective();
