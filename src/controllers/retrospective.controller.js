@@ -285,6 +285,20 @@ const renderCompareRetroMetrics = async (req, res, next) => {
     const team = await Team.getById(req.session.selectedTeam.id);
     const retrospectives = await team.getNClosedRetrospectives(n);
 
+    if (retrospectives.length < 2) {
+      req.session.errorMessage =
+        "El equipo" +
+        (n > 1 ? " no tiene" : " no tiene suficientes") +
+        " retrospectivas cerradas";
+      return res.redirect("..");
+    }
+
+    if (retrospectives.length < n) {
+      res.redirect("./" + retrospectives.length);
+    }
+
+    const maxRetros = Math.min(10);
+
     retrospectives.sort((a, b) => a.end_date - b.end_date);
     let labels = new Set();
     let epics = new Set();
@@ -304,6 +318,7 @@ const renderCompareRetroMetrics = async (req, res, next) => {
       labels,
       epics,
       n,
+      maxRetros,
     });
   } catch (err) {
     next(err);
