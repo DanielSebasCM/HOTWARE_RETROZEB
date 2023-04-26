@@ -62,7 +62,7 @@ const renderInitRetrospective = async (req, res, next) => {
       return res.redirect(".");
     }
 
-    questions = await Question.getAll();
+    questions = await Question.getAllActive();
 
     const activeSprint = await Sprint.getLastWithRetroByTeamId(
       req.session.selectedTeam.id
