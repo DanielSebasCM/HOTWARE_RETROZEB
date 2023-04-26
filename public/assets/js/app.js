@@ -33,8 +33,6 @@
   );
   if (!multiSelectContainers) return;
 
-  const dropdowns = [];
-
   window.addEventListener("click", function (e) {
     for (let container of multiSelectContainers) {
       if (!container.contains(e.target)) {
