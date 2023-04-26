@@ -38,28 +38,28 @@ const renderInitRetrospective = async (req, res, next) => {
       return res.redirect(".");
     }
 
-    await Sprint.syncJira()
-
     const team = await Team.getById(req.session.selectedTeam.id);
     let questions = [];
     const retrospective = await team.getLastRetrospective();
-      
+
     if (retrospective && retrospective.state == "IN_PROGRESS") {
       req.session.errorMessage =
         "Ya hay una retrospectiva activa para el equipo " +
-        team.name + ". Ciérrala para empezar una nueva."
+        team.name +
+        ". Ciérrala para empezar una nueva.";
       return res.redirect(".");
     }
-    
+
     let sprint = await Sprint.getLast();
 
-    if(retrospective && retrospective.id_sprint == sprint.id) {
+    if (retrospective && retrospective.id_sprint == sprint.id) {
       req.session.errorMessage =
-        "El equipo " + team.name + " ya tiene una retrospectiva creada para el último sprint."
+        "El equipo " +
+        team.name +
+        " ya tiene una retrospectiva creada para el último sprint.";
       return res.redirect(".");
-
     }
-    
+
     questions = await Question.getAll();
 
     const activeSprint = await Sprint.getLastWithRetroByTeamId(
@@ -265,7 +265,7 @@ const renderCompareRetroMetrics = async (req, res, next) => {
   try {
     if (!req.session.selectedTeam) {
       req.session.errorMessage =
-        "Únete o selecciona un equipo para poder iniciar una retrospectiva";
+        "Únete o selecciona un equipo para poder comparar retrospectivas";
       return res.redirect("..");
     }
 
