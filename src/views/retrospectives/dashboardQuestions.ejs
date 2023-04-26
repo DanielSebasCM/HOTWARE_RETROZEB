@@ -31,8 +31,8 @@
         </span>
       </div>
       <% if(question.type === 'OPEN') { %>
-      <% if(question.answers?.value?.length === 0) { %>
-      <h2 class="subtitle">No hay respuestas aún</h2>
+      <% if(!question.answers.length) { %>
+      <h2 class="description">No hay respuestas aún</h2>
       <% } else { %>
       <ol class="items__list">
         <% let index = 1 %>
@@ -41,9 +41,14 @@
         <% index++ %>
         <% } %>
       </ol>
-      <% }} else { %>
+      <% 
+      }} else { 
+      if(!question.answers.length){  
+      %>
+      <h2 class="description">No hay respuestas aún</h2>
+      <% } else { %>
       <canvas id="chart-<%= question.id %>"></canvas>
-      <% } %>
+      <% }} %>
     </article>
     <% } %>
   </section>
