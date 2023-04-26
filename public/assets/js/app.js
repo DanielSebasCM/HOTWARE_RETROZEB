@@ -48,7 +48,6 @@
     display.originalText = display.innerText;
 
     const dropdown = container.querySelector(".multi-select-dropdown");
-    dropdowns.push(dropdown);
     dropdown.classList.add("hide");
 
     button.addEventListener("click", () => {

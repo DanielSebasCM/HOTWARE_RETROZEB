@@ -13,6 +13,7 @@ const authorize = (privileges, or = false) => {
 
     let passes = false;
 
+    console.log(req.originalUrl, privileges);
     if (or) {
       passes = privileges.some((privilege) =>
         userPrivileges.includes(privilege)
@@ -22,6 +23,7 @@ const authorize = (privileges, or = false) => {
         userPrivileges.includes(privilege)
       );
     }
+    console.log(passes);
 
     if (!passes) {
       res.locals.errorView = true;
