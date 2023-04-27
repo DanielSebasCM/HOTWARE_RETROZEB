@@ -75,7 +75,11 @@ app.locals.privileges = privileges;
 const Sprint = require("./src/models/sprint.model");
 schedule.scheduleJob("0 * * * *", async () => {
   console.log("Sync Jira");
-  await Sprint.syncJira();
+  try {
+    await Sprint.syncJira();
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // SERVER
