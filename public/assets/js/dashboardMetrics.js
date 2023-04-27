@@ -202,7 +202,6 @@ function groupFilterIssues(rawData, key) {
 
     data[state] = totalStoryPoints;
   }
-  console.log(data);
   return data;
 }
 
