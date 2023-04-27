@@ -102,7 +102,7 @@
         <tbody>
           <% for(let i=0; i < availableTeams.length; i++) { %>
           <% if(currentPrivileges.includes(privileges.teams.canModifyTeams)) {%>
-          <tr onclick="window.location ='<%= routes.teams %>/<%= userTeams[i].id %>/modificar'" id="retrospectives-list" class="retrospective">
+          <tr onclick="window.location ='<%= routes.teams %>/<%= availableTeams[i].id %>/modificar'" id="retrospectives-list" class="retrospective">
             <% } else { %>
           <tr id="retrospectives-list" class="retrospective no-pointer">
             <% } %>
