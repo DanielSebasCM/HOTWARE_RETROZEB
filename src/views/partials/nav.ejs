@@ -10,8 +10,9 @@
     </div>
     
     <ul class="nav__list">
-      <li class="nav__item">Equipo actual:</li>
+      
       <% if(locals.activeTeams && locals.activeTeams.length> 0) { %>
+        <li class="nav__item">Equipo actual:</li>
         <li class="nav__item">
           <form action="/locals/activeteam" method="POST">
             <div class="select-container">
