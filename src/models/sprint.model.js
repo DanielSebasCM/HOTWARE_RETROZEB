@@ -94,10 +94,13 @@ class Sprint {
       process.env.ZECOMMERCE_PROJECT_ID,
       "closed"
     );
-    if (!jiraSprint || jiraSprint.id) return;
+    if (!jiraSprint || jiraSprint.id) {
+      console.log("No new sprint to sync");
+      return;
+    }
 
     jiraSprint.post();
-
+    console.log("New sprint: " + jiraSprint.name + " created");
     const issues = await fetchSprintIssues(jiraSprint.id_jira);
 
     issues.forEach((issue) => {
