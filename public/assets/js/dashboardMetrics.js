@@ -189,7 +189,7 @@ function groupFilterIssues(rawData, key) {
     );
     if (filteredData.length === 0) continue;
 
-    let groupedFilteredData = key
+    const groupedFilteredData = key
       ? filteredData.groupBy(key)
       : { Total: filteredData };
 
