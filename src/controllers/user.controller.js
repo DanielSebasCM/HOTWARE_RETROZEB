@@ -1,5 +1,6 @@
 const User = require("../models/user.model");
 const Role = require("../models/role.model");
+const { routes } = require("../utils/constants");
 
 const renderUsers = async (req, res, next) => {
   try {
@@ -49,7 +50,7 @@ const deleteUser = async (req, res, next) => {
     const user = await User.getById(uid);
     user.delete();
     req.session.successMessage = "Usuario eliminado correctamente";
-    res.redirect("/usuarios");
+    res.redirect(routes.users);
   } catch (err) {
     next(err);
   }
@@ -88,9 +89,13 @@ const modifyUserPost = async (req, res, next) => {
     const user = await User.getById(uid);
     if (newJiraId) {
       try {
-        await user.addJiraId(id_jira);
+        await user.addJiraId(newJiraId);
       } catch (err) {
-        return res.redirect("/");
+        const jiraUser = await User.getByJiraId(newJiraId);
+        if (jiraUser) {
+          req.session.errorMessage = `Este ID ya está en uso por ${jiraUser.first_name} ${jiraUser.last_name}.`;
+          return res.redirect(routes.users + "/" + uid + "/modificar");
+        }
       }
       req.session.currentUser.id_jira = newJiraId;
     }
@@ -107,7 +112,7 @@ const modifyUserPost = async (req, res, next) => {
     }
 
     req.session.successMessage = "Usuario modificado correctamente";
-    res.redirect("/usuarios");
+    res.redirect(routes.users);
   } catch (err) {
     next(err);
   }
@@ -120,7 +125,12 @@ const addJiraId = async (req, res, next) => {
     try {
       await user.addJiraId(id_jira);
     } catch (err) {
-      return res.redirect("/");
+      const jiraUser = await User.getByJiraId(id_jira);
+      if (jiraUser) {
+        req.session.currentUser.id_jira = "no_id";
+        req.session.errorMessage = `Este ID ya está en uso por ${jiraUser.first_name} ${jiraUser.last_name}.`;
+        return res.redirect(routes.dashboard);
+      }
     }
 
     req.session.currentUser.id_jira = id_jira;
