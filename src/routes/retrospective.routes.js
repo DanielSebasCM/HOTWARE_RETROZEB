@@ -44,7 +44,7 @@ router.get(
 // GET
 router.get(
   "/:id/issues",
-  authorize([privileges.getMetrics]),
+  authorize([privileges.getMetrics, privileges.canCompareRetrospectives], true),
   controller.getRetrospectiveIssues
 );
 router.get(
@@ -54,7 +54,7 @@ router.get(
 );
 router.get(
   "/:id/usuarios",
-  authorize([privileges.getMetrics]),
+  authorize([privileges.getMetrics, privileges.canCompareRetrospectives], true),
   controller.getRetrospectiveUsers
 );
 

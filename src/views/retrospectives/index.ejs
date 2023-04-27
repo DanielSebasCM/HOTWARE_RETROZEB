@@ -56,7 +56,13 @@
         </thead>
         <tbody>
           <% for(let i=0; i < retrospectives.length; i++) { %>
-          <tr onclick="window.location ='<%= routes.retrospectives %>/<%= retrospectives[i].id %>'" id="retrospectives-list" class="retrospective" data-fecha="<%= retrospectives[i].start_date.toISOString() %>" data-idTeam="<%= retrospectives[i].id_team %>">
+
+          <% if(currentPrivileges.includes(privileges.teams.canModifyTeams)) {%>
+          <tr onclick="window.location ='<%= routes.retrospectives %>/<%= retrospectives[i].id %>'" id="retrospectives-list" class="retrospective">
+            <% } else { %>
+          <tr id="retrospectives-list" class="retrospective no-pointer">
+            <% } %>
+
             <td class="table__title">
               <%= retrospectives[i].name %>
             </td>

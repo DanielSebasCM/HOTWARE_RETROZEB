@@ -53,7 +53,14 @@ const dataGeneral = groupFilterIssues(groupedIssues, null);
 createChart("general-chart", "General", dataGeneral, ["Total"], "y");
 
 const dataEpics = groupFilterIssues(groupedIssues, "epic_name");
-const epicChart = createChart("epics-chart", "Epics", dataEpics, epics, "y");
+const epicChart = createChart(
+  "epics-chart",
+  "Epics",
+  dataEpics,
+  epics,
+  "y",
+  "Sin Epica"
+);
 
 //get chart labels
 const epicLabels = epicChart.data.labels;
@@ -62,11 +69,28 @@ const dataTypes = groupFilterIssues(groupedIssues, "type");
 createChart("types-chart", "Types", dataTypes, types, "y");
 
 // FUNCTIONS
-function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
+function createChart(
+  canvasId,
+  title,
+  statesData,
+  labels,
+  mainAxis = "x",
+  nullLabel = "N/A"
+) {
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
 
   const canvas = document.getElementById(canvasId);
   canvas.parentElement.style.height = `${labels.length * 15 + 150}px`;
+
+  labels = labels.map((l) => l || nullLabel);
+
+  for (const state in statesData) {
+    const data = statesData[state];
+    if (data[null]) {
+      data[nullLabel] = data[null];
+      delete data[null];
+    }
+  }
 
   const labelHasData = Array(labels.length).fill(false);
 
@@ -95,14 +119,13 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
 
   const totals = {};
   labels.forEach((l) => {
-    totals[l || "N/A"] = statesColors.reduce((acc, { state }) => {
+    totals[l] = statesColors.reduce((acc, { state }) => {
       const data = statesData[state];
       if (data) return acc + (data[l] || 0);
       return acc;
     }, 0);
   });
 
-  labels = labels.map((l) => l || "N/A");
   return new Chart(canvas, {
     type: "bar",
     data: {

@@ -1409,3 +1409,7 @@ a.toggle-button {
 .table-roles th {
   padding-bottom: 1rem;
 }
+
+.no-pointer {
+  cursor: default !important;
+}

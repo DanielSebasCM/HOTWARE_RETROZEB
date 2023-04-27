@@ -19,7 +19,7 @@ const constants = {
     privilegeMaxLength: 255,
     projectMaxLength: 255,
     questionMaxLength: 255,
-    optionMaxLength: 25,
+    optionMaxLength: 40,
     retrospectiveMaxLength: 255,
     roleMaxLength: 40,
     sprintMaxLength: 255,

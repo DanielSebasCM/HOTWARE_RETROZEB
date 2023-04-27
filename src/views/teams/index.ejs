@@ -37,7 +37,12 @@
         </thead>
         <tbody>
           <% for(let i=0; i < userTeams.length; i++) { %>
+          <% if(currentPrivileges.includes(privileges.teams.canModifyTeams)) {%>
           <tr onclick="window.location ='<%= routes.teams %>/<%= userTeams[i].id %>/modificar'" id="retrospectives-list" class="retrospective">
+            <% } else { %>
+          <tr id="retrospectives-list" class="retrospective no-pointer">
+            <% } %>
+
             <td class="table__title">
               <%= userTeams[i].name %>
             </td>
@@ -58,11 +63,11 @@
             </td>
             <td class="table__team" data-idTeam="<%= userTeams[i].id_team %>">
               <% if (currentPrivileges.includes(privileges.teams.canJoinTeams)) { %>
-                <form action="/equipos/eliminar/usuario?_method=PATCH" method="POST" class="form-action-button">
-                  <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
-                  <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
-                  <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn" data-uid='<%=locals.currentUser.uid %>' data-id_team=' <%=userTeams[i].id %>'>Abandonar</button>
-                </form>
+              <form action="/equipos/eliminar/usuario?_method=PATCH" method="POST" class="form-action-button">
+                <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
+                <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
+                <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn" data-uid='<%=locals.currentUser.uid %>' data-id_team=' <%=userTeams[i].id %>'>Abandonar</button>
+              </form>
               <% } %>
             </td>
           </tr>
@@ -96,7 +101,11 @@
         </thead>
         <tbody>
           <% for(let i=0; i < availableTeams.length; i++) { %>
-          <tr onclick="window.location ='<%= routes.teams %>/<%= availableTeams[i].id %>/modificar'" id="retrospectives-list" class="retrospective">
+          <% if(currentPrivileges.includes(privileges.teams.canModifyTeams)) {%>
+          <tr onclick="window.location ='<%= routes.teams %>/<%= userTeams[i].id %>/modificar'" id="retrospectives-list" class="retrospective">
+            <% } else { %>
+          <tr id="retrospectives-list" class="retrospective no-pointer">
+            <% } %>
             <td class="table__title">
               <%= availableTeams[i].name %>
             </td>

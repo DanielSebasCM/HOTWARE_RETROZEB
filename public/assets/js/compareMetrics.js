@@ -144,11 +144,28 @@ const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
 createChart("epics-chart", "Epics", epicsData, sprints, "x");
 
 // FUNCTIONS
-function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
+function createChart(
+  canvasId,
+  title,
+  statesData,
+  labels,
+  mainAxis = "x",
+  nullLabel = "N/A"
+) {
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
 
   const canvas = document.getElementById(canvasId);
   canvas.parentElement.style.height = "400px";
+
+  labels = labels.map((l) => l || nullLabel);
+
+  for (const state in statesData) {
+    const data = statesData[state];
+    if (data[null]) {
+      data[nullLabel] = data[null];
+      delete data[null];
+    }
+  }
 
   const datasets = statesColors.map(({ state, color }) => {
     const storyPoints = labels.map((l) => {
@@ -181,14 +198,12 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
 
   const totals = {};
   labels.forEach((l) => {
-    totals[l || "N/A"] = statesColors.reduce((acc, { state }) => {
+    totals[l] = statesColors.reduce((acc, { state }) => {
       const data = statesData[state];
       if (data) return acc + (data[l] || 0);
       return acc;
     }, 0);
   });
-
-  labels = labels.map((l) => l || "N/A");
 
   let tooltip = undefined;
 
