@@ -87,7 +87,11 @@ const modifyUserPost = async (req, res, next) => {
     const currentUser = req.session.currentUser;
     const user = await User.getById(uid);
     if (newJiraId) {
-      await user.addJiraId(newJiraId);
+      try {
+        await user.addJiraId(id_jira);
+      } catch (err) {
+        return res.redirect("/");
+      }
       req.session.currentUser.id_jira = newJiraId;
     }
     await user.setRoles(roles);
@@ -113,8 +117,11 @@ const addJiraId = async (req, res, next) => {
   try {
     const { id_jira } = req.body;
     const user = new User(req.session.currentUser);
-
-    await user.addJiraId(id_jira);
+    try {
+      await user.addJiraId(id_jira);
+    } catch (err) {
+      return res.redirect("/");
+    }
 
     req.session.currentUser.id_jira = id_jira;
 
