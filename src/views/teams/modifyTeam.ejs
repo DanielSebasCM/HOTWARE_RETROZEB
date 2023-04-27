@@ -4,7 +4,15 @@
       <h1 class="title"><%= team.name %></h1>
       <p class="description">Detalles del equipo</p>
     </div>
-
+    <% if(currentPrivileges.includes(privileges.teams.canDeleteTeams)) { %>
+      <div>
+      <span class="meta mb-3">Eliminar equipo <%=team.name %></span>
+      <form method="POST" action="/equipos/eliminar" id="formE">
+        <input type="hidden" name="id_team" value="<%=team.id %>">
+        <button class="button button--delete-alt" type="submit">Eliminar Equipo</button>
+      </form>
+    </div>
+      <% } %>
     <span class="line"></span>
   </div>
 
@@ -94,14 +102,7 @@
   </div>
   <% } %>
 
-  <% if(currentPrivileges.includes(privileges.teams.canDeleteTeams)) { %>
-  <p class="subtitle mt-5">Zona de peligro</p>
-  <span class="meta mb-3">Eliminar equipo <%=team.name %></span>
-  <form method="POST" action="/equipos/eliminar" id="formE">
-    <input type="hidden" name="id_team" value="<%=team.id %>">
-    <button class="button button--delete-alt" type="submit">Eliminar Equipo</button>
-  </form>
-  <% } %>
+  
 </section>
 
 <script src="/assets/js/modifyTeam.js"></script>
