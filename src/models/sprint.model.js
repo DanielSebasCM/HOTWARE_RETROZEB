@@ -97,7 +97,7 @@ class Sprint {
     );
     if (!jiraSprint || jiraSprint.id) {
       console.log("No new sprint to sync");
-      return;
+      return false;
     }
 
     const Retrospective = require("./retrospective.model");
@@ -128,6 +128,8 @@ class Sprint {
     issues.forEach((issue) => {
       issue.post();
     });
+
+    return true;
   }
 
   static verify(sprint) {
