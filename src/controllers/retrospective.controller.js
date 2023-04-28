@@ -44,14 +44,6 @@ const renderInitRetrospective = async (req, res, next) => {
     let questions = [];
     const retrospective = await team.getLastRetrospective();
 
-    if (retrospective && retrospective.state == "IN_PROGRESS") {
-      req.session.errorMessage =
-        "Ya hay una retrospectiva activa para el equipo " +
-        team.name +
-        ". Ciérrala para empezar una nueva.";
-      return res.redirect(".");
-    }
-
     let sprint = await Sprint.getLast();
 
     if (retrospective && retrospective.id_sprint == sprint.id) {
