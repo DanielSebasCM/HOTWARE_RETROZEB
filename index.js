@@ -51,7 +51,7 @@ initRoutes(app);
 
 // TODO - ADD DASHBOARD
 app.get("/", (req, res) => {
-  res.redirect("/retrospectivas");
+  res.redirect(routes.dashboard);
 });
 
 // 404
