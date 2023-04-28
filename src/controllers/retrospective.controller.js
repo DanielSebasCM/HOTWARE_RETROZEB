@@ -217,6 +217,8 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
       (user) => user.uid === req.session.currentUser.uid
     );
     const labels = await retrospective.getLabels();
+
+
     res.render("retrospectives/dashboardMetrics", {
       title: "Dashboard",
       retrospective,
