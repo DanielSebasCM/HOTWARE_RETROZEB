@@ -6,6 +6,7 @@ const questionRouter = require("./questions.routes");
 const rolesRouter = require("./roles.routes");
 const localsRouter = require("./locals.routes");
 const userRouter = require("./user.routes");
+const dashboardRouter = require("./dashboard.routes");
 const authMiddleware = require("../middlewares/auth");
 const { setLocals } = require("../middlewares/locals.middleware");
 const { routes } = require("../utils/constants");
@@ -20,6 +21,7 @@ const initRoutes = (app) => {
   app.use(setLocals);
 
   // PRIVATE ROUTES
+
   app.use(`${routes.locals}`, localsRouter);
   app.use(`${routes.teams}`, teamRouter);
   app.use(`${routes.actionables}`, actionableRouter);
@@ -27,6 +29,7 @@ const initRoutes = (app) => {
   app.use(`${routes.retrospectives}`, retrospectiveRouter);
   app.use(`${routes.roles}`, rolesRouter);
   app.use(`${routes.users}`, userRouter);
+  app.use(`${routes.dashboard}`, dashboardRouter);
 };
 
 module.exports = initRoutes;

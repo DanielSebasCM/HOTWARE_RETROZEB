@@ -36,6 +36,8 @@ const renderActionables = async (req, res, next) => {
         }
       }
 
+      console.log(actionables);
+
       res.status(200).render("actionables", {
         title: "Accionables",
         actionables,

@@ -83,6 +83,7 @@ async function getJiraActionables() {
     let builtTodo = new SuggestedTodo(suggested_todo);
     builtTodo.jira_state = actionable.fields.status.name;
     builtTodo.creation_date = new Date(actionable.fields.created);
+    builtTodo.self = actionable.self;
     return builtTodo;
   });
 
