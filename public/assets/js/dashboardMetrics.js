@@ -454,6 +454,12 @@ function download(chartId) {
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.setAttribute("href", url);
-  a.setAttribute("download", "download.csv");
+  a.setAttribute("download", `${chartId}.csv`);
   a.click();
 }
+
+document.querySelectorAll(".pill--late").forEach((pill) => {
+  pill.addEventListener("click", function () {
+    download(this.dataset.id);
+  });
+});
