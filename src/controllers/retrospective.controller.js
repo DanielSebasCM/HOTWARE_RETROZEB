@@ -38,19 +38,15 @@ const renderInitRetrospective = async (req, res, next) => {
       return res.redirect(".");
     }
 
-    await Sprint.syncJira();
+    const newSprint = await Sprint.syncJira();
 
+    if (newSprint) {
+      req.session.successMessage =
+        "Hay un nuevo sprint disponible, se han cerrado las retrospectivas anteriores";
+    }
     const team = await Team.getById(req.session.selectedTeam.id);
     let questions = [];
     const retrospective = await team.getLastRetrospective();
-
-    if (retrospective && retrospective.state == "IN_PROGRESS") {
-      req.session.errorMessage =
-        "Ya hay una retrospectiva activa para el equipo " +
-        team.name +
-        ". Ciérrala para empezar una nueva.";
-      return res.redirect(".");
-    }
 
     let sprint = await Sprint.getLast();
 
