@@ -6,4 +6,7 @@ const router = express.Router();
 
 router.get("/", authorize([]), controller.renderDashboard);
 
+router.get("/issues", authorize([]), controller.getIssues);
+router.get("/usuarios", authorize([]), controller.getUsers);
+
 module.exports = router;
