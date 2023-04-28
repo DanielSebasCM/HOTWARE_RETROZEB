@@ -63,7 +63,7 @@ form.addEventListener("submit", (event) => {
     },
   })
     .then(() => {
-      window.location.href = `${routes.retrospectives}/${idRetrospective}/preguntas`;
+      window.location.href = `/retrospectivas/${idRetrospective}/preguntas`;
     })
     .catch((err) => {
       console.log(err);

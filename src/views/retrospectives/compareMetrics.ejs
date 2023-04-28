@@ -6,7 +6,7 @@
       <h1 class="title">Comparación de retrospectivas</h1>
       <div class="horizontal-container">
         <p class="description"> Retrospectivas a comparar: </p>
-        <input type="number" id="n_retrospectives" min="2" max="10" value="<%= n %>" class="input input--number">
+        <input type="number" id="n_retrospectives" min="2" max="<%= maxRetros %>" value="<%= n %>" class="input input--number">
       </div>
     </div>
     <div class="banner__section">
@@ -36,7 +36,7 @@
       </select>
     </div>
     <div class="checkbox-container">
-      <input type="checkbox" class="question-checkbox mr-1" id="accum" checked />
+      <input type="checkbox" class="question-checkbox mr-1" id="accum" />
       <label for="accum">Acumular</label>
     </div>
     <div class="checkbox-container">
@@ -90,19 +90,12 @@
           <% for (let i=0; i < epics.length; i++) { %>
           <li class="items__item">
             <input type="checkbox" class="multi-select-dropdown__checkbox" id="<%= epics[i] %>" checked />
-            <label for="<%= epics[i] %>"><%= epics[i] || "No epic" %></label>
+            <label for="<%= epics[i] %>"><%= epics[i] || "Sin Epica" %></label>
           </li>
           <% } %>
         </ul>
       </div>
     </div>
-    <!-- <div class="select-container">
-      <select class="select" id="epics-options">
-        <% for (let i=0; i < epics.length; i++) { %>
-        <option value="<%= epics[i] || "None" %>"><%= epics[i] || "No epic" %></option>
-        <% } %>
-      </select>
-    </div> -->
   </div>
   <div class="chart-container">
     <button><span class="pill pill--late" data-id="epics-chart">Exportar a CSV</span></button>

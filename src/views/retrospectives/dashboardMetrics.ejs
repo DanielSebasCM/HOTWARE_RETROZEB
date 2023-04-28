@@ -6,53 +6,45 @@
       <h1 class="title"><%= retrospective.name %></h1>
       <p class="description mb-4">Resumen del desempeño en la retrospectiva</p>
     </div>
-    <div class="banner__section">
-      <div>
-        <button class="button button--primary" id="print--button">Generar Reporte</button>
+
+    <div class="banner__section buttons-container">
+      <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives) && retrospective.state !== "CLOSED" && isMember) { %>
+      <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
+      <% } %>
+      <% if(currentPrivileges.includes(privileges.retrospectives.canCloseRetrospectives) && (retrospective.state !== "CLOSED")) { %>
+      <button class="button button--delete-alt dropdown-item" style="min-width: 200px;" id="modal-button">Cerrar Retrospectiva</button>
+      <div id="modal-container" class="modal-container"></div>
+
+      <% } %>
+      <% if(answered ||  retrospective.state === "CLOSED") { %>
+      <div class="toggle-buttons-container toggle-buttons-container--primary">
+        <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
+        <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Respuestas</a>
       </div>
+      <% } %>
     </div>
 
     <span class="line"></span>
   </div>
 
   <!-- FILTERS -->
-  <div class="banner mb-3">
-    <div class="banner__section">
-      <h3 class="subtitle">Filtros</h3>
-      <div class="filters-container">
-        <div class="select-container">
-          <select class="select" id="label-options">
-            <option value="All">Todos los Labels</option>
-            <% for (let i=0; i < labels.length; i++) { %>
-            <option value="<%= labels[i] %>"><%= labels[i] %></option>
-            <% } %>
-            <option value="None">Sin Label</option>
-          </select>
-        </div>
-        <div class="select-container align-flex-end">
-          <select class="select" id="issues-options">
-            <option value="All">Todos los Issues</option>
-            <option value="Team" selected>Issues <%= retrospective.team_name %></option>
-            <option value="Personal">Issues personales</option>
-          </select>
-        </div>
-      </div>
+  <h3 class="subtitle">Filtros</h3>
+  <div class="filters-container">
+    <div class="select-container">
+      <select class="select" id="label-options">
+        <option value="All">Todos los Labels</option>
+        <% for (let i=0; i < labels.length; i++) { %>
+        <option value="<%= labels[i] %>"><%= labels[i] %></option>
+        <% } %>
+        <option value="None">Sin Label</option>
+      </select>
     </div>
-    <div class="banner__section align-flex-center">
-      <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives) && retrospective.state !== "CLOSED" && isMember) { %>
-      <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
-      <% } %>
-      <% if(currentPrivileges.includes(privileges.retrospectives.canCloseRetrospectives) && (retrospective.state !== "CLOSED")) { %>
-      <form action="<%= routes.retrospectives %>/<%= retrospective.id %>/cerrar?_method=PATCH" method="POST">
-        <button class="button button--delete-alt" style="min-width: 200px;">Cerrar Retrospectiva</button>
-      </form>
-      <% } %>
-      <% if(answered ||  retrospective.state === "CLOSED") { %>
-      <div class="toggle-buttons-container toggle-buttons-container--primary">
-        <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
-        <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
-      </div>
-      <% } %>
+    <div class="select-container">
+      <select class="select" id="issues-options">
+        <option value="All">Todos los Issues</option>
+        <option value="Team" selected>Issues <%= retrospective.team_name %></option>
+        <option value="Personal">Issues personales</option>
+      </select>
     </div>
   </div>
 
@@ -83,4 +75,3 @@
 </section>
 
 <script type="module" src="/assets/js/dashboardMetrics.js"></script>
-<script type="module" src="/assets/js/report.js"></script>

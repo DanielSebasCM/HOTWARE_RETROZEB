@@ -38,19 +38,15 @@ const renderInitRetrospective = async (req, res, next) => {
       return res.redirect(".");
     }
 
-    await Sprint.syncJira();
+    const newSprint = await Sprint.syncJira();
 
+    if (newSprint) {
+      req.session.successMessage =
+        "Hay un nuevo sprint disponible, se han cerrado las retrospectivas anteriores";
+    }
     const team = await Team.getById(req.session.selectedTeam.id);
     let questions = [];
     const retrospective = await team.getLastRetrospective();
-
-    if (retrospective && retrospective.state == "IN_PROGRESS") {
-      req.session.errorMessage =
-        "Ya hay una retrospectiva activa para el equipo " +
-        team.name +
-        ". Ciérrala para empezar una nueva.";
-      return res.redirect(".");
-    }
 
     let sprint = await Sprint.getLast();
 
@@ -62,7 +58,7 @@ const renderInitRetrospective = async (req, res, next) => {
       return res.redirect(".");
     }
 
-    questions = await Question.getAll();
+    questions = await Question.getAllActive();
 
     const activeSprint = await Sprint.getLastWithRetroByTeamId(
       req.session.selectedTeam.id
@@ -221,6 +217,8 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
       (user) => user.uid === req.session.currentUser.uid
     );
     const labels = await retrospective.getLabels();
+
+
     res.render("retrospectives/dashboardMetrics", {
       title: "Dashboard",
       retrospective,
@@ -277,13 +275,27 @@ const renderCompareRetroMetrics = async (req, res, next) => {
   try {
     if (!req.session.selectedTeam) {
       req.session.errorMessage =
-        "Únete o selecciona un equipo para poder iniciar una retrospectiva";
+        "Únete o selecciona un equipo para poder comparar retrospectivas";
       return res.redirect("..");
     }
 
     const { n } = req.params;
     const team = await Team.getById(req.session.selectedTeam.id);
     const retrospectives = await team.getNClosedRetrospectives(n);
+
+    if (retrospectives.length < 2) {
+      req.session.errorMessage =
+        "El equipo" +
+        (n > 1 ? " no tiene" : " no tiene suficientes") +
+        " retrospectivas cerradas";
+      return res.redirect("..");
+    }
+
+    if (retrospectives.length < n) {
+      res.redirect("./" + retrospectives.length);
+    }
+
+    const maxRetros = Math.min(10);
 
     retrospectives.sort((a, b) => a.end_date - b.end_date);
     let labels = new Set();
@@ -304,6 +316,7 @@ const renderCompareRetroMetrics = async (req, res, next) => {
       labels,
       epics,
       n,
+      maxRetros,
     });
   } catch (err) {
     next(err);
@@ -350,17 +363,6 @@ const getRetrospectiveUsers = async (req, res, next) => {
   }
 };
 
-const getSprint = async (req, res, next) => {
-  try {
-    const id_retrospective = req.params.id;
-    const retrospective = await Retrospective.getById(id_retrospective);
-    const sprint = await Sprint.getById(retrospective.id_sprint);
-    res.json(sprint);
-  } catch (err) {
-    next(err);
-  }
-};
-
 module.exports = {
   renderRetrospectives,
   renderInitRetrospective,
@@ -371,7 +373,6 @@ module.exports = {
   getRetrospectiveIssues,
   getRetrospectiveAnswers,
   getRetrospectiveUsers,
-  getSprint,
   post,
   postRetrospectiveAnswers,
   patchRetrospectiveState,

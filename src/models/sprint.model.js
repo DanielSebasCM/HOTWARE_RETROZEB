@@ -90,19 +90,46 @@ class Sprint {
       fetchProjectJiraLatestSprint,
       fetchSprintIssues,
     } = require("../utils/jira");
+
     const jiraSprint = await fetchProjectJiraLatestSprint(
       process.env.ZECOMMERCE_PROJECT_ID,
       "closed"
     );
-    if (!jiraSprint || jiraSprint.id) return;
+    if (!jiraSprint || jiraSprint.id) {
+      console.log("No new sprint to sync");
+      return false;
+    }
 
-    jiraSprint.post();
+    const Retrospective = require("./retrospective.model");
+    const Team = require("./team.model");
 
+    const lastSprint = await Sprint.getLast();
+    const teams = await Team.getAllActive();
+    for (const team of teams) {
+      const lastTeamRetro = await team.getLastRetrospective();
+
+      if (lastTeamRetro.state == "IN_PROGRESS") {
+        await lastTeamRetro.close();
+      }
+      if (!lastTeamRetro || lastTeamRetro.id_sprint != lastSprint.id) {
+        const retrospective = new Retrospective({
+          name: lastSprint.name + ": " + team.name,
+          id_sprint: lastSprint.id,
+          id_team: team.id,
+        });
+        await retrospective.post();
+        await retrospective.close();
+      }
+    }
+
+    await jiraSprint.post();
     const issues = await fetchSprintIssues(jiraSprint.id_jira);
 
     issues.forEach((issue) => {
       issue.post();
     });
+
+    return true;
   }
 
   static verify(sprint) {

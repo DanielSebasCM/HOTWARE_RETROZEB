@@ -32,6 +32,15 @@
     ".multi-select-container"
   );
   if (!multiSelectContainers) return;
+
+  window.addEventListener("click", function (e) {
+    for (let container of multiSelectContainers) {
+      if (!container.contains(e.target)) {
+        container.querySelector(".multi-select-dropdown").classList.add("hide");
+      }
+    }
+  });
+
   multiSelectContainers.forEach((container) => {
     const button = container.querySelector(".multi-select-button");
 
