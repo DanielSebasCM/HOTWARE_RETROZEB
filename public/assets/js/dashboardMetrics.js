@@ -380,3 +380,49 @@ const modalClose = document.getElementById("modal-close");
 modalClose.addEventListener("click", function () {
   modalContainer.style.display = "none";
 });
+function chartToCSV(chartId) {
+  const chart = Chart.getChart(chartId);
+  const { datasets, labels } = chart.data;
+  const res = {};
+  res.label = labels;
+  datasets.forEach((dataset) => {
+    res[dataset.label] = dataset.data;
+  });
+  console.log(res);
+
+  return ConvertToCSV(res);
+}
+
+function ConvertToCSV(data) {
+  const headers = Object.keys(data);
+  const rows = Object.values(data);
+
+  let csv = headers.join(",") + "\n";
+
+  for (let i = 0; i < rows[0].length; i++) {
+    let row = "";
+    for (let j = 0; j < rows.length; j++) {
+      if (j === rows.length - 1) row += rows[j][i];
+      else row += rows[j][i] + ",";
+    }
+    csv += row + "\n";
+  }
+
+  return csv;
+}
+
+function download(chartId) {
+  const data = chartToCSV(chartId);
+  const blob = new Blob([data], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.setAttribute("href", url);
+  a.setAttribute("download", `${chartId}.csv`);
+  a.click();
+}
+
+document.querySelectorAll(".pill--late").forEach((pill) => {
+  pill.addEventListener("click", function () {
+    download(this.dataset.id);
+  });
+});
