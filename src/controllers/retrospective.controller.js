@@ -222,7 +222,6 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
     );
     const labels = await retrospective.getLabels();
 
-    console.log(isMember);
 
     res.render("retrospectives/dashboardMetrics", {
       title: "Dashboard",
