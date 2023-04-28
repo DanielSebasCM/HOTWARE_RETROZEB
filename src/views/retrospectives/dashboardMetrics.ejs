@@ -12,9 +12,9 @@
       <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
       <% } %>
       <% if(currentPrivileges.includes(privileges.retrospectives.canCloseRetrospectives) && (retrospective.state !== "CLOSED")) { %>
-      <form action="<%= routes.retrospectives %>/<%= retrospective.id %>/cerrar?_method=PATCH" method="POST">
-        <button class="button button--delete-alt" style="min-width: 200px;">Cerrar Retrospectiva</button>
-      </form>
+      <button class="button button--delete-alt dropdown-item" style="min-width: 200px;" id="modal-button">Cerrar Retrospectiva</button>
+      <div id="modal-container" class="modal-container"></div>
+
       <% } %>
       <% if(answered ||  retrospective.state === "CLOSED") { %>
       <div class="toggle-buttons-container toggle-buttons-container--primary">
