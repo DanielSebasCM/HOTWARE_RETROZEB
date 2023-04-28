@@ -218,7 +218,6 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
     );
     const labels = await retrospective.getLabels();
 
-
     res.render("retrospectives/dashboardMetrics", {
       title: "Dashboard",
       retrospective,
@@ -341,6 +340,17 @@ const getRetrospectiveAnswers = async (req, res, next) => {
   }
 };
 
+const getSprint = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const retro = await Retrospective.getById(id);
+    const sprint = await Sprint.getById(retro.id_sprint);
+    res.json(sprint);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getRetrospectiveIssues = async (req, res, next) => {
   try {
     const id_retrospective = req.params.id;
@@ -376,4 +386,5 @@ module.exports = {
   post,
   postRetrospectiveAnswers,
   patchRetrospectiveState,
+  getSprint,
 };
