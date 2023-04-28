@@ -65,6 +65,9 @@ const getIssues = async (req, res, next) => {
 
 const getUsers = async (req, res, next) => {
   try {
+    if (!req.session.selectedTeam) {
+      return res.status(200).json([]);
+    }
     const team = await Team.getById(req.session.selectedTeam.id);
     const users = await team.getMembers();
     res.status(200).json(users);

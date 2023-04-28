@@ -50,11 +50,12 @@ labelOptions.addEventListener("change", (e) => {
   selectedLabel = e.target.value;
   updateCharts();
 });
-
-issuesOptions.addEventListener("change", (e) => {
-  selectedIssues = e.target.value;
-  updateCharts();
-});
+if (issuesOptions) {
+  issuesOptions.addEventListener("change", (e) => {
+    selectedIssues = e.target.value;
+    updateCharts();
+  });
+}
 
 showEmptyInput.addEventListener("change", (e) => {
   showEmpty = e.target.checked;
