@@ -6,7 +6,7 @@
   </div>
 
   <div class="horizontal-container">
-    <% if (currentPrivileges.includes(privileges.retrospectives.getRetrospectives)) { %>
+    <% if (currentPrivileges.includes(privileges.retrospectives.getRetrospectives) && answerableRetrospectives.length > 0) { %>
     <div class="card">
       <p class="subtitle">Retrospectivas activas</p>
       <table class="table">
@@ -23,7 +23,7 @@
     </div>
     <% } %>
 
-    <% if (currentPrivileges.includes(privileges.actionables.getActionables)) { %>
+    <% if (currentPrivileges.includes(privileges.actionables.getActionables) && ownActionables.length > 0) { %>
     <div class="card">
       <p class="subtitle">Accionables Pendientes</p>
       <table class="table">

@@ -14,11 +14,17 @@ const renderDashboard = async (req, res, next) => {
       "active"
     );
     const retrospectives = await Retrospective.getAllByState("IN_PROGRESS");
-    const answerableRetrospectives = retrospectives.filter(
-      async (retrospective) => {
-        const users = await retrospective.getUsers();
-        return users.some((user) => user.uid === req.session.currentUser.uid);
-      }
+    let answerableRetrospectives = await Promise.all(
+      retrospectives.map(async (retrospective) => {
+        const teamUsers = await retrospective.getUsers();
+        return teamUsers.some(
+          (user) => user.uid === req.session.currentUser.uid
+        );
+      })
+    );
+
+    answerableRetrospectives = retrospectives.filter(
+      (retrospective, index) => answerableRetrospectives[index]
     );
 
     const actionables = await getJiraActionables();
