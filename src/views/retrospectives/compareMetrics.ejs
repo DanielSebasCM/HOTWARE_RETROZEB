@@ -9,6 +9,11 @@
         <input type="number" id="n_retrospectives" min="2" max="10" value="<%= n %>" class="input input--number">
       </div>
     </div>
+    <div class="banner__section">
+      <div>
+        <button class="button button--primary" id="print--button">Generar Reporte</button>
+      </div>
+    </div>
     <span class="line"></span>
   </div>
 
@@ -42,6 +47,7 @@
 
   <!-- CHARTS -->
   <div class="chart-container">
+    <button><span class="pill pill--late" data-id="general-chart">Exportar a CSV</span></button>
     <canvas id="general-chart"></canvas>
   </div>
 
@@ -99,6 +105,7 @@
     </div> -->
   </div>
   <div class="chart-container">
+    <button><span class="pill pill--late" data-id="epics-chart">Exportar a CSV</span></button>
     <canvas id="epics-chart"></canvas>
   </div>
   <script type="module" src="/assets/js/compareMetrics.js"></script>
