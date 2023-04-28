@@ -25,6 +25,7 @@ let selectedLabel = labelOptions.value;
 let selectedIssues = issuesOptions.value;
 let showEmpty = showEmptyInput.checked;
 let baseUrl = window.location.href.split("/");
+const retroId = baseUrl[4];
 baseUrl.pop();
 baseUrl = baseUrl.join("/");
 
@@ -342,3 +343,40 @@ async function getUsers() {
     console.log(error);
   }
 }
+
+// Confirm closing retro modal
+
+//NUEVO EQUIPO
+const modalButton = document.getElementById("modal-button");
+const modalContainer = document.getElementById("modal-container");
+
+modalButton.addEventListener("click", function () {
+  modalContainer.style.display = "block";
+});
+
+modalContainer.addEventListener("click", function (event) {
+  if (event.target === modalContainer) {
+    modalContainer.style.display = "none";
+  }
+});
+
+const modalContent = document.createElement("div");
+modalContent.setAttribute("id", "modal-content");
+modalContent.setAttribute("class", "modal-content");
+
+modalContent.innerHTML = `
+    <h2 class="title">¿Estás seguro de que quieres cerrar la retrospectiva?</h2>
+    <form method="POST" action="/retrospectivas/${retroId}/cerrar?_method=PATCH" id="form">
+      <div class="buttons-container">
+        <button class="button button--delete-alt" type="submit">Sí</button>
+        <a class="button button--discard" id="modal-close">No</a>
+      </div>
+    </form>
+    `;
+modalContainer.appendChild(modalContent);
+
+// Agrega un evento de clic al botón de cerrar para ocultar el modal
+const modalClose = document.getElementById("modal-close");
+modalClose.addEventListener("click", function () {
+  modalContainer.style.display = "none";
+});
