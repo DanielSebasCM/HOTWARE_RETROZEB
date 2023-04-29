@@ -344,42 +344,99 @@ async function getUsers() {
   }
 }
 
-// Confirm closing retro modal
+// Generate Report
+document
+  .querySelector("#print--button")
+  .addEventListener("click", async function () {
+    // Clone the body and create a new one; Get Charts
+    const previousBody = document.body.cloneNode(true);
+    const canvas = document.querySelectorAll("canvas");
+    const newBody = document.createElement("body");
 
-//NUEVO EQUIPO
-const modalButton = document.getElementById("modal-button");
-const modalContainer = document.getElementById("modal-container");
+    // Get the name of the retro, sprint and team
+    const retroName = document.querySelector(".title").textContent;
 
-modalButton.addEventListener("click", function () {
-  modalContainer.style.display = "block";
-});
+    const url = window.location.href.split("/");
+    url[url.length - 1] = "sprint";
+    const sprint = await fetch(url.join("/")).then((res) => res.json());
 
-modalContainer.addEventListener("click", function (event) {
-  if (event.target === modalContainer) {
-    modalContainer.style.display = "none";
-  }
-});
+    const teamName = document
+      .querySelector("#issues-options option:nth-child(2)")
+      .textContent.split(" ");
+    teamName.shift();
 
-const modalContent = document.createElement("div");
-modalContent.setAttribute("id", "modal-content");
-modalContent.setAttribute("class", "modal-content");
+    // Create div for headers
+    newBody.appendChild(document.createElement("div")).style.display = "flex";
+    const newDiv = newBody.querySelector("div");
+    newDiv.style.alignItems = "center";
+    newDiv.style.justifyContent = "center";
+    newDiv.style.flexDirection = "column";
+    newDiv.style.width = "100%";
 
-modalContent.innerHTML = `
-    <h2 class="title">¿Estás seguro de que quieres cerrar la retrospectiva?</h2>
-    <form method="POST" action="/retrospectivas/${retroId}/cerrar?_method=PATCH" id="form">
-      <div class="buttons-container">
-        <button class="button button--delete-alt" type="submit">Sí</button>
-        <a class="button button--discard" id="modal-close">No</a>
-      </div>
-    </form>
-    `;
-modalContainer.appendChild(modalContent);
+    // Create headers
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Retrospectiva: <span>${retroName}</span>`;
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Sprint: <span>${sprint.name}</span>`;
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Equipo: <span>${teamName.join(" ")}</span>`;
+    newDiv.appendChild(document.createElement("div")).style.textAlign =
+      "center";
+    newDiv.appendChild(
+      document.createElement("h2")
+    ).innerHTML = `Labels: <span>${
+      selectedLabel === "All" ? "Todos" : selectedLabel
+    }</span>`;
+    newDiv.appendChild(
+      document.createElement("h2")
+    ).innerHTML = `Issues: <span>${
+      selectedIssues === "All"
+        ? "Todos"
+        : selectedIssues === "Personal"
+        ? "Personales"
+        : "De equipo"
+    }</span>`;
 
-// Agrega un evento de clic al botón de cerrar para ocultar el modal
-const modalClose = document.getElementById("modal-close");
-modalClose.addEventListener("click", function () {
-  modalContainer.style.display = "none";
-});
+    let chart1 = Chart.getChart("general-chart");
+
+    const data = chart1.data.datasets;
+    let sp = "";
+    data.forEach((obj, i, arr) => {
+      if (i !== arr.length - 1)
+        sp += `${obj.label}: <span>${
+          obj.data[0] ? obj.data[0] : 0
+        } sp /</span> `;
+      else
+        sp += `${obj.label}: <span>${obj.data[0] ? obj.data[0] : 0} sp</span> `;
+    });
+    newDiv.appendChild(document.createElement("h2")).innerHTML = sp;
+
+    newDiv.querySelectorAll("span").forEach((span) => {
+      span.style.fontWeight = "normal";
+    });
+    newDiv
+      .querySelectorAll("h2")
+      .forEach((h2) => (h2.style.alignSelf = "flex-start"));
+    newBody.appendChild(document.createElement("br"));
+    newBody.appendChild(document.createElement("hr"));
+    newBody.appendChild(document.createElement("br"));
+
+    for (let node of canvas) {
+      newBody.appendChild(node);
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("hr"));
+      newBody.appendChild(document.createElement("br"));
+    }
+    document.body = newBody;
+    await new Promise((r) => setTimeout(r, 500));
+    window.print();
+    document.body = previousBody;
+    location.reload();
+  });
+
 function chartToCSV(chartId) {
   const chart = Chart.getChart(chartId);
   const { datasets, labels } = chart.data;
@@ -425,4 +482,39 @@ document.querySelectorAll(".pill--late").forEach((pill) => {
   pill.addEventListener("click", function () {
     download(this.dataset.id);
   });
+});
+
+// Confirm closing retro modal
+const modalButton = document.getElementById("modal-button");
+const modalContainer = document.getElementById("modal-container");
+
+modalButton.addEventListener("click", function () {
+  modalContainer.style.display = "block";
+});
+
+modalContainer.addEventListener("click", function (event) {
+  if (event.target === modalContainer) {
+    modalContainer.style.display = "none";
+  }
+});
+
+const modalContent = document.createElement("div");
+modalContent.setAttribute("id", "modal-content");
+modalContent.setAttribute("class", "modal-content");
+
+modalContent.innerHTML = `
+    <h2 class="title">¿Estás seguro de que quieres cerrar la retrospectiva?</h2>
+    <form method="POST" action="/retrospectivas/${retroId}/cerrar?_method=PATCH" id="form">
+      <div class="buttons-container">
+        <button class="button button--delete-alt" type="submit">Sí</button>
+        <a class="button button--discard" id="modal-close">No</a>
+      </div>
+    </form>
+    `;
+modalContainer.appendChild(modalContent);
+
+// Agrega un evento de clic al botón de cerrar para ocultar el modal
+const modalClose = document.getElementById("modal-close");
+modalClose.addEventListener("click", function () {
+  modalContainer.style.display = "none";
 });
