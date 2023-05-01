@@ -158,6 +158,43 @@
   z-index: 1000;
 }
 
+/* -------------NO JIRA ID----------- */
+.no-jira-id {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  padding: 3rem 3rem;
+  background-color: var(--color-bg-body);
+}
+
+.no-jira-id .no-jira-id__body {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 8rem;
+  text-align: center;
+}
+
+.no-jira-id__instructions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.no-jira-id__img {
+  text-align: center;
+}
+
+.no-jira-id__img img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: var(--border-radius);
+}
+
 /*--------------LIST--------------*/
 .items__list {
   max-height: auto;

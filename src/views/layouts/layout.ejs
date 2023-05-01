@@ -1,58 +1,63 @@
 <!-- HEAD -->
 <%- include('../partials/head.ejs') %>
 
-  <body>
-    <div class="notification-container">
-      <% if(locals.successMessage && locals.successMessage !="" ) { %>
-        <div class="notification notification--success">
-          <div class="notification__content">
-            <div class="notification__icon">
-              <span class="icon"></span>
-            </div>
-            <p class="notification__message">
-              <%= locals.successMessage %>
-            </p>
-          </div>
-          <button class="notification__close icon" type="submit" value="exito"></button>
+<body>
+  <div class="notification-container">
+    <% if(locals.successMessage && locals.successMessage !="" ) { %>
+    <div class="notification notification--success">
+      <div class="notification__content">
+        <div class="notification__icon">
+          <span class="icon"></span>
         </div>
-      <% } %>
-      <% if(locals.errorMessage && locals.errorMessage !="" ) { %>
-        <div class=" notification notification--error">
-          <div class="notification__content">
-            <div class="notification__icon">
-              <span class="icon"></span>
-            </div>
-            <p class="notification__message">
-              <%= locals.errorMessage %>
-            </p>
-          </div>
-          <button class="notification__close icon" type="submit" value="error"></button>
-        </div>
-      <% } %>
+        <p class="notification__message">
+          <%= locals.successMessage %>
+        </p>
+      </div>
+      <button class="notification__close icon" type="submit" value="exito"></button>
     </div>
-    <% if(locals.errorView) { %>
-      <!-- BODY -->
-      <div class="error-view">
-        <%- body %>
-      </div>
-    <% } else if (locals.currentUser && locals.currentUser.id_jira && locals.layout) { %>
-      <!-- NAV -->
-      <%- include('../partials/nav.ejs') %>
-      <!-- SIDEBAR -->
-      <%- include('../partials/sidebar.ejs') %>
-      <div class="wrapper">
-        <main class="content">
-          <!-- BODY -->
-          <%- body %>
-        </main>
-      <% } else { %>
-        <!-- BODY -->
-        <div class="login">
-          <%- body %>
+    <% } %>
+    <% if(locals.errorMessage && locals.errorMessage !="" ) { %>
+    <div class=" notification notification--error">
+      <div class="notification__content">
+        <div class="notification__icon">
+          <span class="icon"></span>
         </div>
-      <% } %>
-      <%- include('../partials/footer.ejs') %>
+        <p class="notification__message">
+          <%= locals.errorMessage %>
+        </p>
       </div>
-  </body>
+      <button class="notification__close icon" type="submit" value="error"></button>
+    </div>
+    <% } %>
+  </div>
+  <% if(locals.errorView) { %>
+  <!-- BODY -->
+  <div class="error-view">
+    <%- body %>
+  </div>
+  <% } else if (locals.currentUser && locals.currentUser.id_jira && locals.layout) { %>
+  <!-- NAV -->
+  <%- include('../partials/nav.ejs') %>
+  <!-- SIDEBAR -->
+  <%- include('../partials/sidebar.ejs') %>
+  <div class="wrapper">
+    <main class="content">
+      <!-- BODY -->
+      <%- body %>
+    </main>
+    <% } else if (locals.currentUser && !locals.currentUser.id_jira) { %>
+    <!-- BODY -->
+    <div class="no-jira-id">
+      <%- body %>
+    </div>
+    <% } else { %>
+    <!-- BODY -->
+    <div class="login">
+      <%- body %>
+    </div>
+    <% } %>
+    <%- include('../partials/footer.ejs') %>
+  </div>
+</body>
 
-  </html>
+</html>
