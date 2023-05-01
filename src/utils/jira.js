@@ -39,7 +39,7 @@ async function getJiraActionables() {
     JIRA_USER_HOTWARE,
     JIRA_API_KEY_HOTWARE,
     {
-      jql: "project=APIT AND issuetype=Act",
+      jql: 'project=APIT AND labels = "Accionable"',
       fields: [
         "summary",
         "description",
@@ -124,7 +124,7 @@ async function postJiraActionable(actionable) {
       summary: actionable.title,
       description,
       issuetype: {
-        name: "Act",
+        name: "Task",
       },
       priority: {
         name: actionable.priority ? actionable.priority : "Medium",
@@ -132,6 +132,7 @@ async function postJiraActionable(actionable) {
       assignee: {
         accountId: user ? user.id_jira : null,
       },
+      labels: ["Accionable"],
     },
   });
 
