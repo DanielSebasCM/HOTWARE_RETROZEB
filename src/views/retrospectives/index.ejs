@@ -57,7 +57,7 @@
         <tbody>
           <% for(let i=0; i < retrospectives.length; i++) { %>
 
-          <% if(currentPrivileges.includes(privileges.teams.canModifyTeams)) {%>
+          <% if(currentPrivileges.includes(privileges.retrospectives.getRetrospectives)) {%>
           <tr onclick="window.location ='<%= routes.retrospectives %>/<%= retrospectives[i].id %>'" id="retrospectives-list" class="retrospective">
             <% } else { %>
           <tr id="retrospectives-list" class="retrospective no-pointer">

@@ -38,19 +38,15 @@ const renderInitRetrospective = async (req, res, next) => {
       return res.redirect(".");
     }
 
-    await Sprint.syncJira();
+    const newSprint = await Sprint.syncJira();
 
+    if (newSprint) {
+      req.session.successMessage =
+        "Hay un nuevo sprint disponible, se han cerrado las retrospectivas anteriores";
+    }
     const team = await Team.getById(req.session.selectedTeam.id);
     let questions = [];
     const retrospective = await team.getLastRetrospective();
-
-    if (retrospective && retrospective.state == "IN_PROGRESS") {
-      req.session.errorMessage =
-        "Ya hay una retrospectiva activa para el equipo " +
-        team.name +
-        ". Ciérrala para empezar una nueva.";
-      return res.redirect(".");
-    }
 
     let sprint = await Sprint.getLast();
 
@@ -221,6 +217,7 @@ const renderRetrospectiveMetrics = async (req, res, next) => {
       (user) => user.uid === req.session.currentUser.uid
     );
     const labels = await retrospective.getLabels();
+
     res.render("retrospectives/dashboardMetrics", {
       title: "Dashboard",
       retrospective,
@@ -343,6 +340,17 @@ const getRetrospectiveAnswers = async (req, res, next) => {
   }
 };
 
+const getSprint = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const retro = await Retrospective.getById(id);
+    const sprint = await Sprint.getById(retro.id_sprint);
+    res.json(sprint);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const getRetrospectiveIssues = async (req, res, next) => {
   try {
     const id_retrospective = req.params.id;
@@ -378,4 +386,5 @@ module.exports = {
   post,
   postRetrospectiveAnswers,
   patchRetrospectiveState,
+  getSprint,
 };

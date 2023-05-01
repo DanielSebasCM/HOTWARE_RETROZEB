@@ -12,9 +12,9 @@
       <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
       <% } %>
       <% if(currentPrivileges.includes(privileges.retrospectives.canCloseRetrospectives) && (retrospective.state !== "CLOSED")) { %>
-      <form action="<%= routes.retrospectives %>/<%= retrospective.id %>/cerrar?_method=PATCH" method="POST">
-        <button class="button button--delete-alt" style="min-width: 200px;">Cerrar Retrospectiva</button>
-      </form>
+      <button class="button button--delete-alt dropdown-item" style="min-width: 200px;" id="modal-button">Cerrar Retrospectiva</button>
+      <div id="modal-container" class="modal-container"></div>
+
       <% } %>
       <% if(answered ||  retrospective.state === "CLOSED") { %>
       <div class="toggle-buttons-container toggle-buttons-container--primary">
@@ -22,6 +22,9 @@
         <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Respuestas</a>
       </div>
       <% } %>
+      <div>
+        <button class="button button--primary" id="print--button">Generar Reporte</button>
+      </div>
     </div>
 
     <span class="line"></span>
@@ -50,6 +53,7 @@
 
   <!-- CHARTS -->
   <div class="chart-container">
+    <button><span class="pill pill--late" data-id="general-chart">Exportar a CSV</span></button>
     <canvas id="general-chart"></canvas>
   </div>
 
@@ -63,9 +67,11 @@
   </div>
   <div class="charts-container charts-container--no-col">
     <div class="chart-container">
+      <button><span class="pill pill--late" data-id="epics-chart">Exportar a CSV</span></button>
       <canvas id="epics-chart"></canvas>
     </div>
     <div class="chart-container">
+      <button><span class="pill pill--late" data-id="types-chart">Exportar a CSV</span></button>
       <canvas id="types-chart"></canvas>
     </div>
   </div>

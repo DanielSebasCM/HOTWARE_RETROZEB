@@ -29,7 +29,7 @@ const constants = {
   },
   routes: {
     home: "/",
-    dashboard: "/retrospectivas",
+    dashboard: "/dashboard",
     login: "/login",
     logout: "/logout",
     refreshToken: "/token/refresh",

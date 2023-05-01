@@ -39,6 +39,12 @@ router.get(
   controller.renderRetrospectiveAnswer
 );
 
+router.get(
+  "/:id/sprint",
+  authorize([privileges.getMetrics]),
+  controller.getSprint
+);
+
 // API ROUTES
 
 // GET
