@@ -70,6 +70,7 @@ app.use(errorHandler);
 app.locals.routes = routes;
 app.locals.layout = true;
 app.locals.privileges = privileges;
+app.locals.googleClientId = process.env.GOOGLE_CLIENT_ID;
 
 // NODE SCHEDULE
 const Sprint = require("./src/models/sprint.model");
