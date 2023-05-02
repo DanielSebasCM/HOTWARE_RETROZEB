@@ -156,3 +156,18 @@
     });
   });
 })();
+
+// prevent double click on forms
+
+window.addEventListener("load", () => {
+  const forms = document.querySelectorAll("form");
+  if (!forms) return;
+
+  forms.forEach((form) => {
+    form.addEventListener("submit", () => {
+      const submitBtn = form.querySelector("button[type='submit']");
+      if (!submitBtn) return;
+      submitBtn.disabled = true;
+    });
+  });
+});
