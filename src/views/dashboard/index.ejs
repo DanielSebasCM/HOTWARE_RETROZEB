@@ -1,6 +1,12 @@
 <section class="dashboard">
   <div class="banner">
     <div class="banner__section">
+      <h1 class="title">Bienvenido, <%= currentUser.first_name %></h1>
+      <p class="description">Resumen de la última actividad</p>
+    </div>
+  </div>
+  <div class="banner">
+    <div class="banner__section">
       <h1 class="title"><%= sprint.name %></h1>
     </div>
   </div>
@@ -53,7 +59,7 @@
     <div class="select-container">
       <select class="select" id="issues-options">
         <option value="All">Todos los Issues</option>
-        <option value="Team" selected>Issues <%= team.name %></option>
+        <option value="Team" selected>Issues equipo: <%= team.name %></option>
         <option value="Personal">Issues personales</option>
       </select>
     </div>
