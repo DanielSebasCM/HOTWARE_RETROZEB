@@ -1,46 +1,55 @@
 <section class="dashboard">
   <div class="banner">
     <div class="banner__section">
-      <h1 class="title"><%= sprint.name %></h1>
+      <h1 class="title">Bienvenido, <%= currentUser.first_name %></h1>
+      <p class="description">Resumen de la actividad más reciente</p>
     </div>
+    <span class="line"></span>
   </div>
 
-  <div class="horizontal-container">
+  <% if ((currentPrivileges.includes(privileges.retrospectives.getRetrospectives) && answerableRetrospectives.length > 0) ||(currentPrivileges.includes(privileges.actionables.getActionables) && ownActionables.length > 0)) { %>
+  <div class="horizontal-container align-flex-start mb-4">
     <% if (currentPrivileges.includes(privileges.retrospectives.getRetrospectives) && answerableRetrospectives.length > 0) { %>
     <div class="card">
-      <p class="subtitle">Retrospectivas activas</p>
-      <table class="table">
+      <p class="subtitle subtitle--blue">Retrospectivas activas</p>
+      <ol class="list">
         <% for (let retro of answerableRetrospectives) { %>
-        <% if(currentPrivileges.includes(privileges.retrospectives.getMetrics)) {%>
-        <tr onclick="window.location ='<%= routes.retrospectives %>/<%= retro.id %>'" class="retrospective">
+        <li>
+          <% if(currentPrivileges.includes(privileges.retrospectives.getMetrics)) {%>
+          <a class="description link" href='<%= routes.retrospectives %>/<%= retro.id %>'><%= retro.name %></a>
           <% } else { %>
-        <tr class="retrospective no-pointer">
+          <p class="description"><%= retro.name %></p>
           <% } %>
-          <td><%= retro.name %></td>
-        </tr>
+        </li>
         <% } %>
-      </table>
+      </ol>
     </div>
     <% } %>
 
     <% if (currentPrivileges.includes(privileges.actionables.getActionables) && ownActionables.length > 0) { %>
     <div class="card">
-      <p class="subtitle">Accionables Pendientes</p>
-      <table class="table">
+      <p class="subtitle subtitle--blue">Accionables Pendientes</p>
+      <ol class="list">
         <% for (let actionable of ownActionables) { %>
-        <tr onclick="window.location ='<%= `${routes.actionables}/process` %>'" class="retrospective">
-          <td><%= actionable.title %></td>
-        </tr>
+        <li>
+          <% if(currentPrivileges.includes(privileges.retrospectives.getMetrics)) {%>
+          <a class="description link" href='<%= `${routes.actionables}/process` %>'><%= actionable.title %></a>
+          <% } else { %>
+          <p class="description"><%= actionable.title %></p>
+          <% } %>
+        </li>
         <% } %>
-      </table>
+      </ol>
     </div>
     <% } %>
   </div>
+  <% } %>
 
-  <span class="line"></span>
 
+  <h2 class="subtitle">Sprint actual: <span class="description description--blue"><%= sprint.name %></span></h2>
+  <p class="description mb-3">Resultados y métricas</p>
 
-  <h3 class="subtitle">Filtros</h3>
+  <h3 class="input__label mb-1">Filtros</h3>
   <div class="filters-container">
     <div class="select-container">
       <select class="select" id="label-options">
@@ -53,7 +62,7 @@
     <div class="select-container">
       <select class="select" id="issues-options">
         <option value="All">Todos los Issues</option>
-        <option value="Team" selected>Issues <%= team.name %></option>
+        <option value="Team" selected>Issues equipo: <%= team.name %></option>
         <option value="Personal">Issues personales</option>
       </select>
     </div>
@@ -66,7 +75,7 @@
   </div>
 
   <span class="line"></span>
-  <h2 class="subtitle">Otras métricas</h2>
+  <h2 class="subtitle mb-3">Otras métricas</h2>
   <div class="filters-container">
     <div class="checkbox-container">
       <input type="checkbox" class="question-checkbox mr-1" id="show-empty" />

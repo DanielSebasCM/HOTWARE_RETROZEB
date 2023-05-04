@@ -31,7 +31,7 @@
     <div class="select-container">
       <select class="select" id="issues-options">
         <option value="All" selected>Todos los Issues</option>
-        <option value="Team">Issues <%= selectedTeam.name %></option>
+        <option value="Team">Issues equipo: <%= selectedTeam.name %></option>
         <option value="Personal">Issues personales</option>
       </select>
     </div>
@@ -47,7 +47,9 @@
 
   <!-- CHARTS -->
   <div class="chart-container">
-    <button><span class="pill pill--late" data-id="general-chart">Exportar a CSV</span></button>
+    <button class="button button--primary button--sm mb-0" style="position: absolute; right: 15px;">
+      <span data-id="general-chart">Exportar a CSV</span>
+    </button>
     <canvas id="general-chart"></canvas>
   </div>
 
@@ -98,7 +100,9 @@
     </div>
   </div>
   <div class="chart-container">
-    <button><span class="pill pill--late" data-id="epics-chart">Exportar a CSV</span></button>
+    <button class="button button--primary button--sm mb-0" style="position: absolute; right: 15px;">
+      <span data-id="epics-chart">Exportar a CSV</span>
+    </button>
     <canvas id="epics-chart"></canvas>
   </div>
   <script type="module" src="/assets/js/compareMetrics.js"></script>

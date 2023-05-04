@@ -50,9 +50,14 @@
               <div class="users__avatar-group">
                 <% const len = userTeams[i].members.length > 5 ? 5 : userTeams[i].members.length; %>
                 <% for(let j=0; j< len; j++) { %>
+                <% if(userTeams[i].members[j].picture) { %>
+                <img src="<%= userTeams[i].members[j].picture %>" alt="<%= userTeams[i].members[j].first_name %>" class="user__avatar no-border" />
+                <% } else { %>
                 <span class="user__avatar">
                   <%= userTeams[i].members[j].first_name[0] %><%= userTeams[i].members[j].last_name[0] %>
                 </span>
+                <% } %>
+
                 <% } %>
                 <% if(userTeams[i].members.length > 5) { %>
                 <span class="user__avatar">
@@ -116,9 +121,13 @@
               <div class="users__avatar-group">
                 <% const len = availableTeams[i].members.length > 5 ? 5 : availableTeams[i].members.length; %>
                 <% for(let j=0; j< len; j++) { %>
+                <% if(availableTeams[i].members[j].picture) { %>
+                <img src="<%= availableTeams[i].members[j].picture %>" alt="<%= availableTeams[i].members[j].first_name %>" class="user__avatar no-border" />
+                <% } else { %>
                 <span class="user__avatar">
                   <%= availableTeams[i].members[j].first_name[0] %><%= availableTeams[i].members[j].last_name[0] %>
                 </span>
+                <% } %>
                 <% } %>
                 <% if(availableTeams[i].members.length > 5) { %>
                 <span class="user__avatar">

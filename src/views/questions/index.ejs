@@ -40,18 +40,18 @@
         <span class="label label--active">
           <%= question.type === 'SELECTION' ? 'OP. MULTIPLE' : 
               question.type === 'OPEN' ? 'ABIERTA' :
-              question.type === 'BOOLEAN' ? 'SI/NO' : 
-              question.type === 'SCALE' ? 'ESCALAR' : '' %>
-        </span>        
+              question.type === 'BOOLEAN' ? 'Si / No' : 
+              question.type === 'SCALE' ? '1-5' : '' %>
+        </span>
       </div>
       <% if(question.type === 'SELECTION') { %>
-      <span class="line"></span>
-      <p class="card__description"><%= question.options.join(" / ") %> </p>
+      <span class="input__label description--blue mt-1">Opciones</span>
+      <p class="card__description"><%= question.options.join(" , ") %> </p>
       <% } %>
       <% if(currentPrivileges.includes(privileges.questions.canDeleteQuestions)) { %>
       <form action="/preguntas?_method=DELETE" method="POST">
         <input type="hidden" name="id" value="<%=question.id %>">
-        <button type="submit" class="button button--sm button--delete-alt remove-question-btn" data-id=<%=question.id %>>Eliminar</button>
+        <button type="submit" class="button button--sm button--delete-alt remove-question-btn mt-3" data-id=<%=question.id %>>Eliminar</button>
       </form>
       <% } %>
     </div>
