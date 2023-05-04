@@ -8,9 +8,9 @@ const {
   JIRA_USER_HOTWARE,
   JIRA_API_KEY_HOTWARE,
   JIRA_URL_HOTWARE,
-  JIRA_USER_EXTERNAL,
-  JIRA_API_KEY_EXTERNAL,
-  JIRA_URL_EXTERNAL,
+  JIRA_USER,
+  JIRA_API_KEY,
+  JIRA_URL,
 } = process.env;
 
 // ACTIONABLES
@@ -166,12 +166,12 @@ async function postJiraActionable(actionable) {
  * @returns Issues of the sprint on their actual state
  */
 async function fetchSprintIssues(jiraIdSprint) {
-  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/sprint/${jiraIdSprint}/issue`;
+  const url = `${JIRA_URL}/rest/agile/1.0/sprint/${jiraIdSprint}/issue`;
 
   const issues = await getAll(
     url,
-    JIRA_USER_EXTERNAL,
-    JIRA_API_KEY_EXTERNAL,
+    JIRA_USER,
+    JIRA_API_KEY,
     {
       fields: [
         "parent",
@@ -270,13 +270,10 @@ async function fetchProjectJiraLatestSprint(jiraIdProject, state) {
  *   Else, it will create a new sprint with id = null and return it without saving it to the database
  */
 async function fetchBoardSprints(jiraIdBoard, idProject, states) {
-  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/board/${jiraIdBoard}/sprint`;
-  const jiraSprints = await getAll(
-    url,
-    JIRA_USER_EXTERNAL,
-    JIRA_API_KEY_EXTERNAL,
-    { state: states }
-  );
+  const url = `${JIRA_URL}/rest/agile/1.0/board/${jiraIdBoard}/sprint`;
+  const jiraSprints = await getAll(url, JIRA_USER, JIRA_API_KEY, {
+    state: states,
+  });
 
   const localSprints = jiraSprints.map(async (sprint) => {
     const dbSprint = await Sprint.getByJiraId(sprint.id);
@@ -306,8 +303,8 @@ async function fetchProjectBoards(jiraIdProject) {
   // Temporary while we figure out wich boards they want
   return [{ id: 570 }];
 
-  const url = `${JIRA_URL_EXTERNAL}/rest/agile/1.0/board`;
-  const boards = await getAll(url, JIRA_USER_EXTERNAL, JIRA_API_KEY_EXTERNAL, {
+  const url = `${JIRA_URL}/rest/agile/1.0/board`;
+  const boards = await getAll(url, JIRA_USER, JIRA_API_KEY, {
     projectKeyOrId: jiraIdProject,
     type: "scrum",
   });
