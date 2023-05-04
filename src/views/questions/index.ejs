@@ -26,8 +26,8 @@
         <option value="">TODAS</option>
         <option value="OP. MULTIPLE">Pregunta Opción Múltiple</option>
         <option value="ABIERTA">Pregunta Abierta</option>
-        <option value="SI/NO">Pregunta Si/No</option>
-        <option value="ESCALAR">Pregunta Escalar</option>
+        <option value="Si / No">Pregunta Si/No</option>
+        <option value="Escalar">Pregunta Escalar</option>
       </select>
     </div>
   </div>
@@ -41,7 +41,7 @@
           <%= question.type === 'SELECTION' ? 'OP. MULTIPLE' : 
               question.type === 'OPEN' ? 'ABIERTA' :
               question.type === 'BOOLEAN' ? 'Si / No' : 
-              question.type === 'SCALE' ? '1-5' : '' %>
+              question.type === 'SCALE' ? 'Escalar' : '' %>
         </span>
       </div>
       <% if(question.type === 'SELECTION') { %>
