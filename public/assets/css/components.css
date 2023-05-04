@@ -7,7 +7,7 @@
 }
 
 .subtitle {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   font-weight: 600;
   color: var(--color-font-primary);
   margin-bottom: var(--text-mb);
@@ -27,6 +27,18 @@
 .description--blue {
   color: var(--color-font-active);
   font-weight: 500;
+}
+
+.link:hover {
+  text-decoration: underline;
+  color: var(--color-font-active);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding-left: 1rem;
 }
 
 .line {
@@ -173,7 +185,7 @@
   justify-content: flex-start;
   align-items: center;
   min-height: 3rem;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 /* CARDS */
@@ -247,6 +259,7 @@
   display: flex;
   width: 100%;
   justify-content: space-between;
+  gap: 1rem;
 }
 
 .card__title {
@@ -618,15 +631,15 @@
   width: 100%;
   max-width: var(--button-width);
   height: var(--input-height);
-  /* margin-right: var(--component-mr); */
   margin-bottom: var(--component-mb);
+  padding: 0 1.5rem;
   font-weight: 600;
   font-family: "Poppins", sans-serif;
   font-size: 1.4rem;
-  /* border: 1px solid; */
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: var(--transition);
+  white-space: nowrap;
 }
 
 .button:hover {
@@ -1125,6 +1138,12 @@ a.toggle-button {
   background-image: url("/assets/img/zeb500-mobile.svg");
 }
 
+.question {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-font-primary);
+}
+
 /* UTILS */
 .transition {
   transition: all 0.3s ease-in-out;
@@ -1325,6 +1344,12 @@ a.toggle-button {
 
 .pl-5 {
   padding-left: 5rem !important;
+}
+
+/* FLEX */
+.align-flex-start {
+  display: flex;
+  align-items: flex-start;
 }
 
 .align-flex-end {

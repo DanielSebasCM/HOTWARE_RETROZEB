@@ -478,7 +478,7 @@ function download(chartId) {
   a.click();
 }
 
-document.querySelectorAll(".pill--late").forEach((pill) => {
+document.querySelectorAll(".button.button--primary.button--sm span").forEach((pill) => {
   pill.addEventListener("click", function () {
     download(this.dataset.id);
   });
