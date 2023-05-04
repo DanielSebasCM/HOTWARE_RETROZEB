@@ -10,12 +10,12 @@ const tokens = getTokens();
 const pruneEmpty = false;
 const usersUids = {};
 const statesColors = [
-  { state: "To Do", color: "rgba(255, 99, 132, 0.6)" },
-  { state: "En curso", color: "rgba(54, 162, 235, 0.6)" },
-  { state: "Pull request", color: "rgba(255, 206, 86, 0.6)" },
-  { state: "QA", color: "rgba(75, 192, 192, 0.6)" },
-  { state: "Blocked", color: "rgba(153, 102, 255, 0.6)" },
-  { state: "Done", color: "rgba(255, 159, 64, 0.6)" },
+  { state: "To Do", color: "rgba(255, 140, 165, 1)" },
+  { state: "En curso", color: "rgba(105, 195, 255, 1)" },
+  { state: "Pull request", color: "rgba(255, 226, 154, 1)" },
+  { state: "QA", color: "rgba(147, 217, 217, 1)" },
+  { state: "Blocked", color: "rgba(194, 163, 255, 1)" },
+  { state: "Done", color: "rgba(255, 197, 140, 1)" },
 ];
 
 let selectedTeamId = teamOptions.value;
@@ -51,8 +51,8 @@ nRetrospectivesInput.addEventListener("change", async (e) => {
   let n = parseInt(e.target.value);
   if (n > 10) {
     n = 10;
-  } else if (n < 1) {
-    n = 1;
+  } else if (n < 2) {
+    n = 2;
   }
   window.location.href = `/retrospectivas/comparar/${n}`;
 });
@@ -69,7 +69,6 @@ stackedInput.addEventListener("change", (e) => {
 
 epicsOptions.addEventListener("change", (e) => {
   selectedEpics = epicsOptions.selectedOptions;
-  console.log(selectedEpics);
   const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
     filterIssuesEpics(i, selectedLabel, selectedIssues, selectedEpics)
   );
@@ -144,11 +143,28 @@ const epicsData = groupFilterIssues(groupedIssues, "sprint_name", (i) =>
 createChart("epics-chart", "Epics", epicsData, sprints, "x");
 
 // FUNCTIONS
-function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
+function createChart(
+  canvasId,
+  title,
+  statesData,
+  labels,
+  mainAxis = "x",
+  nullLabel = "N/A"
+) {
   const secundaryAxis = mainAxis === "x" ? "y" : "x";
 
   const canvas = document.getElementById(canvasId);
   canvas.parentElement.style.height = "400px";
+
+  labels = labels.map((l) => l || nullLabel);
+
+  for (const state in statesData) {
+    const data = statesData[state];
+    if (data[null]) {
+      data[nullLabel] = data[null];
+      delete data[null];
+    }
+  }
 
   const datasets = statesColors.map(({ state, color }) => {
     const storyPoints = labels.map((l) => {
@@ -188,7 +204,20 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
     }, 0);
   });
 
-  labels = labels.map((l) => l || "N/A");
+  let tooltip = undefined;
+
+  if (!accum) {
+    tooltip = {
+      callbacks: {
+        afterLabel: function (context) {
+          return `${(
+            (context.parsed[secundaryAxis] / totals[context.label]) *
+            100
+          ).toFixed(2)}%`;
+        },
+      },
+    };
+  }
 
   return new Chart(canvas, {
     type: accum && stacked ? "line" : "bar",
@@ -211,16 +240,7 @@ function createChart(canvasId, title, statesData, labels, mainAxis = "x") {
             usePointStyle: true,
           },
         },
-        tooltip: {
-          callbacks: {
-            afterLabel: function (context) {
-              return `${(
-                (context.parsed[secundaryAxis] / totals[context.label]) *
-                100
-              ).toFixed(2)}%`;
-            },
-          },
-        },
+        tooltip,
       },
       scales: {
         [mainAxis]: {
@@ -321,3 +341,136 @@ function updateChart(canvasId, statesData, labels) {
   chart.destroy();
   createChart(canvasId, title, statesData, labels, mainAxis);
 }
+
+// Report Generation
+
+document
+  .querySelector("#print--button")
+  .addEventListener("click", async function () {
+    // Clone the body and create a new one; Get Charts
+    const previousBody = document.body.cloneNode(true);
+    const canvas = document.querySelectorAll("canvas");
+    const newBody = document.createElement("body");
+
+    // Get the name of the retro, sprint and team
+    const retroName = document.querySelector(".title").textContent;
+
+    const teamName = document
+      .querySelector("#issues-options option:nth-child(2)")
+      .textContent.split(" ");
+    teamName.shift();
+
+    // Create div for headers
+    newBody.appendChild(document.createElement("div")).style.display = "flex";
+    const newDiv = newBody.querySelector("div");
+    newDiv.style.alignItems = "center";
+    newDiv.style.justifyContent = "center";
+    newDiv.style.flexDirection = "column";
+    newDiv.style.width = "100%";
+
+    // Create headers
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Retrospectiva: <span>${retroName}</span>`;
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `<span>Ultimos ${sprints.length} sprints comparados</span>`;
+    newDiv.appendChild(
+      document.createElement("h1")
+    ).innerHTML = `Equipo: <span>${teamName.join(" ")}</span>`;
+    newDiv.appendChild(document.createElement("div")).style.textAlign =
+      "center";
+    newDiv.appendChild(
+      document.createElement("h2")
+    ).innerHTML = `Labels: <span>${
+      selectedLabel === "All" ? "Todos" : selectedLabel
+    }</span>`;
+    newDiv.appendChild(
+      document.createElement("h2")
+    ).innerHTML = `Issues: <span>${
+      selectedIssues === "All"
+        ? "Todos"
+        : selectedIssues === "Personal"
+        ? "Personales"
+        : "De equipo"
+    }</span>`;
+
+    let epics = "";
+
+    selectedEpics.forEach((epic, i, arr) => {
+      if (i === arr.length - 1) epics += epic ? epic : "No épica";
+      else epics += `${epic ? epic : "No épica"}, `;
+    });
+
+    newDiv.appendChild(
+      document.createElement("h2")
+    ).innerHTML = `Epics: <span>${epics}</span>`;
+
+    newDiv.querySelectorAll("span").forEach((span) => {
+      span.style.fontWeight = "normal";
+    });
+    newDiv
+      .querySelectorAll("h2")
+      .forEach((h2) => (h2.style.alignSelf = "flex-start"));
+    newBody.appendChild(document.createElement("br"));
+    newBody.appendChild(document.createElement("hr"));
+    newBody.appendChild(document.createElement("br"));
+
+    for (let node of canvas) {
+      newBody.appendChild(node);
+      newBody.appendChild(document.createElement("br"));
+      newBody.appendChild(document.createElement("hr"));
+      newBody.appendChild(document.createElement("br"));
+    }
+    document.body = newBody;
+    await new Promise((r) => setTimeout(r, 500));
+    window.print();
+    document.body = previousBody;
+    location.reload();
+  });
+
+function chartToCSV(chartId) {
+  const chart = Chart.getChart(chartId);
+  const { datasets, labels } = chart.data;
+  const res = {};
+  res.label = labels;
+  datasets.forEach((dataset) => {
+    res[dataset.label] = dataset.data;
+  });
+
+  return ConvertToCSV(res);
+}
+
+function ConvertToCSV(data) {
+  const headers = Object.keys(data);
+  const rows = Object.values(data);
+
+  let csv = headers.join(",") + "\n";
+
+  for (let i = 0; i < rows[0].length; i++) {
+    let row = "";
+    for (let j = 0; j < rows.length; j++) {
+      if (j === rows.length - 1) row += rows[j][i];
+      else row += rows[j][i] + ",";
+    }
+    csv += row + "\n";
+  }
+
+  return csv;
+}
+
+function download(chartId) {
+  const data = chartToCSV(chartId);
+  const blob = new Blob([data], { type: "text/csv" });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.setAttribute("href", url);
+  a.setAttribute("download", `${chartId}.csv`);
+  a.click();
+}
+
+document.querySelectorAll(".button.button--primary.button--sm span").forEach((pill) => {
+  pill.addEventListener("click", function () {
+    download(this.dataset.id);
+  });
+});

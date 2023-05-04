@@ -7,11 +7,17 @@
         Visualiza las respuestas a las preguntas de la retrospectiva
       </p>
     </div>
-    <div class="banner__section">
+    <div class="banner__section buttons-container">
+      <% if(currentPrivileges.includes(privileges.retrospectives.canCloseRetrospectives) && (retrospective.state !== "CLOSED")) { %>
+      <form action="<%= routes.retrospectives %>/<%= retrospective.id %>/cerrar?_method=PATCH" method="POST">
+        <button class="button button--delete-alt" style="min-width: 200px;">Cerrar Retrospectiva</button>
+      </form>
+      <% } %>
       <div class="toggle-buttons-container toggle-buttons-container--primary">
         <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
-        <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
+        <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Respuestas</a>
       </div>
+
     </div>
     <span class="line"></span>
   </div>
@@ -25,8 +31,8 @@
         </span>
       </div>
       <% if(question.type === 'OPEN') { %>
-      <% if(question.answers?.value?.length === 0) { %>
-      <h2 class="subtitle">No hay respuestas aún</h2>
+      <% if(!question.answers.length) { %>
+      <h2 class="description">No hay respuestas aún</h2>
       <% } else { %>
       <ol class="items__list">
         <% let index = 1 %>
@@ -35,9 +41,14 @@
         <% index++ %>
         <% } %>
       </ol>
-      <% }} else { %>
+      <% 
+      }} else { 
+      if(!question.answers.length){  
+      %>
+      <h2 class="description">No hay respuestas aún</h2>
+      <% } else { %>
       <canvas id="chart-<%= question.id %>"></canvas>
-      <% } %>
+      <% }} %>
     </article>
     <% } %>
   </section>

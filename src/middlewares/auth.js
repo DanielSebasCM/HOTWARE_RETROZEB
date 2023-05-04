@@ -1,4 +1,5 @@
 const authUtil = require("../utils/auth");
+const User = require("../models/user.model");
 
 const authMiddleware = {
   // VALIDATE ACTIVE TOKEN
@@ -11,8 +12,28 @@ const authMiddleware = {
 
     try {
       const auth = authUtil.verifyToken(token);
-      if (!req.session.currentUser) req.session.currentUser = auth;
 
+      const user = await User.getById(auth.uid);
+
+      if (!user || user.active === 0) return authUtil.deleteSession(req, res);
+
+      if (!req.session.currentUser) req.session.currentUser = auth;
+      next();
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  verifyJiraUserId: async (req, res, next) => {
+    const user = req.session.currentUser;
+
+    try {
+      if (!user.id_jira) {
+        return res.render("config/jiraUserId", {
+          title: "Jira User Id",
+          currentUser: user,
+        });
+      }
       next();
     } catch (error) {
       next(error);

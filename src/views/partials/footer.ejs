@@ -1,9 +1,10 @@
 <script src="/assets/js/auth/index.js"></script>
 <% if(locals.currentUser) { %>
-<script src="/assets/js/app.js"></script>
-<% } %> <% if (locals.currentUser) { %>
-<!-- FOOTER -->
-<footer class="footer">
-  Designed by Hotware | <%= new Date().getFullYear() %> © Zebrands
-</footer>
+  <script src="/assets/js/app.js"></script>
+<% } %>
+<% if (locals.currentUser && locals.currentUser.id_jira && !locals.errorView ) { %>
+  <!-- FOOTER -->
+  <footer class="footer">
+    Designed by Hotware | <%= new Date().getFullYear() %> © Zebrands
+  </footer>
 <% } %>

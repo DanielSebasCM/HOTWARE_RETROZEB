@@ -5,7 +5,13 @@ const constants = {
     issueStates: ["To Do", "En curso", "Pull request", "QA", "Blocked", "Done"],
     issueTypes: ["Story", "Task", "Sub-task", "Bug"],
     questionTypes: ["OPEN", "BOOLEAN", "SCALE", "SELECTION"],
-    actionableStates: ["PENDING", "ACCEPTED", "REJECTED"],
+    actionableStates: [
+      "PENDING",
+      "ACCEPTED",
+      "REJECTED",
+      "COMPLETED",
+      "PROCESS",
+    ],
   },
   limits: {
     answerMaxLength: 400,
@@ -13,7 +19,7 @@ const constants = {
     privilegeMaxLength: 255,
     projectMaxLength: 255,
     questionMaxLength: 255,
-    optionMaxLength: 25,
+    optionMaxLength: 40,
     retrospectiveMaxLength: 255,
     roleMaxLength: 40,
     sprintMaxLength: 255,
@@ -23,6 +29,7 @@ const constants = {
   },
   routes: {
     home: "/",
+    dashboard: "/dashboard",
     login: "/login",
     logout: "/logout",
     refreshToken: "/token/refresh",
@@ -31,18 +38,24 @@ const constants = {
     retrospectives: "/retrospectivas",
     questions: "/preguntas",
     roles: "/roles",
+    users: "/usuarios",
     locals: "/locals",
+    jiraUserID: "/jira/user/id",
+    noJiraUserID: "/jira/user/no-id",
   },
   privileges: {
     actionables: {
       getActionables: "getActionables",
       canAcceptActionables: "canAcceptActionables",
+      canCreateActionables: "canCreateActionables",
       canRejectActionables: "canRejectActionables",
     },
     teams: {
       getTeams: "getTeams",
       canJoinTeams: "canJoinTeams",
       canCreateTeams: "canCreateTeams",
+      canModifyTeams: "canModifyTeams",
+      canDeleteTeams: "canDeleteTeams",
     },
     questions: {
       getQuestions: "getQuestions",
@@ -52,6 +65,7 @@ const constants = {
     roles: {
       getRoles: "getRoles",
       canCreateRoles: "canCreateRoles",
+      canModifyRoles: "canModifyRoles",
       canDeleteRoles: "canDeleteRoles",
     },
     retrospectives: {
@@ -60,6 +74,12 @@ const constants = {
       canAnswerRetrospectives: "canAnswerRetrospectives",
       getMetrics: "getMetrics",
       canCompareRetrospectives: "canCompareRetrospectives",
+      canCloseRetrospectives: "canCloseRetrospectives",
+    },
+    users: {
+      getUsers: "getUsers",
+      deleteUsers: "deleteUsers",
+      canModifyUsers: "canModifyUsers",
     },
   },
 };

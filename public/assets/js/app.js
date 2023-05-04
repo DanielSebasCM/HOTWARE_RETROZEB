@@ -32,6 +32,15 @@
     ".multi-select-container"
   );
   if (!multiSelectContainers) return;
+
+  window.addEventListener("click", function (e) {
+    for (let container of multiSelectContainers) {
+      if (!container.contains(e.target)) {
+        container.querySelector(".multi-select-dropdown").classList.add("hide");
+      }
+    }
+  });
+
   multiSelectContainers.forEach((container) => {
     const button = container.querySelector(".multi-select-button");
 
@@ -133,3 +142,32 @@
     deleteTokens();
   });
 })();
+
+(function pinterestCards() {
+  const pinterestContainers = document.querySelectorAll(".pinterest-container");
+  if (!pinterestContainers) return;
+
+  pinterestContainers.forEach((container) => {
+    const cards = container.querySelectorAll(".card");
+    if (!cards) return;
+    cards.forEach((card) => {
+      console.log(card.offsetHeight);
+      card.style.gridRowEnd = `span ${Math.ceil(card.offsetHeight / 10) + 2}`;
+    });
+  });
+})();
+
+// prevent double click on forms
+
+window.addEventListener("load", () => {
+  const forms = document.querySelectorAll("form");
+  if (!forms) return;
+
+  forms.forEach((form) => {
+    form.addEventListener("submit", () => {
+      const submitBtn = form.querySelector("button[type='submit']");
+      if (!submitBtn) return;
+      submitBtn.disabled = true;
+    });
+  });
+});

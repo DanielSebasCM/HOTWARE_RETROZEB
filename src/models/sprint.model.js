@@ -1,5 +1,5 @@
 const db = require("../utils/db");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const sprintMaxLength = require("../utils/constants").limits.sprintMaxLength;
 class Sprint {
@@ -33,21 +33,14 @@ class Sprint {
     return new Sprint(sprint[0]);
   }
 
-  static async getLastWithoutRetroByTeamId(id_team) {
+  static async getLast() {
     let [sprint, _] = await db.execute(
       `
     SELECT *
     FROM sprint
-    WHERE id NOT IN (
-      SELECT r.id_sprint
-      FROM retrospective as r
-      WHERE r.id_team = ?
-    )
-    AND end_date IS NOT NULL
     ORDER BY end_date DESC
     LIMIT 1
-    `,
-      [id_team]
+    `
     );
 
     if (sprint.length == 0) return null;
@@ -90,6 +83,56 @@ class Sprint {
   static async getAll() {
     let [sprint, _] = await db.execute(`SELECT * FROM sprint`);
     return sprint.map((sprint) => new Sprint(sprint));
+  }
+
+  static async syncJira() {
+    const {
+      fetchProjectJiraLatestSprint,
+      fetchSprintIssues,
+    } = require("../utils/jira");
+
+    const jiraSprint = await fetchProjectJiraLatestSprint(
+      process.env.ZECOMMERCE_PROJECT_ID,
+      "closed"
+    );
+    if (!jiraSprint || jiraSprint.id) {
+      console.log("No new sprint to sync");
+      return false;
+    }
+
+    const Retrospective = require("./retrospective.model");
+    const Team = require("./team.model");
+
+    const lastSprint = await Sprint.getLast();
+
+    if (lastSprint) {
+      const teams = await Team.getAllActive();
+      for (const team of teams) {
+        const lastTeamRetro = await team.getLastRetrospective();
+
+        if (lastTeamRetro?.state == "IN_PROGRESS") {
+          await lastTeamRetro.close();
+        }
+        if (!lastTeamRetro || lastTeamRetro?.id_sprint != lastSprint.id) {
+          const retrospective = new Retrospective({
+            name: lastSprint.name + ": " + team.name,
+            id_sprint: lastSprint.id,
+            id_team: team.id,
+          });
+          await retrospective.post();
+          await retrospective.close();
+        }
+      }
+    }
+
+    await jiraSprint.post();
+    const issues = await fetchSprintIssues(jiraSprint.id_jira);
+
+    issues.forEach((issue) => {
+      issue.post();
+    });
+
+    return true;
   }
 
   static verify(sprint) {

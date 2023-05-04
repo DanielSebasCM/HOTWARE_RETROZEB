@@ -4,13 +4,16 @@
   <div class="banner">
     <div class="banner__section">
       <h1 class="title">Comparación de retrospectivas</h1>
-      <p class="description"><%= retrospectives.map(retrospective => retrospective.name).join(", ") %></p>
+      <div class="horizontal-container">
+        <p class="description"> Retrospectivas a comparar: </p>
+        <input type="number" id="n_retrospectives" min="2" max="<%= maxRetros %>" value="<%= n %>" class="input input--number">
+      </div>
     </div>
-
     <div class="banner__section">
-      <input type="number" id="n_retrospectives" min="1" max="10" value="<%= n %>" class="input">
+      <div>
+        <button class="button button--primary" id="print--button">Generar Reporte</button>
+      </div>
     </div>
-
     <span class="line"></span>
   </div>
 
@@ -28,12 +31,12 @@
     <div class="select-container">
       <select class="select" id="issues-options">
         <option value="All" selected>Todos los Issues</option>
-        <option value="Team">Issues <%= selectedTeam.name %></option>
+        <option value="Team">Issues equipo: <%= selectedTeam.name %></option>
         <option value="Personal">Issues personales</option>
       </select>
     </div>
     <div class="checkbox-container">
-      <input type="checkbox" class="question-checkbox mr-1" id="accum" checked />
+      <input type="checkbox" class="question-checkbox mr-1" id="accum" />
       <label for="accum">Acumular</label>
     </div>
     <div class="checkbox-container">
@@ -44,6 +47,9 @@
 
   <!-- CHARTS -->
   <div class="chart-container">
+    <button class="button button--primary button--sm mb-0" style="position: absolute; right: 15px;">
+      <span data-id="general-chart">Exportar a CSV</span>
+    </button>
     <canvas id="general-chart"></canvas>
   </div>
 
@@ -86,21 +92,17 @@
           <% for (let i=0; i < epics.length; i++) { %>
           <li class="items__item">
             <input type="checkbox" class="multi-select-dropdown__checkbox" id="<%= epics[i] %>" checked />
-            <label for="<%= epics[i] %>"><%= epics[i] || "No epic" %></label>
+            <label for="<%= epics[i] %>"><%= epics[i] || "Sin Epica" %></label>
           </li>
           <% } %>
         </ul>
       </div>
     </div>
-    <!-- <div class="select-container">
-      <select class="select" id="epics-options">
-        <% for (let i=0; i < epics.length; i++) { %>
-        <option value="<%= epics[i] || "None" %>"><%= epics[i] || "No epic" %></option>
-        <% } %>
-      </select>
-    </div> -->
   </div>
   <div class="chart-container">
+    <button class="button button--primary button--sm mb-0" style="position: absolute; right: 15px;">
+      <span data-id="epics-chart">Exportar a CSV</span>
+    </button>
     <canvas id="epics-chart"></canvas>
   </div>
   <script type="module" src="/assets/js/compareMetrics.js"></script>

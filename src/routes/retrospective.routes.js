@@ -39,12 +39,18 @@ router.get(
   controller.renderRetrospectiveAnswer
 );
 
+router.get(
+  "/:id/sprint",
+  authorize([privileges.getMetrics]),
+  controller.getSprint
+);
+
 // API ROUTES
 
 // GET
 router.get(
   "/:id/issues",
-  authorize([privileges.getMetrics]),
+  authorize([privileges.getMetrics, privileges.canCompareRetrospectives], true),
   controller.getRetrospectiveIssues
 );
 router.get(
@@ -54,7 +60,7 @@ router.get(
 );
 router.get(
   "/:id/usuarios",
-  authorize([privileges.getMetrics]),
+  authorize([privileges.getMetrics, privileges.canCompareRetrospectives], true),
   controller.getRetrospectiveUsers
 );
 
@@ -68,6 +74,13 @@ router.post(
   "/:id/contestar",
   authorize([privileges.canAnswerRetrospectives]),
   controller.postRetrospectiveAnswers
+);
+
+// PATCH
+router.patch(
+  "/:id/cerrar",
+  authorize([privileges.canCloseRetrospectives]),
+  controller.patchRetrospectiveState
 );
 
 module.exports = router;

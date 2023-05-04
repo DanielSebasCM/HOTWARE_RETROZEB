@@ -1,8 +1,9 @@
 const db = require("../utils/db");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const Team = require("./team.model");
 const Privilege = require("./privilege.model");
+const Role = require("./role.model");
 
 class User {
   constructor(user) {
@@ -14,6 +15,7 @@ class User {
     this.last_name = user.last_name;
     this.email = user.email;
     this.picture = user.picture || null;
+    // this.active = user.active;
     this.active = user.active === 0 ? 0 : 1;
   }
   static async getAll() {
@@ -73,6 +75,14 @@ class User {
     return privileges.map((privilege) => new Privilege(privilege));
   }
 
+  async getRoles() {
+    const [roles, _] = await db.execute(
+      "SELECT r.* FROM role r, users_roles ur WHERE ur.uid = ? AND ur.id_role = r.id",
+      [this.uid]
+    );
+    return roles.map((role) => new Role(role));
+  }
+
   static async getByGoogleId(id_google_auth) {
     let [user, _] = await db.execute(
       `SELECT * FROM user WHERE id_google_auth = ?`,
@@ -85,6 +95,11 @@ class User {
 
   static async getAllActive() {
     let [users, _] = await db.execute(`SELECT * FROM user WHERE active = 1`);
+    return users.map((user) => new User(user));
+  }
+
+  static async getAllInactive() {
+    let [users, _] = await db.execute(`SELECT * FROM user WHERE active = 0`);
     return users.map((user) => new User(user));
   }
 
@@ -133,7 +148,17 @@ class User {
       `UPDATE user SET active = 0 WHERE uid = ?`,
       [this.uid]
     );
+    await db.execute(`DELETE FROM users_roles WHERE uid = ?`, [this.uid]);
     this.active = 0;
+    return res;
+  }
+
+  async activate() {
+    let [res, _] = await db.execute(
+      `UPDATE user SET active = 1 WHERE uid = ?`,
+      [this.uid]
+    );
+    this.active = 1;
     return res;
   }
 
@@ -141,6 +166,19 @@ class User {
     return db.execute(`INSERT INTO users_roles (uid, id_role) VALUES (?, ?)`, [
       this.uid,
       role.id,
+    ]);
+  }
+  async setRoles(roles) {
+    await db.execute(`DELETE FROM users_roles WHERE uid = ?`, [this.uid]);
+    for (let role of roles) {
+      await this.addRole(role);
+    }
+  }
+
+  async addJiraId(id_jira) {
+    return db.execute(`UPDATE user SET id_jira = ? WHERE uid = ?`, [
+      id_jira,
+      this.uid,
     ]);
   }
 }

@@ -1,7 +1,9 @@
 const db = require("../utils/db");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const actionableStates = require("../utils/constants").enums.actionableStates;
+const issuePriorities = require("../utils/constants").enums.issuePriorities;
+const { getJiraActionables } = require("../utils/jira");
 const { toDoTitleMaxLength, toDoDescriptionMaxLength } =
   require("../utils/constants").limits;
 class SuggestedTodo {
@@ -12,7 +14,8 @@ class SuggestedTodo {
     this.title = suggested_todo.title;
     this.description = suggested_todo.description;
     this.state = suggested_todo.state || "PENDING";
-    this.id_user_author = suggested_todo.id_user_author;
+    this.id_user_author = suggested_todo.id_user_author || null;
+    this.priority = suggested_todo.priority || "Medium";
   }
 
   static async getById(id) {
@@ -33,10 +36,24 @@ class SuggestedTodo {
   }
 
   static async getAllByState(state) {
+    if (state == "COMPLETED") {
+      const suggested_todos = await getJiraActionables();
+      const completed_todos = suggested_todos.filter((suggested_todo) => {
+        return suggested_todo.state === "COMPLETED";
+      });
+      return completed_todos;
+    } else if (state == "PROCESS") {
+      const suggested_todos = await getJiraActionables();
+      const process_todos = suggested_todos.filter((suggested_todo) => {
+        return suggested_todo.state === "PROCESS";
+      });
+      return process_todos;
+    }
     let [suggested_todo_, _] = await db.execute(
       `SELECT * FROM suggested_todo WHERE state = ?`,
       [state]
     );
+
     return suggested_todo_.map(
       (suggested_todo) => new SuggestedTodo(suggested_todo)
     );
@@ -73,14 +90,22 @@ class SuggestedTodo {
         validationMessages.mustBeEnum(actionableStates)
       );
 
-    // id_user_author
-    if (!suggested_todo.id_user_author)
+    // priority
+    if (
+      suggested_todo.priority &&
+      !issuePriorities.includes(suggested_todo.priority)
+    )
       throw new ValidationError(
-        "id_user_author",
-        validationMessages.isMandatory
+        "priority",
+        validationMessages.mustBeEnum(issuePriorities)
       );
 
-    if (!Number.isInteger(Number(suggested_todo.id_user_author)))
+    // id_user_author
+
+    if (
+      suggested_todo.id_user_author &&
+      !Number.isInteger(Number(suggested_todo.id_user_author))
+    )
       throw new ValidationError(
         "id_user_author",
         validationMessages.mustBeInteger
@@ -91,8 +116,8 @@ class SuggestedTodo {
 
   async post() {
     let [suggested_todo, _] = await db.execute(
-      `INSERT INTO suggested_todo (title, description, id_user_author) VALUES (?, ?, ?)`,
-      [this.title, this.description, this.id_user_author]
+      `INSERT INTO suggested_todo (title, description, id_user_author, priority) VALUES (?, ?, ?, ?)`,
+      [this.title, this.description, this.id_user_author, this.priority]
     );
 
     this.id = suggested_todo.insertId;

@@ -1,5 +1,5 @@
 const Sprint = require("../models/sprint.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const sprintMaxLength = require("../utils/constants").limits.sprintMaxLength;
 // ------------------ VERIFIER ------------------

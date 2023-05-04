@@ -1,6 +1,6 @@
 const User = require("../models/user.model");
 
-const authorize = (privileges) => {
+const authorize = (privileges, or = false) => {
   return async (req, res, next) => {
     if (!req.session.currentUser) {
       return next();
@@ -11,13 +11,25 @@ const authorize = (privileges) => {
     let userPrivileges = await builtUser.getPrivileges();
     userPrivileges = userPrivileges.map((privilege) => privilege.name);
 
-    for (privilege of privileges) {
-      if (!userPrivileges.includes(privilege)) {
-        return res.render("errors/404", {
-          title: "Retro Zeb - Error 404",
-          message: "No encontramos lo que buscabas :(",
-        });
-      }
+    let passes = false;
+
+    if (or) {
+      passes = privileges.some((privilege) =>
+        userPrivileges.includes(privilege)
+      );
+    } else {
+      passes = privileges.every((privilege) =>
+        userPrivileges.includes(privilege)
+      );
+    }
+
+    if (!passes) {
+      res.locals.errorView = true;
+
+      return res.render("errors/404", {
+        title: "Retro Zeb - Error 404",
+        message: "No encontramos lo que buscabas :(",
+      });
     }
 
     req.app.locals.currentPrivileges = userPrivileges;

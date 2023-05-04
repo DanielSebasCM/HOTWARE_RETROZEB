@@ -1,0 +1,48 @@
+<!-- HEADER -->
+<header class="login__header">
+  <img src="/assets/img/logo.svg" alt="RetroZeb Logo" />
+</header>
+<!-- LOGIN FORM -->
+<main class="no-jira-id__body">
+  <h1 class="title">Bienvenido, <%= currentUser.first_name %></h1>
+  <p class="description description--blue">
+    Por favor ingresa tu ID de usuario de JIRA
+  </p>
+
+  <form action="<%= routes.jiraUserID %>" method="POST" id="jira-user-id" class="jira-user-id-form mt-3">
+    <input type="hidden" name="uid" value="<%= currentUser.uid %>" />
+    <input class="input" type="text" placeholder="ID de Usuario de JIRA" name="id_jira" />
+    <button class="button button--primary mt-1 mb-1" type="submit">
+      Guardar
+    </button>
+  </form>
+  <form action="<%= routes.noJiraUserID %>" method="POST" class="jira-user-id-form">
+    <button class="button button--discard mt-0" type="submit">
+      Continuar sin ID
+    </button>
+  </form>
+
+  <section class="mb-3 mt-2">
+    <p class="subtitle description--blue mt-5">¿Necesitas ayuda?</p>
+    <p class="description">
+      Sigue los pasos a continuación para obtener tu ID de usuario de Jira
+    </p>
+    <img src="./assets/icon/arrow-down.svg" alt="">
+
+  </section>
+</main>
+
+<div class="no-jira-id__instructions mt-5">
+  <div class="no-jira-id__img mb-3">
+    <p class="description description--blue mb-2">
+      1. Accede a tu perfil en JIRA
+    </p>
+    <img src="./assets/img/jira_user_id_1.png" alt="" />
+  </div>
+  <div class="no-jira-id__img">
+    <p class="description description--blue mb-2">
+      2. Copia tu ID de usuario de la URL en tu perfil
+    </p>
+    <img src="./assets/img/jira_user_id_2.png" alt="" />
+  </div>
+</div>

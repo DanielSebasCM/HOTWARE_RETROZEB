@@ -1,0 +1,44 @@
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">
+        Accionables <span class="meta"></span>
+        <p class="description">Crea tus accionables</p>
+    </div>
+    <span class="line"></span>
+  </div>
+  <form id="addact" action="/accionables/nuevo" method="POST">
+    <p class="description-question">Ingresa la información del accionable</p>
+    <div class="input-container">
+      <label class="input__label" for="">Título</label>
+      <input name="title" class="input input--md" type="text" placeholder="Titulo del accionable" id="question-input" required maxlength="40" />
+    </div>
+    <div class="input-container">
+      <label class="input__label" for="">Descripción</label>
+      <input name="description" class="input input--md" type="text" placeholder="Descripción del accionable" id="question-input" required maxlength="255" />
+    </div>
+    <p class="description-question mt-3">Seleciona un nivel de prioridad</p>
+    <div class="select-container">
+      <select class="select" name="priority">
+        <% for(let i=0; i<priority.length;i++) {%>
+        <option value="<%=priority[i] %>">
+          <%=priority[i]%>
+        </option>
+        <% } %>
+      </select>
+    </div>
+    <p class="description-question mt-3">Seleciona un responsable de accionable</p>
+    <div class="select-container">
+      <select class="select" name="id_user_author">
+        <option value="<%= null %>">Ninguno</option>
+        <% for(unit of Users) {%>
+        <option value="<%= unit.uid %>">
+          <%= unit.first_name %>
+          <%= unit.last_name %>
+        </option>
+        <% } %>
+      </select>
+    </div>
+    <button class="button button--primary mt-3" type="submit">Crear</button>
+  </form>
+</section>

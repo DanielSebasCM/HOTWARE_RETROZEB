@@ -3,7 +3,7 @@
   <div class="banner">
     <div class="banner__section">
       <h1 class="title">
-        Preguntas <span class="meta">(<%= questions.length %>)</span>
+        Preguntas
       </h1>
       <p class="description">Listado de preguntas creadas</p>
     </div>
@@ -23,11 +23,11 @@
     </div>
     <div class="select-container">
       <select class="select" id="select-question-type">
-        <option value="">TIPO</option>
-        <option value="SELECTION">SELECTION</option>
-        <option value="OPEN">OPEN</option>
-        <option value="BOOLEAN">BOOLEAN</option>
-        <option value="SCALE">SCALE</option>
+        <option value="">TODAS</option>
+        <option value="OP. MULTIPLE">Pregunta Opción Múltiple</option>
+        <option value="ABIERTA">Pregunta Abierta</option>
+        <option value="SI/NO">Pregunta Si/No</option>
+        <option value="ESCALAR">Pregunta Escalar</option>
       </select>
     </div>
   </div>
@@ -37,16 +37,21 @@
     <div class="card card--question">
       <div class="card__header">
         <p class="card__subtitle"><%= question.description %></p>
-        <span class="label label--active"> <%= question.type %> </span>
+        <span class="label label--active">
+          <%= question.type === 'SELECTION' ? 'OP. MULTIPLE' : 
+              question.type === 'OPEN' ? 'ABIERTA' :
+              question.type === 'BOOLEAN' ? 'Si / No' : 
+              question.type === 'SCALE' ? '1-5' : '' %>
+        </span>
       </div>
       <% if(question.type === 'SELECTION') { %>
-      <span class="line"></span>
-      <p class="card__description"><%= question.options.join("/ ") %> </p>
+      <span class="input__label description--blue mt-1">Opciones</span>
+      <p class="card__description"><%= question.options.join(" , ") %> </p>
       <% } %>
       <% if(currentPrivileges.includes(privileges.questions.canDeleteQuestions)) { %>
       <form action="/preguntas?_method=DELETE" method="POST">
         <input type="hidden" name="id" value="<%=question.id %>">
-        <button type="submit" class="button button--sm button--delete-alt remove-question-btn" data-id=<%=question.id %>>Eliminar</button>
+        <button type="submit" class="button button--sm button--delete-alt remove-question-btn mt-3" data-id=<%=question.id %>>Eliminar</button>
       </form>
       <% } %>
     </div>

@@ -1,5 +1,5 @@
 const SuggestedTodo = require("../models/suggestedTodo.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const actionableStates = require("../utils/constants").enums.actionableStates;
 const { toDoTitleMaxLength, toDoDescriptionMaxLength } =
@@ -89,23 +89,6 @@ test("Todo state is of type" + actionableStates, () => {
       description: "Test description",
       state: "INVALID",
       id_user_author: 1,
-    });
-  } catch (error) {
-    thrownError = error;
-  }
-  expect(thrownError).toEqual(expectedError);
-});
-
-test("Todo has an author", () => {
-  let thrownError;
-  const expectedError = new ValidationError(
-    "id_user_author",
-    validationMessages.isMandatory
-  );
-  try {
-    new SuggestedTodo({
-      title: "Test",
-      description: "Test description",
     });
   } catch (error) {
     thrownError = error;

@@ -4,18 +4,28 @@
   <div class="banner">
     <div class="banner__section">
       <h1 class="title"><%= retrospective.name %></h1>
-      <p class="description">Resumen del desempeño en la retrospectiva</p>
+      <p class="description mb-4">Resumen del desempeño en la retrospectiva</p>
     </div>
 
-    <div class="banner__section">
-      <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives)) { %>
+    <div class="banner__section buttons-container">
+      <% if(!answered && currentPrivileges.includes(privileges.retrospectives.canAnswerRetrospectives) && retrospective.state !== "CLOSED" && isMember) { %>
       <a href="<%= routes.retrospectives %>/<%= retrospective.id %>/contestar" class="button button--primary">Contestar Retrospectiva</a>
-      <% } else {%>
+      <% } %>
+      <div>
+        <button class="button button--edit" id="print--button">Generar Reporte</button>
+      </div>
+      <% if(currentPrivileges.includes(privileges.retrospectives.canCloseRetrospectives) && (retrospective.state !== "CLOSED")) { %>
+      <button class="button button--delete-alt dropdown-item" style="min-width: 200px;" id="modal-button">Cerrar Retrospectiva</button>
+      <div id="modal-container" class="modal-container"></div>
+
+      <% } %>
+      <% if(answered ||  retrospective.state === "CLOSED") { %>
       <div class="toggle-buttons-container toggle-buttons-container--primary">
         <a class="toggle-button toggle-button--active" href="<%= routes.retrospectives %>/<%= retrospective.id %>/metricas">Métricas</a>
-        <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Preguntas</a>
+        <a class="toggle-button" href="<%= routes.retrospectives %>/<%= retrospective.id %>/preguntas">Respuestas</a>
       </div>
       <% } %>
+
     </div>
 
     <span class="line"></span>
@@ -36,7 +46,7 @@
     <div class="select-container">
       <select class="select" id="issues-options">
         <option value="All">Todos los Issues</option>
-        <option value="Team" selected>Issues <%= retrospective.team_name %></option>
+        <option value="Team" selected>Issues equipo: <%= retrospective.team_name %></option>
         <option value="Personal">Issues personales</option>
       </select>
     </div>
@@ -44,6 +54,9 @@
 
   <!-- CHARTS -->
   <div class="chart-container">
+    <button class="button button--primary button--sm mb-0" style="position: absolute; right: 15px;">
+      <span data-id="general-chart">Exportar a CSV</span>
+    </button>
     <canvas id="general-chart"></canvas>
   </div>
 
@@ -57,9 +70,16 @@
   </div>
   <div class="charts-container charts-container--no-col">
     <div class="chart-container">
+      <button class="button button--primary button--sm mb-0" style="position: absolute; right: 15px;">
+        <span data-id="epics-chart">Exportar a CSV</span>
+      </button>
       <canvas id="epics-chart"></canvas>
     </div>
     <div class="chart-container">
+      <button class="button button--primary button--sm mb-0" style="position: absolute; right: 15px;">
+        <span data-id="types-chart">Exportar a CSV</span>
+      </button>
+
       <canvas id="types-chart"></canvas>
     </div>
   </div>

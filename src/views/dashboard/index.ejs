@@ -1,0 +1,95 @@
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">Bienvenido, <%= currentUser.first_name %></h1>
+      <p class="description">Resumen de la actividad más reciente</p>
+    </div>
+    <span class="line"></span>
+  </div>
+
+  <% if ((currentPrivileges.includes(privileges.retrospectives.getRetrospectives) && answerableRetrospectives.length > 0) ||(currentPrivileges.includes(privileges.actionables.getActionables) && ownActionables.length > 0)) { %>
+  <div class="horizontal-container align-flex-start mb-4">
+    <% if (currentPrivileges.includes(privileges.retrospectives.getRetrospectives) && answerableRetrospectives.length > 0) { %>
+    <div class="card">
+      <p class="subtitle subtitle--blue">Retrospectivas activas</p>
+      <ol class="list">
+        <% for (let retro of answerableRetrospectives) { %>
+        <li>
+          <% if(currentPrivileges.includes(privileges.retrospectives.getMetrics)) {%>
+          <a class="description link" href='<%= routes.retrospectives %>/<%= retro.id %>'><%= retro.name %></a>
+          <% } else { %>
+          <p class="description"><%= retro.name %></p>
+          <% } %>
+        </li>
+        <% } %>
+      </ol>
+    </div>
+    <% } %>
+
+    <% if (currentPrivileges.includes(privileges.actionables.getActionables) && ownActionables.length > 0) { %>
+    <div class="card">
+      <p class="subtitle subtitle--blue">Accionables Pendientes</p>
+      <ol class="list">
+        <% for (let actionable of ownActionables) { %>
+        <li>
+          <% if(currentPrivileges.includes(privileges.retrospectives.getMetrics)) {%>
+          <a class="description link" href='<%= `${routes.actionables}/process` %>'><%= actionable.title %></a>
+          <% } else { %>
+          <p class="description"><%= actionable.title %></p>
+          <% } %>
+        </li>
+        <% } %>
+      </ol>
+    </div>
+    <% } %>
+  </div>
+  <% } %>
+
+
+  <h2 class="subtitle">Sprint actual: <span class="description description--blue"><%= sprint.name %></span></h2>
+  <p class="description mb-3">Resultados y métricas</p>
+
+  <h3 class="input__label mb-1">Filtros</h3>
+  <div class="filters-container">
+    <div class="select-container">
+      <select class="select" id="label-options">
+        <option value="All">Todos los Labels</option>
+        <option value="None">Sin Label</option>
+      </select>
+    </div>
+
+    <% if (team) { %>
+    <div class="select-container">
+      <select class="select" id="issues-options">
+        <option value="All">Todos los Issues</option>
+        <option value="Team" selected>Issues equipo: <%= team.name %></option>
+        <option value="Personal">Issues personales</option>
+      </select>
+    </div>
+    <% } %>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="chart-container">
+    <canvas id="general-chart"></canvas>
+  </div>
+
+  <span class="line"></span>
+  <h2 class="subtitle mb-3">Otras métricas</h2>
+  <div class="filters-container">
+    <div class="checkbox-container">
+      <input type="checkbox" class="question-checkbox mr-1" id="show-empty" />
+      <label for="show-empty">Mostrar atributos vacíos</label>
+    </div>
+  </div>
+  <div class="charts-container charts-container--no-col">
+    <div class="chart-container">
+      <canvas id="epics-chart"></canvas>
+    </div>
+    <div class="chart-container">
+      <canvas id="types-chart"></canvas>
+    </div>
+  </div>
+</section>
+
+<script type="module" src="/assets/js/dashboard.js"></script>

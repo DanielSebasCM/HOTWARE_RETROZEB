@@ -3,15 +3,16 @@
 
   <div class="banner">
     <div class="banner__section">
-      <h1 class="title">Equipos <span class="meta"> (<%=userTeams.length + availableTeams.length %>)</span></h1>
+      <h1 class="title">Equipos</h1>
       <p class="description">
         Visualiza tu equipo o selecciona uno al cual unirte
       </p>
     </div>
     <% if(currentPrivileges.includes(privileges.teams.canCreateTeams)) { %>
-    <div class="banner__section">
-      <a class="button button--primary" href="#">Crear Equipo</a>
-    </div>
+    <a class="button button--primary dropdown-item" id="modal-button">
+      Crear Equipo
+    </a>
+    <div id="modal-container" class="modal-container"></div>
     <% } %>
     <span class="line"></span>
   </div>
@@ -23,97 +24,137 @@
     </span>
   </h2>
   <% if(userTeams && userTeams.length> 0) { %>
-  <div class="cards-container">
-    <% for(let i=0; i < userTeams.length; i++) { %>
-    <div class="card card--team">
-      <div class="card__header">
+  <!-- TABLE -->
+  <div class="banner--nomargin">
+    <div class="table-container">
+      <table class="table" id="retrospectivasSearch">
+        <thead>
+          <tr class="subtitle">
+            <td>Nombre</td>
+            <td>Miembros</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let i=0; i < userTeams.length; i++) { %>
+          <% if(currentPrivileges.includes(privileges.teams.canModifyTeams)) {%>
+          <tr onclick="window.location ='<%= routes.teams %>/<%= userTeams[i].id %>/modificar'" id="retrospectives-list" class="retrospective">
+            <% } else { %>
+          <tr id="retrospectives-list" class="retrospective no-pointer">
+            <% } %>
 
-        <h3 class="card__title">
-          <%= userTeams[i].name %>
-        </h3>
+            <td class="table__title">
+              <%= userTeams[i].name %>
+            </td>
+            <td>
+              <div class="users__avatar-group">
+                <% const len = userTeams[i].members.length > 5 ? 5 : userTeams[i].members.length; %>
+                <% for(let j=0; j< len; j++) { %>
+                <% if(userTeams[i].members[j].picture) { %>
+                <img src="<%= userTeams[i].members[j].picture %>" alt="<%= userTeams[i].members[j].first_name %>" class="user__avatar no-border" />
+                <% } else { %>
+                <span class="user__avatar">
+                  <%= userTeams[i].members[j].first_name[0] %><%= userTeams[i].members[j].last_name[0] %>
+                </span>
+                <% } %>
 
-        <form action="/equipos/eliminar/usuario?_method=PATCH" method="POST">
-          <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
-          <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
-
-          <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn" data-uid=<%=locals.currentUser.uid %> data-id_team=<%=userTeams[i].id %>>Abandonar</button>
-        </form>
-      </div>
-      <p class="card__subtitle">
-        Miembros <span class="meta"> (<%=userTeams[i].members.length %>) </span>
-      </p>
-      <div class="users__list">
-        <% for(let j=0; j < userTeams[i].members.length; j++) { %>
-        <div class="user__item">
-          <span class="user__avatar">
-            <%= userTeams[i].members[j].first_name[0] %>
-          </span>
-          <span class="user__name">
-            <%= userTeams[i].members[j].first_name%>
-            <%= userTeams[i].members[j].last_name%>
-          </span>
-        </div>
-        <% } %>
-      </div>
-
+                <% } %>
+                <% if(userTeams[i].members.length > 5) { %>
+                <span class="user__avatar">
+                  +<%= userTeams[i].members.length - 5 %>
+                </span>
+                <% } %>
+              </div>
+            </td>
+            <td class="table__team" data-idTeam="<%= userTeams[i].id_team %>">
+              <% if (currentPrivileges.includes(privileges.teams.canJoinTeams)) { %>
+              <form action="/equipos/eliminar/usuario?_method=PATCH" method="POST" class="form-action-button">
+                <input type="hidden" name="id_team" value="<%=userTeams[i].id %>">
+                <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
+                <button type="submit" class="button button--sm button--delete-alt remove-team-user-btn" data-uid='<%=locals.currentUser.uid %>' data-id_team=' <%=userTeams[i].id %>'>Abandonar</button>
+              </form>
+              <% } %>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
     </div>
-    <% } %>
-    <% } %>
+  </div>
+  <% } %>
 </section>
-<!-- <span class="line"></span> -->
 
 <section>
   <!-- ALL TEAMS -->
-  <div class="banner">
+  <div class="banner mt-5">
     <h2 class="subtitle">
       Todos los equipos
       <span class="meta"> (<%=availableTeams.length %>) </span>
     </h2>
-
   </div>
-  <!-- TEAMS LIST -->
-  <% if(availableTeams && availableTeams.length> 0) { %>
-  <div class="cards-container">
-    <% for(let i=0; i < availableTeams.length; i++) { %>
-    <div class="card card--team">
-      <div class="card__header">
-
-        <h3 class="card__title">
-          <%= availableTeams[i].name %>
-        </h3>
-      </div>
-
-      <p class="card__subtitle">
-        Miembros <span class="meta"> (<%=availableTeams[i].members.length %>) </span>
-      </p>
-      <div class="users__list">
-        <% for(let j=0; j < availableTeams[i].members.length; j++) { %>
-        <div class="user__item">
-          <span class="user__avatar">
-            <%= availableTeams[i].members[j].first_name[0] %>
-          </span>
-          <span class="user__name">
-            <%= availableTeams[i].members[j].first_name%>
-            <%= availableTeams[i].members[j].last_name%>
-          </span>
-        </div>
-        <% } %>
-
-      </div>
-      <div class="card__footer">
-
-        <% if(currentPrivileges.includes(privileges.teams.canJoinTeams)) { %>
-        <form action="/equipos/nuevo/usuario" method="POST">
-          <input type="hidden" name="id_team" value="<%=availableTeams[i].id %>">
-          <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
-
-          <button class="button button--primary add-team-user-btn" data-uid=<%=locals.currentUser.uid %> data-id_team=<%=availableTeams[i].id %>>
-            Unirme
-          </button>
-        </form>
-        <% } %>
-      </div>
+  <!-- TABLE -->
+  <% if(availableTeams && availableTeams.length > 0) {%>
+  <div class="banner--nomargin">
+    <div class="table-container">
+      <table class="table" id="retrospectivasSearch">
+        <thead>
+          <tr class="subtitle">
+            <td>Nombre</td>
+            <td>Miembros</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let i=0; i < availableTeams.length; i++) { %>
+          <% if(currentPrivileges.includes(privileges.teams.canModifyTeams)) {%>
+          <tr onclick="window.location ='<%= routes.teams %>/<%= availableTeams[i].id %>/modificar'" id="retrospectives-list" class="retrospective">
+            <% } else { %>
+          <tr id="retrospectives-list" class="retrospective no-pointer">
+            <% } %>
+            <td class="table__title">
+              <%= availableTeams[i].name %>
+            </td>
+            <td>
+              <% if(availableTeams[i].members.length < 1) { %>
+              <p class="desription">Sin miembros</p>
+              <% } else {%>
+              <div class="users__avatar-group">
+                <% const len = availableTeams[i].members.length > 5 ? 5 : availableTeams[i].members.length; %>
+                <% for(let j=0; j< len; j++) { %>
+                <% if(availableTeams[i].members[j].picture) { %>
+                <img src="<%= availableTeams[i].members[j].picture %>" alt="<%= availableTeams[i].members[j].first_name %>" class="user__avatar no-border" />
+                <% } else { %>
+                <span class="user__avatar">
+                  <%= availableTeams[i].members[j].first_name[0] %><%= availableTeams[i].members[j].last_name[0] %>
+                </span>
+                <% } %>
+                <% } %>
+                <% if(availableTeams[i].members.length > 5) { %>
+                <span class="user__avatar">
+                  +<%= availableTeams[i].members.length - 5 %>
+                </span>
+                <% } %>
+              </div>
+              <% } %>
+            </td>
+            <td class="table__team" data-idTeam="<%= availableTeams[i].id_team %>">
+              <% if(currentPrivileges.includes(privileges.teams.canJoinTeams)) { %>
+              <form action="/equipos/nuevo/usuario" method="POST" class="form-action-button">
+                <input type="hidden" name="id_team" value="<%=availableTeams[i].id %>">
+                <input type="hidden" name="uid" value="<%=locals.currentUser.uid %>">
+                <button class="button button--primary button--sm add-team-user-btn" data-uid=<%=locals.currentUser.uid %> data-id_team=<%=availableTeams[i].id %>>
+                  Unirme
+                </button>
+              </form>
+              <% } %>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
     </div>
-    <% } %>
-    <% } %>
+  </div>
+  <% } %>
 </section>
+
+<script src="/assets/js/team.js"></script>

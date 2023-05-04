@@ -1,5 +1,5 @@
 const Question = require("../models/question.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const questionTypes = require("../utils/constants").enums.questionTypes;
 const { questionMaxLength, optionMaxLength } =

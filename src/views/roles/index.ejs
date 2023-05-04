@@ -1,49 +1,65 @@
-<!--MAIN-->
 <section class="dashboard">
   <div class="banner">
     <div class="banner__section">
       <h1 class="title">
-        Roles <span class="meta">(<%= roles.length %>)</span>
+        Roles
       </h1>
-      <p class="description">Listado de roles creados</p>
+      <p class="description">Listado de roles creados y sus privilegios</p>
     </div>
-    <% if(currentPrivileges.includes(privileges.teams.canCreateRoles)) { %>
-    <div class="banner__section">
+    <div class="banner__section buttons-container">
+      <% if(currentPrivileges.includes(privileges.roles.canCreateRoles)) { %>
       <a class="button button--primary" href="roles/nuevo">Añadir Rol</a>
+      <% } %>
+      <% if(currentPrivileges.includes(privileges.roles.canModifyRoles)) { %>
+      <% if (roles.length > 0) { %>
+      <a class="button button--edit" href="<%=`roles/${roles[0].id}/modificar`%>">Modificar Rol</a>
+      <% } %>
+      <% } %>
     </div>
-    <% } %>
     <span class="line"></span>
   </div>
 
-  <!-- ROLES -->
-  <div class="filters-container">
-    <div class="input search-bar">
-      <span class="icon search-bar__icon"></span>
-      <input type="text" placeholder="Buscar" />
-    </div>
-  </div>
-  <% if(roles && roles.length> 0) { %>
-  <div class="cards-container">
-    <% for(let role of roles) { %>
-    <div class="card card--question">
-      <div class="card__header">
-        <p class="card__subtitle"><%= role.name %></p>
-      </div>
-      <% if(currentPrivileges.includes(privileges.teams.canDeleteRoles)) { %>
-      <form action="/roles?_method=DELETE" method="POST">
-        <input type="hidden" name="id" value="<%=role.id %>">
-        <button type="submit" class="button button--sm button--delete-alt remove-role-btn" data-id=<%=role.id %>>Eliminar</button>
-      </form>
-      <% } %>
-    </div>
-    <% } %>
+  <!--ROLES-->
+  <% if (roles.length > 0) { %>
+  <div class="card-table">
+    <table class="table-roles">
+      <thead>
+        <tr>
+          <th class="pl-1 pt-2 pb-2" style="text-align: left;">Privilegios</th>
+          <% for (let role of roles) { %>
+          <th class="pt-2 pb-2"><%= role.name %></th>
+          <% } %>
+        </tr>
+      </thead>
+      <tbody>
+        <% for (let tag in privilegesByTag) { %>
+        <tr class="tr-header">
+          <td><%= tag %></td>
+          <% for (let role of roles) { %>
+          <td></td>
+          <% } %>
+        </tr>
+        <% for (let privilege of privilegesByTag[tag]) { %>
+        <tr>
+          <td class="text-left"><%= privilege.description %></td>
+          <% for (let role of roles) { %>
+          <td>
+            <% if(role.privileges.some(p => p.id_privilege == privilege.id) ) { %>
+            <div><img src="/assets/icon/check_circle.svg" alt="checkbox"></div>
+            <% } else { %>
+            <p>-</p>
+            <% } %>
+          </td>
+          <% } %>
+        </tr>
+        <% } %>
+        <% } %>
+      </tbody>
+    </table>
   </div>
   <% } else { %>
-  <div class="cards-container">
-    <div class="card">
-      <p class="card__subtitle">No hay roles</p>
-    </div>
+  <div class="card">
+    <p class="description">No hay roles creados</p>
   </div>
   <% } %>
 </section>
-<script defer src="/assets/js/roles.js"></script>

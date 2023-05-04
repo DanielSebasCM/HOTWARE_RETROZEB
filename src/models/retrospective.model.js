@@ -4,7 +4,7 @@ const Question = require("./question.model");
 const Answer = require("./answer.model");
 const Issue = require("./issue.model");
 const User = require("./user.model");
-const ValidationError = require("../errors/ValidationError");
+const ValidationError = require("../errors/validationError");
 const validationMessages = require("../utils/messages").validation;
 const retrospectiveStates =
   require("../utils/constants").enums.retrospectiveStates;
@@ -226,6 +226,15 @@ class Retrospective {
     );
 
     this.id = res.insertId;
+
+    return res;
+  }
+
+  async close() {
+    const [res, _] = await db.execute(
+      "UPDATE retrospective SET state = 'CLOSED', end_date = ? WHERE id = ?",
+      [new Date(), this.id]
+    );
 
     return res;
   }

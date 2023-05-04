@@ -1,8 +1,8 @@
-require("dotenv").config();
 const Project = require("../models/project.model");
 const Sprint = require("../models/sprint.model");
 const Issue = require("../models/issue.model");
 const User = require("../models/user.model");
+const JiraError = require("../errors/JiraError");
 
 const {
   JIRA_USER_HOTWARE,
@@ -32,14 +32,22 @@ const {
  * @returns Array of actionables
  */
 async function getJiraActionables() {
+  const SuggestedTodo = require("../models/suggestedTodo.model");
   const url = `${JIRA_URL_HOTWARE}/rest/api/3/search`;
   let actionables = await getAll(
     url,
     JIRA_USER_HOTWARE,
     JIRA_API_KEY_HOTWARE,
     {
-      jql: "project=APIT AND issuetype=Act",
-      fields: ["summary", "description", "priority", "status", "assignee"],
+      jql: 'project=APIT AND labels = "Accionable"',
+      fields: [
+        "summary",
+        "description",
+        "priority",
+        "status",
+        "assignee",
+        "created",
+      ],
     },
     "issues"
   );
@@ -60,14 +68,23 @@ async function getJiraActionables() {
         }
       });
     }
-    return {
-      id_jira: actionable.id,
+
+    let state = "PROCESS";
+    if (actionable.fields.status.name === "Done") {
+      state = "COMPLETED";
+    }
+    let suggested_todo = {
       title: actionable.fields.summary,
       description,
+      state,
+      id_user_author: user?.uid,
       priority: actionable.fields.priority.name,
-      state: actionable.fields.status.name,
-      uid_assignee: user?.id,
     };
+    let builtTodo = new SuggestedTodo(suggested_todo);
+    builtTodo.jira_state = actionable.fields.status.name;
+    builtTodo.creation_date = new Date(actionable.fields.created);
+    builtTodo.self = actionable.self;
+    return builtTodo;
   });
 
   return await Promise.all(actionables);
@@ -79,7 +96,7 @@ async function postJiraActionable(actionable) {
     `${JIRA_USER_HOTWARE}:${JIRA_API_KEY_HOTWARE}`
   ).toString("base64")}`;
 
-  const user = await User.getById(actionable.uid_assignee);
+  const user = await User.getById(actionable.id_user_author);
   let description = null;
   if (actionable.description) {
     description = {
@@ -107,14 +124,15 @@ async function postJiraActionable(actionable) {
       summary: actionable.title,
       description,
       issuetype: {
-        name: "Act",
+        name: "Task",
       },
       priority: {
         name: actionable.priority ? actionable.priority : "Medium",
       },
       assignee: {
-        accountId: user ? user.jira_id : null,
+        accountId: user ? user.id_jira : null,
       },
+      labels: ["Accionable"],
     },
   });
 
@@ -317,7 +335,12 @@ async function getAll(url, user, api_key, params, key = "values") {
     headers: {
       Authorization,
     },
-  }).then((res) => res.json());
+  }).then((res) => {
+    if (!res.ok) {
+      throw new JiraError("Error de jira", res.status);
+    }
+    return res.json();
+  });
   const data = res[key];
 
   while (true) {
@@ -343,3 +366,13 @@ function isDone(res) {
   if (res.total !== undefined) return res.startAt + res.maxResults >= res.total;
   return true;
 }
+
+module.exports = {
+  getJiraActionables,
+  fetchProjectJiraSprints,
+  fetchProjectJiraLatestSprint,
+  fetchBoardSprints,
+  fetchProjectBoards,
+  fetchSprintIssues,
+  postJiraActionable,
+};

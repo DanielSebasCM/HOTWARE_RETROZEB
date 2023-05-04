@@ -1,0 +1,77 @@
+<section class="dashboard">
+  <div class="banner">
+    <div class="banner__section">
+      <h1 class="title">
+        Usuarios
+      </h1>
+      <p class="description">Usuarios activos actuales</p>
+    </div>
+    <div class="banner__section">
+      <a class="button button--primary" href="/usuarios/inactivos">
+        Activar Usuarios
+      </a>
+    </div>
+    <span class="line"></span>
+  </div>
+
+  <div class="filters-container">
+    <div class="input search-bar">
+      <span class="icon search-bar__icon"></span>
+      <input type="text" placeholder="Buscar" id="buscar" />
+    </div>
+    <div class="select-container">
+      <select class="select" id="orderAlphabetic">
+        <option value="asc">A-Z</option>
+        <option value="desc">Z-A</option>
+      </select>
+    </div>
+  </div>
+
+  <% if(users && users.length> 0) { %>
+  <div class="banner--nomargin">
+    <div class="table-container">
+      <table class="table" id="userSearch">
+        <thead>
+          <tr class="subtitle">
+            <td>Nombre</td>
+            <td>E-mail</td>
+            <td>Roles</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% for(let i=0; i < users.length; i++) { %>
+
+          <% if(currentPrivileges.includes(privileges.users.canModifyUsers)) {%>
+          <tr onclick="window.location ='<%= routes.users %>/<%= users[i].uid %>/modificar'" id="retrospectives-list" class="retrospective">
+            <% } else { %>
+          <tr id="retrospectives-list" class="retrospective no-pointer">
+            <% } %>
+
+            <td class="table__title">
+              <%= users[i].first_name %>
+              <%= users[i].last_name %>
+              <% if(currentUser.uid===users[i].uid) { %> <span class="meta">(Tú)</span>
+              <% } %>
+            </td>
+            <td>
+              <%= users[i].email %>
+            </td>
+            <td>
+              <span class="horizontal-container table__role">
+                <% for (let j=0; j<users[i].roles.length; j++){ %>
+                <span class="label label--active" style="max-width:fit-content" data-idRole="<%= users[i].roles[j].name %>"> <%= users[i].roles[j].name %> </span>
+                <% } %>
+              </span>
+            </td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <% } %>
+  <p class="no-results hide">No hay resultados</p>
+
+  <script src="/assets/js/users.js"></script>
+
+</section>
