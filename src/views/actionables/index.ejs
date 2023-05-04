@@ -41,105 +41,103 @@
   <% if (actionables.length>0) { %>
   <div class="cards-container">
     <% for(let i=0; i< actionables.length; i++) {%>
-    <a href="<%= actionables[i].self %>">
-      <div class="card card--actionable">
-        <div class="card__header">
-          <h3 class="card__title mr-2">
-            <%= actionables[i].title %>
-          </h3>
-          <% if (state==="process") { %>
-          <div class="pills-container">
-            <% if(actionables[i].pillcolor==="green"){ %>
-            <span class="pill pill--ontime"></span>
-            <% } %>
-            <% if(actionables[i].pillcolor==="yellow"){ %>
-            <span class="pill pill--late"></span>
-            <% } %>
-            <% if(actionables[i].pillcolor==="red"){ %>
-            <span class="pill pill--alert"></span>
-            <% } %>
-          </div>
-          <% } %>
-        </div>
-
-
-        <span class="line"></span>
-        <p class="act__description">
-          <%= actionables[i].description %>
-        </p>
+    <div class="card card--actionable">
+      <div class="card__header">
+        <h3 class="card__title mr-2">
+          <%= actionables[i].title %>
+        </h3>
         <% if (state==="process") { %>
-        <p class="act__description">
-          <b>Estado:</b> <%= actionables[i].jira_state %>
-        </p>
-        <% } %>
-
-        <!--PRIORIDADES-->
-
-        <p class="card__subtitle">
-          Prioridad
-        </p>
-
-        <div class="horizontal-container">
-          <div class="pills-container">
-            <% if (actionables[i].priority==="Highest"){ %>
-            <span class="pill pill--small-vhigh"></span>
-            <% } %>
-            <% if (actionables[i].priority==="High"){ %>
-            <span class="pill pill--small-high"></span>
-            <% } %>
-            <% if (actionables[i].priority==="Medium"){ %>
-            <span class="pill pill--small-medium"></span>
-            <% } %>
-            <% if (actionables[i].priority==="Low"){ %>
-            <span class="pill pill--small-low"></span>
-            <% } %>
-            <% if (actionables[i].priority==="Lowest"){ %>
-            <span class="pill pill--small-vlow"></span>
-            <% } %>
-          </div>
-          <p class="act__description">
-            <%= actionables[i].priority %>
-          </p>
-        </div>
-
-        <!--RESPONSABLE-->
-        <div>
-          <% if (arrUsers[i]){ %> <p class="card__subtitle">
-            Responsable
-          </p>
-          <div class="user__item">
-            <span class="user__avatar">
-              <%= arrUsers[i].first_name[0] %>
-            </span>
-            <span class="user__name">
-              <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
-            </span>
-          </div>
+        <div class="pills-container">
+          <% if(actionables[i].pillcolor==="green"){ %>
+          <span class="pill pill--ontime"></span>
           <% } %>
-        </div>
-        <!--FECHA HACE CUANTO SE CREO-->
-        <% if (state==="process") { %>
-        <p class="card__description__footer">
-          <%= moment(actionables[i].creation_date).fromNow(); %>
-        </p>
-        <% } %>
-        <!--BOTONES-->
-        <% if(state==="pending" ) { %>
-        <div class="buttons-container card__footer <%= arrUsers[i]? "mt-2":"" %>">
-          <% if(currentPrivileges.includes(privileges.actionables.canAcceptActionables)) { %>
-          <form action="<%= actionables[i].id %>/accept" method="POST">
-            <button class="button button--primary" type="submit">Aprobar</button>
-          </form>
+          <% if(actionables[i].pillcolor==="yellow"){ %>
+          <span class="pill pill--late"></span>
           <% } %>
-          <% if(currentPrivileges.includes(privileges.actionables.canRejectActionables)) { %>
-          <form action="<%= actionables[i].id %>/reject" method="POST">
-            <button class="button button--discard" type="submit">Rechazar</button>
-          </form>
+          <% if(actionables[i].pillcolor==="red"){ %>
+          <span class="pill pill--alert"></span>
           <% } %>
         </div>
         <% } %>
       </div>
-    </a>
+
+
+      <span class="line"></span>
+      <p class="act__description">
+        <%= actionables[i].description %>
+      </p>
+      <% if (state==="process") { %>
+      <p class="act__description">
+        <b>Estado:</b> <%= actionables[i].jira_state %>
+      </p>
+      <% } %>
+
+      <!--PRIORIDADES-->
+
+      <p class="card__subtitle">
+        Prioridad
+      </p>
+
+      <div class="horizontal-container">
+        <div class="pills-container">
+          <% if (actionables[i].priority==="Highest"){ %>
+          <span class="pill pill--small-vhigh"></span>
+          <% } %>
+          <% if (actionables[i].priority==="High"){ %>
+          <span class="pill pill--small-high"></span>
+          <% } %>
+          <% if (actionables[i].priority==="Medium"){ %>
+          <span class="pill pill--small-medium"></span>
+          <% } %>
+          <% if (actionables[i].priority==="Low"){ %>
+          <span class="pill pill--small-low"></span>
+          <% } %>
+          <% if (actionables[i].priority==="Lowest"){ %>
+          <span class="pill pill--small-vlow"></span>
+          <% } %>
+        </div>
+        <p class="act__description">
+          <%= actionables[i].priority %>
+        </p>
+      </div>
+
+      <!--RESPONSABLE-->
+      <div>
+        <% if (arrUsers[i]){ %> <p class="card__subtitle">
+          Responsable
+        </p>
+        <div class="user__item">
+          <span class="user__avatar">
+            <%= arrUsers[i].first_name[0] %>
+          </span>
+          <span class="user__name">
+            <%= arrUsers[i].first_name + " " + arrUsers[i].last_name %>
+          </span>
+        </div>
+        <% } %>
+      </div>
+      <!--FECHA HACE CUANTO SE CREO-->
+      <% if (state==="process") { %>
+      <p class="card__description__footer">
+        <%= moment(actionables[i].creation_date).fromNow(); %>
+      </p>
+      <% } %>
+      <!--BOTONES-->
+      <% if(state==="pending" ) { %>
+      <div class="buttons-container card__footer <%= arrUsers[i]? "mt-2":"" %>">
+        <% if(currentPrivileges.includes(privileges.actionables.canAcceptActionables)) { %>
+        <form action="<%= actionables[i].id %>/accept" method="POST">
+          <button class="button button--primary" type="submit">Aprobar</button>
+        </form>
+        <% } %>
+        <% if(currentPrivileges.includes(privileges.actionables.canRejectActionables)) { %>
+        <form action="<%= actionables[i].id %>/reject" method="POST">
+          <button class="button button--discard" type="submit">Rechazar</button>
+        </form>
+        <% } %>
+      </div>
+      <% } %>
+    </div>
     <% } %>
   </div>
   <% } %>
