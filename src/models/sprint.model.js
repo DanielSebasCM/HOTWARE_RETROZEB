@@ -104,21 +104,24 @@ class Sprint {
     const Team = require("./team.model");
 
     const lastSprint = await Sprint.getLast();
-    const teams = await Team.getAllActive();
-    for (const team of teams) {
-      const lastTeamRetro = await team.getLastRetrospective();
 
-      if (lastTeamRetro.state == "IN_PROGRESS") {
-        await lastTeamRetro.close();
-      }
-      if (!lastTeamRetro || lastTeamRetro.id_sprint != lastSprint.id) {
-        const retrospective = new Retrospective({
-          name: lastSprint.name + ": " + team.name,
-          id_sprint: lastSprint.id,
-          id_team: team.id,
-        });
-        await retrospective.post();
-        await retrospective.close();
+    if (lastSprint) {
+      const teams = await Team.getAllActive();
+      for (const team of teams) {
+        const lastTeamRetro = await team.getLastRetrospective();
+
+        if (lastTeamRetro?.state == "IN_PROGRESS") {
+          await lastTeamRetro.close();
+        }
+        if (!lastTeamRetro || lastTeamRetro?.id_sprint != lastSprint.id) {
+          const retrospective = new Retrospective({
+            name: lastSprint.name + ": " + team.name,
+            id_sprint: lastSprint.id,
+            id_team: team.id,
+          });
+          await retrospective.post();
+          await retrospective.close();
+        }
       }
     }
 
