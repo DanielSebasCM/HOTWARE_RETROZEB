@@ -53,6 +53,9 @@ form.addEventListener("submit", (event) => {
 
   const tokens = getTokens();
 
+  const button = form.querySelector("button");
+  button.disabled = true;
+
   fetch(window.location.href, {
     method: "POST",
     body: JSON.stringify(body),
@@ -67,5 +70,6 @@ form.addEventListener("submit", (event) => {
     })
     .catch((err) => {
       console.log(err);
+      button.disabled = false;
     });
 });
