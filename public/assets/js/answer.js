@@ -2,6 +2,8 @@ const form = document.getElementById("question-form");
 const idRetrospective = window.location.href.split("/")[4];
 const uid = document.getElementsByClassName("user")[0].getAttribute("data-uid");
 
+console.log(form.querySelector("button"))
+
 form.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -53,6 +55,9 @@ form.addEventListener("submit", (event) => {
 
   const tokens = getTokens();
 
+  const button = form.querySelector("button")
+  button.disabled = true
+
   fetch(window.location.href, {
     method: "POST",
     body: JSON.stringify(body),
@@ -67,5 +72,6 @@ form.addEventListener("submit", (event) => {
     })
     .catch((err) => {
       console.log(err);
+      button.disabled = false
     });
 });
